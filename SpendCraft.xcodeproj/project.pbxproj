@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7923782628D7656B0069DB01 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782528D7656B0069DB01 /* Session.swift */; };
 		7923782828D7678C0069DB01 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782728D7678C0069DB01 /* Error.swift */; };
+		7923782A28D76BD60069DB01 /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782928D76BD60069DB01 /* Authentication.swift */; };
 		79C19CA228D41BC8003F05F2 /* SpendCraftApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C19CA128D41BC8003F05F2 /* SpendCraftApp.swift */; };
 		79C19CA628D41BCA003F05F2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 79C19CA528D41BCA003F05F2 /* Assets.xcassets */; };
 		79C19CA928D41BCA003F05F2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 79C19CA828D41BCA003F05F2 /* Preview Assets.xcassets */; };
@@ -41,6 +42,7 @@
 /* Begin PBXFileReference section */
 		7923782528D7656B0069DB01 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		7923782728D7678C0069DB01 /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
+		7923782928D76BD60069DB01 /* Authentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
 		79C19C9E28D41BC8003F05F2 /* SpendCraft.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpendCraft.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		79C19CA128D41BC8003F05F2 /* SpendCraftApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendCraftApp.swift; sourceTree = "<group>"; };
 		79C19CA528D41BCA003F05F2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				79C19CD228D517E7003F05F2 /* Transaction.swift */,
+				7923782928D76BD60069DB01 /* Authentication.swift */,
 				7923782728D7678C0069DB01 /* Error.swift */,
 				7923782528D7656B0069DB01 /* Session.swift */,
 			);
@@ -287,6 +290,7 @@
 				79C19CD028D4D871003F05F2 /* TransactionView.swift in Sources */,
 				7923782828D7678C0069DB01 /* Error.swift in Sources */,
 				79C19CA228D41BC8003F05F2 /* SpendCraftApp.swift in Sources */,
+				7923782A28D76BD60069DB01 /* Authentication.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
