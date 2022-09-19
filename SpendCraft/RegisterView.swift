@@ -11,16 +11,15 @@ struct RegisterView: View {
     @StateObject private var store = TransactionStore();
 
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("Unassigned")
-                .font(.title)
-            List {
-                ForEach(store.transactions) { trx in
+        List {
+            ForEach($store.transactions) { $trx in
+                NavigationLink(destination: TransactionDetailView(transaction: $trx)) {
                     TransactionView(transaction: trx)
                 }
             }
-            .listStyle(.plain)
         }
+        .listStyle(.plain)
+        .navigationTitle("Unassigned")
         .onAppear {
             TransactionStore.load() { result in
                 switch result {

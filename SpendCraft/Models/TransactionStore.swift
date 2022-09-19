@@ -22,7 +22,7 @@ class TransactionStore: ObservableObject {
         guard let session = try? getSession() else {
             return
         }
-                
+
         let task = session.dataTask(with: urlRequest) {data, response, error in
             if let error = error {
                 print("Error: \(error)");

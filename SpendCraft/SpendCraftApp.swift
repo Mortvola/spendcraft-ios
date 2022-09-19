@@ -14,7 +14,9 @@ struct SpendCraftApp: App {
     var body: some Scene {
         WindowGroup {
             if (authentication.authenticated) {
-                RegisterView()
+                NavigationView {
+                    MainView()
+                }
             }
             else {
                 LoginView(authenticated: $authentication.authenticated)
