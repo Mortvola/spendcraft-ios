@@ -9,7 +9,22 @@ import SwiftUI
 
 struct CategoriesView: View {
     var body: some View {
-        RegisterView()
+        NavigationView {
+            List {
+                NavigationLink {
+                    RegisterView()
+                } label: {
+                    Label("Unassigned", systemImage: "info.circle")
+                }
+                NavigationLink {
+                    RegisterView()
+                } label: {
+                    Label("Test 2", systemImage: "info.circle")
+                }
+            }
+            .listStyle(.sidebar)
+            .navigationTitle("Categories")
+        }
     }
 }
 
