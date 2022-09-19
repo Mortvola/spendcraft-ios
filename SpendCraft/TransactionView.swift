@@ -37,7 +37,7 @@ struct TransactionView: View {
 }
 
 struct TransactionView_Previews: PreviewProvider {
-    static let transaction = try! Transaction(date: "2022-11-15", name: "Costco", amount: 300.0, institution: "Citi", account: "Checking")
+    static let transaction = try! Transaction(id: 0, date: "2022-11-15", name: "Costco", amount: 300.0, institution: "Citi", account: "Checking")
 
     static var previews: some View {
         TransactionView(transaction: transaction)

@@ -8,28 +8,34 @@
 import SwiftUI
 
 struct RegisterView: View {
-    var transactions: [Transaction]
+    @StateObject private var store = TransactionStore();
 
     var body: some View {
         VStack(alignment: .leading) {
             Text("Unassigned")
                 .font(.title)
             List {
-                ForEach(transactions) { trx in
+                ForEach(store.transactions) { trx in
                     TransactionView(transaction: trx)
                 }
             }
             .listStyle(.plain)
         }
+        .onAppear {
+            TransactionStore.load() { result in
+                switch result {
+                case .failure(let error):
+                    fatalError(error.localizedDescription)
+                case .success(let transactions):
+                    self.store.transactions = transactions
+                }
+            }
+        }
     }
 }
 
 struct RegisterView_Previews: PreviewProvider {
-    static let transactions: [Transaction] = [
-        try! Transaction(date: "2022-12-16", name: "Costco", amount: 300.0, institution: "Citi", account: "Checking"),
-        try! Transaction(date: "2022-11-15", name: "Safeway", amount: 250.0, institution: "Citi", account: "Checking")
-    ]
     static var previews: some View {
-        RegisterView(transactions: transactions)
+        RegisterView()
     }
 }

@@ -7,15 +7,15 @@
 
 import Foundation
 
-struct Transaction: Identifiable {
-    var id: UUID
+struct Transaction: Identifiable, Codable {
+    var id: Int
     var date: Date
     var name: String
     var amount: Double
     var institution: String
     var account: String
     
-    init(id: UUID = UUID(), date: String, name: String, amount: Double, institution: String, account: String) throws {
+    init(id: Int, date: String, name: String, amount: Double, institution: String, account: String) throws {
         let dateFormatter = DateFormatter();
         dateFormatter.dateFormat = "y-M-d"
         
@@ -30,5 +30,14 @@ struct Transaction: Identifiable {
         self.amount = amount
         self.institution = institution
         self.account = account
+    }
+    
+    init(trx: TransactionsResponse.Transaction) {
+        self.id = trx.id
+        self.date = trx.date
+        self.name = trx.accountTransaction.name
+        self.amount = trx.accountTransaction.amount
+        self.institution = trx.accountTransaction.account.institution.name
+        self.account = trx.accountTransaction.account.name
     }
 }
