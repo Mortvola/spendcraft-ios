@@ -10,7 +10,8 @@ import SwiftUI
 struct RegisterView: View {
     @Binding var category: Category
     @StateObject private var store = TransactionStore();
-
+    @State var loading = false
+    
     func loadTransactions() {
         TransactionStore.load(category: category) { result in
             switch result {
@@ -19,20 +20,31 @@ struct RegisterView: View {
             case .success(let transactions):
                 self.store.transactions = transactions
             }
+
+            loading = false
         }
     }
 
     var body: some View {
-        List {
-            ForEach($store.transactions) { $trx in
-                NavigationLink(destination: TransactionDetailView(transaction: $trx)) {
-                    TransactionView(transaction: trx)
+        VStack {
+            if (loading) {
+                ProgressView()
+                Spacer()
+            }
+            else {
+                List {
+                    ForEach($store.transactions) { $trx in
+                        NavigationLink(destination: TransactionDetailView(transaction: $trx)) {
+                            TransactionView(transaction: trx)
+                        }
+                    }
                 }
+                .listStyle(.plain)
             }
         }
-        .listStyle(.plain)
         .navigationTitle(category.name)
         .onAppear {
+            loading = true
             loadTransactions()
         }
         .refreshable {
