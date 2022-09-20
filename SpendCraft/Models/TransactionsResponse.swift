@@ -18,7 +18,7 @@ extension DateFormatter {
     }()
 }
 
-class TransactionsResponse: Codable {
+struct TransactionsResponse: Codable {
     struct Transaction: Codable {
         struct AccountTransaction: Codable {
             struct Account: Codable {
@@ -37,7 +37,7 @@ class TransactionsResponse: Codable {
         
         var id: Int
         var date: Date
-        var accountTransaction: AccountTransaction
+        var accountTransaction: AccountTransaction?
     }
 
     var transactions: [Transaction]
@@ -59,6 +59,11 @@ extension TransactionsResponse.Transaction {
             throw MyError.runtimeError("date is invalid")
         }
         
-        self.accountTransaction = try container.decode(AccountTransaction.self, forKey: .accountTransaction)
+        do {
+            self.accountTransaction = try container.decode(AccountTransaction.self, forKey: .accountTransaction)
+        }
+        catch {
+            print("accountTransaction decoding failed")
+        }
     }
 }

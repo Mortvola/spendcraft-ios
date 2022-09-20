@@ -31,7 +31,7 @@ struct TransactionDetailView: View {
             HStack {
                 Text("Amount")
                 Spacer()
-                Text(String(format: "%.2f", transaction.amount))
+                AmountView(amount: transaction.amount)
             }
             HStack {
                 Text("Institution")

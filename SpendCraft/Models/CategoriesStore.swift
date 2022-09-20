@@ -1,17 +1,17 @@
 //
-//  Store.swift
+//  CategoriesStore.swift
 //  SpendCraft
 //
-//  Created by Richard Shields on 9/18/22.
+//  Created by Richard Shields on 9/19/22.
 //
 
 import Foundation
 
-class TransactionStore: ObservableObject {
-    @Published var transactions: [Transaction] = []
-
-    static func load(category: Category, completion: @escaping (Result<[Transaction], Error>)->Void) {
-        guard let url = URL(string: "https://spendcraft.app/api/category/\(category.id)/transactions?offset=0&limit=30") else {
+class CategoriesStore: ObservableObject {
+    @Published var categories: Categories = Categories(tree: [])
+    
+    static func load(completion: @escaping (Result<Categories, Error>)->Void) {
+        guard let url = URL(string: "https://spendcraft.app/api/groups") else {
             return
         }
 
@@ -46,21 +46,19 @@ class TransactionStore: ObservableObject {
                 return;
             }
             
-            var transactionsResponse: TransactionsResponse
+            var categoriesResponse: [CategoryTreeNode]
             do {
-                transactionsResponse = try JSONDecoder().decode(TransactionsResponse.self, from: data)
+                categoriesResponse = try JSONDecoder().decode([CategoryTreeNode].self, from: data)
             }
             catch {
                 print ("Error: \(error)")
                 return
             }
 
-            let transactions: [Transaction] = transactionsResponse.transactions.map {
-                Transaction(trx: $0)
-            }
+            let categories: Categories = Categories(tree: categoriesResponse);
         
             DispatchQueue.main.async {
-                completion(.success(transactions))
+                completion(.success(categories))
             }
         }
         task.resume()

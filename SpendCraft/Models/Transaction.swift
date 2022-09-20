@@ -35,9 +35,9 @@ struct Transaction: Identifiable, Codable {
     init(trx: TransactionsResponse.Transaction) {
         self.id = trx.id
         self.date = trx.date
-        self.name = trx.accountTransaction.name
-        self.amount = trx.accountTransaction.amount
-        self.institution = trx.accountTransaction.account.institution.name
-        self.account = trx.accountTransaction.account.name
+        self.name = trx.accountTransaction?.name ?? ""
+        self.amount = trx.accountTransaction?.amount ?? 0
+        self.institution = trx.accountTransaction?.account.institution.name ?? ""
+        self.account = trx.accountTransaction?.account.name ?? ""
     }
 }

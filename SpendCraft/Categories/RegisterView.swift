@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct RegisterView: View {
+    @Binding var category: Category
     @StateObject private var store = TransactionStore();
 
     var body: some View {
@@ -19,9 +20,9 @@ struct RegisterView: View {
             }
         }
         .listStyle(.plain)
-        .navigationTitle("Unassigned")
+        .navigationTitle(category.name)
         .onAppear {
-            TransactionStore.load() { result in
+            TransactionStore.load(category: category) { result in
                 switch result {
                 case .failure(let error):
                     fatalError(error.localizedDescription)
@@ -34,7 +35,8 @@ struct RegisterView: View {
 }
 
 struct RegisterView_Previews: PreviewProvider {
+    static let category = Category(id: 0, groupId: 0, name: "Test Category", balance: 100, type: "REGULAR", monthlyExpenses: true)
     static var previews: some View {
-        RegisterView()
+        RegisterView(category: .constant(category))
     }
 }

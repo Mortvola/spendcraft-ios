@@ -16,6 +16,18 @@ struct TransactionView: View {
         return dateFormatter.string(from: transaction.date)
     }
 
+    func formatAccount(institution: String?, account: String?) -> String {
+        guard let institution = institution, let account = account else {
+            return ""
+        }
+        
+        if (institution != "" && account != "") {
+            return "\(institution): \(account)"
+        }
+        
+        return ""
+    }
+
     var body: some View {
         VStack(alignment: .leading) {
             HStack() {
@@ -24,12 +36,11 @@ struct TransactionView: View {
                     Text(transaction.name)
                     Spacer()
                 }
-                Text(String(format: "%.2f", transaction.amount))
-                    .monospacedDigit()
+                AmountView(amount: transaction.amount)
             }
             
             HStack {
-                Text("\(transaction.institution): \(transaction.account)")
+                Text(formatAccount(institution: transaction.institution, account:  transaction.account))
                     .font(.caption)
             }
         }
