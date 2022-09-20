@@ -11,6 +11,17 @@ struct RegisterView: View {
     @Binding var category: Category
     @StateObject private var store = TransactionStore();
 
+    func loadTransactions() {
+        TransactionStore.load(category: category) { result in
+            switch result {
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            case .success(let transactions):
+                self.store.transactions = transactions
+            }
+        }
+    }
+
     var body: some View {
         List {
             ForEach($store.transactions) { $trx in
@@ -22,14 +33,10 @@ struct RegisterView: View {
         .listStyle(.plain)
         .navigationTitle(category.name)
         .onAppear {
-            TransactionStore.load(category: category) { result in
-                switch result {
-                case .failure(let error):
-                    fatalError(error.localizedDescription)
-                case .success(let transactions):
-                    self.store.transactions = transactions
-                }
-            }
+            loadTransactions()
+        }
+        .refreshable {
+            loadTransactions()
         }
     }
 }
