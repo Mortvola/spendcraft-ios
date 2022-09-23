@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Category: Codable, Identifiable {
+struct Category: Codable, Identifiable, Hashable {
     var id: Int
     var groupId: Int
     var name: String
@@ -25,7 +25,7 @@ struct Category: Codable, Identifiable {
     }
 }
 
-struct Group: Codable, Identifiable {
+struct Group: Codable, Identifiable, Hashable {
     var id: Int
     var name: String
     var type: String
@@ -39,7 +39,7 @@ struct Group: Codable, Identifiable {
     }
 }
 
-enum CategoryTreeNode: Codable, Identifiable {
+enum CategoryTreeNode: Codable, Identifiable, Hashable {
     case group(Group)
     case category(Category)
     
@@ -49,6 +49,26 @@ enum CategoryTreeNode: Codable, Identifiable {
             return String("Cat-\(category.id)")
         case .group(let group):
             return String("Grp-\(group.id)")
+        }
+    }
+    
+    var name: String {
+        switch self {
+        case .category(let category):
+            return category.name
+        case .group(let group):
+            return group.name
+        }
+    }
+    
+    var children: [CategoryTreeNode]? {
+        switch self {
+        case .category:
+            return nil
+        case .group(let group):
+            return group.categories.map{
+                CategoryTreeNode.category($0)
+            }
         }
     }
 }

@@ -35,9 +35,17 @@ struct TransactionsResponse: Codable {
             var account: Account
         }
         
+        struct TransactionCategory: Codable {
+            var id: Int
+            var categoryId: Int
+            var amount: Double
+            var comment: String?
+        }
+        
         var id: Int
         var date: Date
         var accountTransaction: AccountTransaction?
+        var transactionCategories: [TransactionCategory]
     }
 
     var transactions: [Transaction]
@@ -64,6 +72,13 @@ extension TransactionsResponse.Transaction {
         }
         catch {
             print("accountTransaction decoding failed")
+        }
+        
+        do {
+            self.transactionCategories = try container.decode([TransactionCategory].self, forKey: .transactionCategories)
+        }
+        catch {
+            self.transactionCategories = []
         }
     }
 }

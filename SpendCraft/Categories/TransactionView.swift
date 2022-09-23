@@ -10,12 +10,6 @@ import SwiftUI
 struct TransactionView: View {
     var transaction: Transaction
 
-    func formatDate(date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MM/dd/yy"
-        return dateFormatter.string(from: transaction.date)
-    }
-
     func formatAccount(institution: String?, account: String?) -> String {
         guard let institution = institution, let account = account else {
             return ""
@@ -48,9 +42,7 @@ struct TransactionView: View {
 }
 
 struct TransactionView_Previews: PreviewProvider {
-    static let transaction = try! Transaction(id: 0, date: "2022-11-15", name: "Costco", amount: 300.0, institution: "Citi", account: "Checking")
-
     static var previews: some View {
-        TransactionView(transaction: transaction)
+        TransactionView(transaction: Transaction.sampleData[0])
     }
 }
