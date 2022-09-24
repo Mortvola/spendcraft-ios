@@ -35,7 +35,7 @@ struct RegisterView: View {
             else {
                 List {
                     ForEach($store.transactions) { $trx in
-                        RegisterTransactionView(trx: $trx, categories: categories)
+                        TransactionView(trx: $trx, categories: categories)
                     }
                 }
                 .listStyle(.plain)

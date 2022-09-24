@@ -10,6 +10,13 @@ import SwiftUI
 struct TransactionEdit: View {
     @Binding var transaction: Transaction.Data
     let categories: Categories
+    static var next: Int = 0
+
+    static func nextId() -> Int {
+        next -= 1
+        
+        return next
+    }
 
     var body: some View {
         Form {
@@ -47,11 +54,13 @@ struct TransactionEdit: View {
                         TransactionCategoryEdit(transactionCategory: $trxCat, categories: categories)
                     }
                     .onDelete { indices in
-                        print("delete transaction category at \(indices)")
+                        transaction.categories.remove(atOffsets: indices)
                     }
                     
                     Button(action: {
-                        transaction.categories.append(Transaction.Category())
+                        var category = Transaction.Category();
+                        category.id = TransactionEdit.nextId()
+                        transaction.categories.append(category)
                     }) {
                         Text("Add Category")
                             .foregroundColor(Color.accentColor)

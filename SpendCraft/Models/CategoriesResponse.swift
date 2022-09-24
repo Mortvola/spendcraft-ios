@@ -83,7 +83,6 @@ extension CategoryTreeNode {
             return
         }
         catch {
-            print ("Not a category")
         }
         
         do {
@@ -92,7 +91,6 @@ extension CategoryTreeNode {
             return
         }
         catch {
-            print ("Not a group")
         }
         
         throw MyError.runtimeError("Failed to decode tree node")

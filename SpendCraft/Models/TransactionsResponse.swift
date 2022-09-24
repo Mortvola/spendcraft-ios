@@ -44,6 +44,7 @@ struct TransactionsResponse: Codable {
         
         var id: Int
         var date: Date
+        var comment: String?
         var accountTransaction: AccountTransaction?
         var transactionCategories: [TransactionCategory]
     }

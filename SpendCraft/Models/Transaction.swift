@@ -40,9 +40,10 @@ struct Transaction: Identifiable, Codable {
     var amount: Double
     var institution: String
     var account: String
+    var comment: String?
     var categories: [Category] = []
     
-    init(id: Int, date: String, name: String, amount: Double, institution: String, account: String, transactionCategories: [Category]) {
+    init(id: Int, date: String, name: String, amount: Double, institution: String, account: String, comment: String?, transactionCategories: [Category]) {
         let dateFormatter = DateFormatter();
         dateFormatter.dateFormat = "y-M-d"
         
@@ -52,12 +53,14 @@ struct Transaction: Identifiable, Codable {
         self.amount = amount
         self.institution = institution
         self.account = account
+        self.comment = comment
         self.categories = transactionCategories
     }
     
     init(trx: TransactionsResponse.Transaction) {
         self.id = trx.id
         self.date = trx.date
+        self.comment = trx.comment
         self.name = trx.accountTransaction?.name ?? ""
         self.amount = trx.accountTransaction?.amount ?? 0
         self.institution = trx.accountTransaction?.account.institution.name ?? ""
@@ -65,6 +68,113 @@ struct Transaction: Identifiable, Codable {
         self.categories = trx.transactionCategories.map {
             Category(trxCategory: $0)
         }
+    }
+
+    func save(completion: @escaping (Result<[Transaction], Error>)->Void) {
+        guard let url = URL(string: "https://spendcraft.app/api/transaction/\(self.id)") else {
+            return
+        }
+
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "PATCH"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        guard let session = try? getSession() else {
+            return
+        }
+
+        /*
+        {
+           "name":"Garmin",
+           "date":"2022-09-22",
+           "amount":-64.95,
+           "principle":0,
+           "comment":"",
+           "splits":[
+               {
+                   "id":-2,
+                   "categoryId":4,
+                   "amount":-64.95
+               }
+           ]
+        }
+        */
+        
+        struct TrxData: Encodable {
+            struct Category: Encodable {
+                var id: Int?
+                var categoryId: Int?
+                var amount: Double
+                var comment: String?
+            }
+            
+            var name: String
+            var date: String
+            var amount: Double
+            var principle: Double
+            var comment: String?
+            var splits: [Category]
+
+        }
+
+        guard let date = self.date else {
+            return
+        }
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let dateString = formatter.string(from: date)
+
+        let trxData = TrxData(name: self.name, date: dateString, amount: self.amount, principle: 0, comment: self.comment, splits: self.categories.map {
+            TrxData.Category(id: $0.id, categoryId: $0.categoryId, amount: $0.amount, comment: $0.comment)
+        })
+
+        guard let uploadData = try? JSONEncoder().encode(trxData) else {
+            return
+        }
+
+        let task = session.uploadTask(with: urlRequest, from: uploadData) {data, response, error in
+            if let error = error {
+                print("Error: \(error)");
+                return
+            }
+            
+            guard let response = response as? HTTPURLResponse else {
+                print ("response is nil")
+                return
+            }
+            
+            guard (200...299).contains(response.statusCode) else {
+                print ("Server error: \(response.statusCode)")
+                return
+            }
+            
+            print("success: \(response.statusCode)")
+            
+//            guard let data = data else {
+//                print ("data is nil")
+//                return;
+//            }
+            
+//            var transactionsResponse: TransactionsResponse
+//            do {
+//                transactionsResponse = try JSONDecoder().decode(TransactionsResponse.self, from: data)
+//            }
+//            catch {
+//                print ("Error: \(error)")
+//                return
+//            }
+//
+//            let transactions: [Transaction] = transactionsResponse.transactions.map {
+//                Transaction(trx: $0)
+//            }
+        
+//            DispatchQueue.main.async {
+//                completion(.success(transactions))
+//            }
+        }
+        task.resume()
     }
 }
 
@@ -75,11 +185,16 @@ extension Transaction {
         var amount: Double = 0.0
         var institution: String = ""
         var account: String = ""
+        var comment: String?
         var categories: [Category] = []
     }
     
     var data: Data {
-        Data(date: date, name: name, amount: amount, institution: institution, account: account, categories: categories)
+        Data(date: date, name: name, amount: amount, institution: institution, account: account, comment: comment, categories: categories)
+    }
+    
+    mutating func update(from data: Data) {
+        categories = data.categories
     }
 }
 
