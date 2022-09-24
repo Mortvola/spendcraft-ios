@@ -19,7 +19,6 @@ struct NumericField: View {
                 if let newValue = Double(typedValue) {
                     if (value != newValue) {
                         value = newValue
-                        print("value = \(value)")
                     }
                 }
                 else {
