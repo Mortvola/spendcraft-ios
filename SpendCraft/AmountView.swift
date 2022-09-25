@@ -14,7 +14,12 @@ struct AmountView: View {
         let formatter = NumberFormatter()
         formatter.numberStyle = NumberFormatter.Style.currency
         
-        let number = NSNumber(value: value)
+        var v = value
+        if (v == 0.0 && v.sign == .minus) {
+            v = 0.0
+        }
+
+        let number = NSNumber(value: v)
         return formatter.string(from: number) ?? ""
     }
     
