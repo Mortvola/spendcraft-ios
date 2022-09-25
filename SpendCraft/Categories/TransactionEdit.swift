@@ -18,6 +18,14 @@ struct TransactionEdit: View {
         return next
     }
 
+    var remaining: Double {
+        let sum = transaction.categories.reduce(0, { x, y in
+            x + y.amount
+        })
+        
+        return ((transaction.amount - sum) * 100.0).rounded() / 100.0
+    }
+
     var body: some View {
         Form {
             List {
@@ -49,9 +57,26 @@ struct TransactionEdit: View {
                     }
                 }
 
-                Section(header: Text("Categories")) {
+                Section(
+                    header: Text("Categories"),
+                    footer: HStack {
+                        Text("Remaining")
+                        Spacer()
+                        AmountView(amount: remaining)
+                    }
+                        .font(.body)
+                ) {
                     ForEach($transaction.categories) { $trxCat in
-                        TransactionCategoryEdit(transactionCategory: $trxCat, categories: categories)
+                        VStack(alignment: .leading) {
+                            HStack() {
+                                CategoryPicker(selection: $trxCat.categoryId, categories: categories)
+                                Spacer()
+                                NumericField(value: $trxCat.amount)
+                                    .frame(maxWidth: 100)
+                            }
+                            TextField("Comment", text: $trxCat.comment)
+                                .truncationMode(.tail)
+                        }
                     }
                     .onDelete { indices in
                         transaction.categories.remove(atOffsets: indices)
