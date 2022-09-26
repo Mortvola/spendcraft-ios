@@ -23,7 +23,7 @@ struct CategoryPicker: View {
         NavigationLink(destination: CategoryList(categories: categories, selection: $selection)) {
             Text(categoryText(selection: selection))
                 .truncationMode(.tail)
-                .foregroundColor(selection == nil ? Color.gray : nil)
+                .foregroundColor(selection == nil ? Color(uiColor: .placeholderText) : nil)
         }
     }
 }

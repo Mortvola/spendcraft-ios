@@ -11,11 +11,10 @@ struct Transaction: Identifiable, Codable {
     struct Category: Identifiable, Codable {
         var id: Int?
         var categoryId: Int?
-        var amount: Double
+        var amount: Double?
         var comment: String
         
         init() {
-            self.amount = 0
             self.comment = ""
         }
 
@@ -105,7 +104,7 @@ struct Transaction: Identifiable, Codable {
             struct Category: Encodable {
                 var id: Int?
                 var categoryId: Int?
-                var amount: Double
+                var amount: Double?
                 var comment: String?
             }
             
@@ -187,6 +186,26 @@ extension Transaction {
         var account: String = ""
         var comment: String?
         var categories: [Category] = []
+
+        var isValid: Bool {
+            categories.allSatisfy {
+                $0.categoryId != nil && $0.amount != nil
+            }
+            && (categories.count == 0 || remaining == 0)
+        }
+
+        var remaining: Double {
+            let sum = self.categories.reduce(0.0, { x, y in
+                if let amount = y.amount {
+                    return x + amount
+                }
+                
+                return x
+            })
+            
+            return ((self.amount - sum) * 100.0).rounded() / 100.0
+        }
+
     }
     
     var data: Data {

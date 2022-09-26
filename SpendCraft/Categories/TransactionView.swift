@@ -72,8 +72,8 @@ struct TransactionView: View {
                             isEditingTrx = false;
                             trx.update(from: data)
                             saveTransaction()
-                            // scrum.update(from: data)
                         }
+                        .disabled(!data.isValid)
                     }
                 }
             }

@@ -18,14 +18,6 @@ struct TransactionEdit: View {
         return next
     }
 
-    var remaining: Double {
-        let sum = transaction.categories.reduce(0, { x, y in
-            x + y.amount
-        })
-        
-        return ((transaction.amount - sum) * 100.0).rounded() / 100.0
-    }
-
     var body: some View {
         Form {
             List {
@@ -62,7 +54,7 @@ struct TransactionEdit: View {
                     footer: HStack {
                         Text("Remaining")
                         Spacer()
-                        AmountView(amount: remaining)
+                        AmountView(amount: transaction.remaining)
                     }
                         .font(.body)
                 ) {
@@ -85,6 +77,7 @@ struct TransactionEdit: View {
                     Button(action: {
                         var category = Transaction.Category();
                         category.id = TransactionEdit.nextId()
+                        category.amount = transaction.remaining
                         transaction.categories.append(category)
                     }) {
                         Text("Add Category")
