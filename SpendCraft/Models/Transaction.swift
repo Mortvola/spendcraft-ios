@@ -25,7 +25,7 @@ struct Transaction: Identifiable, Codable {
             self.comment = comment ?? ""
         }
         
-        init(trxCategory: TransactionsResponse.Transaction.TransactionCategory) {
+        init(trxCategory: TransactionResponse.TransactionCategory) {
             self.id = trxCategory.id
             self.categoryId = trxCategory.categoryId
             self.amount = trxCategory.amount
@@ -56,7 +56,7 @@ struct Transaction: Identifiable, Codable {
         self.categories = transactionCategories
     }
     
-    init(trx: TransactionsResponse.Transaction) {
+    init(trx: TransactionResponse) {
         self.id = trx.id
         self.date = trx.date
         self.comment = trx.comment
@@ -68,8 +68,14 @@ struct Transaction: Identifiable, Codable {
             Category(trxCategory: $0)
         }
     }
+    
+    func hasCategory(categoryId: Int) -> Bool {
+        categories.contains {
+            $0.id == categoryId
+        }
+    }
 
-    func save(completion: @escaping (Result<[Transaction], Error>)->Void) {
+    func save(completion: @escaping (Result<UpdateTransactionResponse, Error>)->Void) {
         guard let url = URL(string: "https://spendcraft.app/api/transaction/\(self.id)") else {
             return
         }
@@ -83,23 +89,6 @@ struct Transaction: Identifiable, Codable {
             return
         }
 
-        /*
-        {
-           "name":"Garmin",
-           "date":"2022-09-22",
-           "amount":-64.95,
-           "principle":0,
-           "comment":"",
-           "splits":[
-               {
-                   "id":-2,
-                   "categoryId":4,
-                   "amount":-64.95
-               }
-           ]
-        }
-        */
-        
         struct TrxData: Encodable {
             struct Category: Encodable {
                 var id: Int?
@@ -114,7 +103,6 @@ struct Transaction: Identifiable, Codable {
             var principle: Double
             var comment: String?
             var splits: [Category]
-
         }
 
         guard let date = self.date else {
@@ -123,6 +111,7 @@ struct Transaction: Identifiable, Codable {
 
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = TimeZone(abbreviation: "UTC")
         let dateString = formatter.string(from: date)
 
         let trxData = TrxData(name: self.name, date: dateString, amount: self.amount, principle: 0, comment: self.comment, splits: self.categories.map {
@@ -151,27 +140,23 @@ struct Transaction: Identifiable, Codable {
             
             print("success: \(response.statusCode)")
             
-//            guard let data = data else {
-//                print ("data is nil")
-//                return;
-//            }
+            guard let data = data else {
+                print ("data is nil")
+                return
+            }
             
-//            var transactionsResponse: TransactionsResponse
-//            do {
-//                transactionsResponse = try JSONDecoder().decode(TransactionsResponse.self, from: data)
-//            }
-//            catch {
-//                print ("Error: \(error)")
-//                return
-//            }
-//
-//            let transactions: [Transaction] = transactionsResponse.transactions.map {
-//                Transaction(trx: $0)
-//            }
-        
-//            DispatchQueue.main.async {
-//                completion(.success(transactions))
-//            }
+            var updateTrxResponse: UpdateTransactionResponse
+            do {
+                updateTrxResponse = try JSONDecoder().decode(UpdateTransactionResponse.self, from: data)
+            }
+            catch {
+                print ("Error: \(error)")
+                return
+            }
+
+            DispatchQueue.main.async {
+                completion(.success(updateTrxResponse))
+            }
         }
         task.resume()
     }
@@ -224,5 +209,6 @@ func formatDate(date: Date?) -> String {
 
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "MM/dd/yy"
+    dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
     return dateFormatter.string(from: date)
 }

@@ -18,42 +18,46 @@ extension DateFormatter {
     }()
 }
 
-struct TransactionsResponse: Codable {
-    struct Transaction: Codable {
-        struct AccountTransaction: Codable {
-            struct Account: Codable {
-                struct Institution: Codable {
-                    var name: String
-                }
-                
+struct TransactionResponse: Codable {
+    struct AccountTransaction: Codable {
+        struct Account: Codable {
+            struct Institution: Codable {
                 var name: String
-                var institution: Institution
             }
-
+            
             var name: String
-            var amount: Double
-            var account: Account
+            var institution: Institution
         }
-        
-        struct TransactionCategory: Codable {
-            var id: Int
-            var categoryId: Int
-            var amount: Double
-            var comment: String?
-        }
-        
-        var id: Int
-        var date: Date
-        var comment: String?
-        var accountTransaction: AccountTransaction?
-        var transactionCategories: [TransactionCategory]
-    }
 
-    var transactions: [Transaction]
+        var name: String
+        var amount: Double
+        var account: Account
+    }
+    
+    struct TransactionCategory: Codable {
+        var id: Int
+        var categoryId: Int
+        var amount: Double
+        var comment: String?
+    }
+    
+    var id: Int
+    var date: Date
+    var comment: String?
+    var accountTransaction: AccountTransaction?
+    var transactionCategories: [TransactionCategory]
+}
+
+struct TransactionsResponse: Codable {
+    var transactions: [TransactionResponse]
     var balance: Double
 }
 
-extension TransactionsResponse.Transaction {
+struct UpdateTransactionResponse: Codable {
+    var transaction: TransactionResponse
+}
+
+extension TransactionResponse {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         

@@ -9,6 +9,8 @@ import SwiftUI
 
 struct TransactionView: View {
     @Binding var trx: Transaction
+    @Binding var transactions: [Transaction]
+    @Binding var category: Category
     @State var data = Transaction.Data()
     @State var isEditingTrx = false
     let categories: Categories
@@ -30,8 +32,20 @@ struct TransactionView: View {
             switch result {
             case .failure(let error):
                 fatalError(error.localizedDescription)
-            case .success:
+            case .success(let updateTrxResponse):
                 print("transaction saved")
+                
+                let transaction = Transaction(trx: updateTrxResponse.transaction)
+                
+                if ((transaction.categories.count == 0 && category.id != -2) || (transaction.categories.count != 0 && !transaction.hasCategory(categoryId: category.id))) {
+                    let index = transactions.firstIndex(where: {
+                        $0.id == trx.id
+                    })
+                    
+                    if let index = index {
+                        transactions.remove(at: index)
+                    }
+                }
             }
         }
     }
@@ -83,9 +97,10 @@ struct TransactionView: View {
 
 struct TransactionView_Previews: PreviewProvider {
     static let categories = Categories(tree: [])
+    static let category = Category(id: 0, groupId: 0, name: "Test", balance: 0, type: "REGULAR", monthlyExpenses: false)
 
     static var previews: some View {
-        TransactionView(trx: .constant(Transaction.sampleData[0]), categories: categories)
+        TransactionView(trx: .constant(Transaction.sampleData[0]), transactions: .constant(Transaction.sampleData), category: .constant(category), categories: categories)
     }
 }
 
