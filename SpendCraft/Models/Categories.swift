@@ -101,6 +101,21 @@ struct Categories {
         self.groupDictionary = Dictionary()
         self.categoryDictionary = Dictionary()
 
+        // Add the groups and categories to the dictionaries
+        self.tree.forEach { node in
+            switch node {
+            case .category(let category):
+                categoryDictionary.updateValue(category, forKey: category.id)
+                break
+            case .group(let group):
+                groupDictionary.updateValue(group, forKey: group.id)
+                group.categories.forEach { category in
+                    categoryDictionary.updateValue(category, forKey: category.id)
+                }
+                break
+            }
+        }
+
         // Find nogroup group
         let noGroup = self.tree.first(where: {
             switch($0) {
@@ -172,25 +187,9 @@ struct Categories {
                     self.accountTransfer = accountTransfer
                 }
 
-                self.tree.removeAll {
-                    $0.id == system.id
-                }
-            }
-        }
-
-
-        // Add the groups and categories to the dictionaries
-        self.tree.forEach { node in
-            switch node {
-            case .category(let category):
-                categoryDictionary.updateValue(category, forKey: category.id)
-                break
-            case .group(let group):
-                groupDictionary.updateValue(group, forKey: group.id)
-                group.categories.forEach { category in
-                    categoryDictionary.updateValue(category, forKey: category.id)
-                }
-                break
+//                self.tree.removeAll {
+//                    $0.id == system.id
+//                }
             }
         }
     }

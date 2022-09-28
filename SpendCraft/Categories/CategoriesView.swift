@@ -26,7 +26,9 @@ struct CategoriesView: View {
                     case .category(let category):
                         CategoryView(category: category, categories: $categories)
                     case .group(let group):
-                        GroupView(group: .constant(group), categories: $categories)
+                        if (group.type != "SYSTEM") {
+                            GroupView(group: .constant(group), categories: $categories)
+                        }
                     }
                 }
             }
