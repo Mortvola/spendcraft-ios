@@ -64,7 +64,7 @@ struct TransactionView: View {
                         Text(trx.name)
                         Spacer()
                     }
-                    AmountView(amount: trx.amount)
+                    AmountView(amount: trx.categoryAmount(category: category))
                 }
                 
                 HStack {

@@ -74,6 +74,22 @@ struct Transaction: Identifiable, Codable {
             $0.id == categoryId
         }
     }
+    
+    func categoryAmount(category: Categories.Category) -> Double {
+        if (category.type == "UNASSIGNED") {
+            return self.amount
+        }
+
+        return categories.reduce(0.0, { result, trxCategory in
+            if (trxCategory.categoryId == category.id) {
+                if let amount = trxCategory.amount {
+                    return result + amount
+                }
+            }
+            
+            return result
+        })
+    }
 
     func save(completion: @escaping (Result<UpdateTransactionResponse, Error>)->Void) {
         guard let url = URL(string: "https://spendcraft.app/api/transaction/\(self.id)") else {
