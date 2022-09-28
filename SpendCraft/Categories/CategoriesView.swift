@@ -14,15 +14,9 @@ struct CategoriesView: View {
     var body: some View {
         NavigationView {
             List {
-                NavigationLink(destination: RegisterView(category: testCategory, categories: $categories)) {
-                    Text("Unassigned")
-                }
-                NavigationLink(destination: RegisterView(category: testCategory, categories: $categories)) {
-                    Text("Funding Pool")
-                }
-                NavigationLink(destination: RegisterView(category: testCategory, categories: $categories)) {
-                    Text("Account Transfer")
-                }
+                CategoryView(category: categories.unassigned, categories: $categories)
+                CategoryView(category: categories.fundingPool, categories: $categories)
+                CategoryView(category: categories.accountTransfer, categories: $categories)
                 NavigationLink(destination: RegisterView(category: testCategory, categories: $categories)) {
                     Text("Rebalances")
                 }

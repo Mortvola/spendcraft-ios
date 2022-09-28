@@ -89,7 +89,10 @@ struct Categories {
     var tree: [TreeNode] = []
     var groupDictionary: Dictionary<Int, Group>
     var categoryDictionary: Dictionary<Int, Category>
-    
+    var unassigned: Category = Category(id: -2, groupId: 0, name: "Unassigned", balance: 0, type: "UNASSIGNED", monthlyExpenses: false)
+    var fundingPool: Category = Category(id: -3, groupId: 0, name: "Funding Pool", balance: 0, type: "FUNDING POOL", monthlyExpenses: false)
+    var accountTransfer: Category = Category(id: -4, groupId: 0, name: "Account Transfer", balance: 0, type: "ACCOUNT TRANSFER", monthlyExpenses: false)
+
     init(tree: [CategoryTreeNode]) {
         self.tree = tree.map {
             Categories.TreeNode(node: $0)
@@ -108,6 +111,8 @@ struct Categories {
             }
         })
         
+        // Move the categories in the No Group group to the top level of the tree
+        // and then delete the No Group group.
         if let noGroup = noGroup {
             noGroup.children?.forEach { node in
                 self.tree.append(node)
@@ -126,6 +131,53 @@ struct Categories {
                 return name0 < name1
             }
         }
+        
+        // Find the System group
+        let system = self.tree.first(where: {
+            switch($0) {
+            case .group(let group):
+                return group.type == "SYSTEM"
+            case .category:
+                return false
+            }
+        })
+        
+        if let system = system {
+            // Find the unassigned category
+            switch(system) {
+            case .category:
+                print("category")
+            case .group(let group):
+                let unassigned = group.categories.first(where: { category in
+                    category.type == "UNASSIGNED"
+                })
+                
+                if let unassigned = unassigned {
+                    self.unassigned = unassigned
+                }
+                
+                let fundingPool = group.categories.first(where: { category in
+                    category.type == "FUNDING POOL"
+                })
+                
+                if let fundingPool = fundingPool {
+                    self.fundingPool = fundingPool
+                }
+
+                let accountTransfer = group.categories.first(where: { category in
+                    category.type == "ACCOUNT TRANSFER"
+                })
+                
+                if let accountTransfer = accountTransfer {
+                    self.accountTransfer = accountTransfer
+                }
+
+                self.tree.removeAll {
+                    $0.id == system.id
+                }
+            }
+        }
+
 
         // Add the groups and categories to the dictionaries
         self.tree.forEach { node in
