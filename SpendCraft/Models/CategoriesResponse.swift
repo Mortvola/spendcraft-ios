@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Category: Codable, Identifiable, Hashable {
+class Category: Codable, Identifiable {
     var id: Int
     var groupId: Int
     var name: String
@@ -25,7 +25,7 @@ struct Category: Codable, Identifiable, Hashable {
     }
 }
 
-struct Group: Codable, Identifiable, Hashable {
+class Group: Codable, Identifiable {
     var id: Int
     var name: String
     var type: String
@@ -39,7 +39,7 @@ struct Group: Codable, Identifiable, Hashable {
     }
 }
 
-enum CategoryTreeNode: Codable, Identifiable, Hashable {
+enum CategoryTreeNode: Codable, Identifiable {
     case group(Group)
     case category(Category)
     

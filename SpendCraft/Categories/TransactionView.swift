@@ -10,10 +10,10 @@ import SwiftUI
 struct TransactionView: View {
     @Binding var trx: Transaction
     @Binding var transactions: [Transaction]
-    @Binding var category: Category
+    @ObservedObject var category: Categories.Category
+    @Binding var categories: Categories
     @State var data = Transaction.Data()
     @State var isEditingTrx = false
-    let categories: Categories
     
     func formatAccount(institution: String?, account: String?) -> String {
         guard let institution = institution, let account = account else {
@@ -33,8 +33,6 @@ struct TransactionView: View {
             case .failure(let error):
                 fatalError(error.localizedDescription)
             case .success(let updateTrxResponse):
-                print("transaction saved")
-                
                 let transaction = Transaction(trx: updateTrxResponse.transaction)
                 
                 if ((transaction.categories.count == 0 && category.id != -2) || (transaction.categories.count != 0 && !transaction.hasCategory(categoryId: category.id))) {
@@ -45,6 +43,10 @@ struct TransactionView: View {
                     if let index = index {
                         transactions.remove(at: index)
                     }
+                }
+                
+                updateTrxResponse.categories.forEach { cat in
+                    categories.updateBalance(categoryId: cat.id, balance: cat.balance)
                 }
             }
         }
@@ -97,10 +99,10 @@ struct TransactionView: View {
 
 struct TransactionView_Previews: PreviewProvider {
     static let categories = Categories(tree: [])
-    static let category = Category(id: 0, groupId: 0, name: "Test", balance: 0, type: "REGULAR", monthlyExpenses: false)
+    static let category = Categories.Category(id: 0, groupId: 0, name: "Test", balance: 0, type: "REGULAR", monthlyExpenses: false)
 
     static var previews: some View {
-        TransactionView(trx: .constant(Transaction.sampleData[0]), transactions: .constant(Transaction.sampleData), category: .constant(category), categories: categories)
+        TransactionView(trx: .constant(Transaction.sampleData[0]), transactions: .constant(Transaction.sampleData), category: category, categories: .constant(categories))
     }
 }
 

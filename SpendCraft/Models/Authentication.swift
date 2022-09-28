@@ -26,9 +26,10 @@ class Authentication: ObservableObject {
         struct Data: Encodable {
             var username: String
             var password: String
+            var remember: String
         }
         
-        let data = Data(username: username, password: password)
+        let data = Data(username: username, password: password, remember: "on")
         
         guard let uploadData = try? JSONEncoder().encode(data) else {
             return

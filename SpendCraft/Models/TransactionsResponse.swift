@@ -54,6 +54,12 @@ struct TransactionsResponse: Codable {
 }
 
 struct UpdateTransactionResponse: Codable {
+    struct Category: Codable {
+        var id: Int
+        var balance: Double
+    }
+
+    var categories: [Category]
     var transaction: TransactionResponse
 }
 

@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct RegisterView: View {
-    @Binding var category: Category
-    let categories: Categories
+    @ObservedObject var category: Categories.Category
+    @Binding var categories: Categories
     @StateObject private var store = TransactionStore();
     @State var loading = false
     
@@ -35,7 +35,7 @@ struct RegisterView: View {
             else {
                 List {
                     ForEach($store.transactions) { $trx in
-                        TransactionView(trx: $trx, transactions: $store.transactions, category: $category, categories: categories)
+                        TransactionView(trx: $trx, transactions: $store.transactions, category: category, categories: $categories)
                     }
                 }
                 .listStyle(.plain)
@@ -53,10 +53,10 @@ struct RegisterView: View {
 }
 
 struct RegisterView_Previews: PreviewProvider {
-    static let category = Category(id: 0, groupId: 0, name: "Test Category", balance: 100, type: "REGULAR", monthlyExpenses: true)
+    static let category = Categories.Category(id: 0, groupId: 0, name: "Test Category", balance: 100, type: "REGULAR", monthlyExpenses: true)
     static let categories = Categories(tree: [])
 
     static var previews: some View {
-        RegisterView(category: .constant(category), categories: categories)
+        RegisterView(category: category, categories: .constant(categories))
     }
 }
