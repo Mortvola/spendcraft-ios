@@ -8,8 +8,27 @@
 import SwiftUI
 
 struct AccountsView: View {
+    @StateObject private var accountsStore = AccountsStore();
+
     var body: some View {
-        Text("Accounts")
+        NavigationView {
+            List {
+                ForEach($accountsStore.accounts) { $institution in
+                    InstitutionView(institution: $institution)
+                }
+            }
+            .navigationTitle("Accounts")
+        }
+        .onAppear {
+            AccountsStore.load(completion: { result in
+                switch result {
+                case .failure(let error):
+                    fatalError(error.localizedDescription)
+                case .success(let accounts):
+                    self.accountsStore.accounts = accounts
+                }
+            })
+        }
     }
 }
 
