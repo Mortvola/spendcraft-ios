@@ -141,6 +141,14 @@
 			path = CategoryPicker;
 			sourceTree = "<group>";
 		};
+		79ADF87328E5D49B00227F44 /* Accounts */ = {
+			isa = PBXGroup;
+			children = (
+				7946967028D82006005B6408 /* AccountsView.swift */,
+			);
+			path = Accounts;
+			sourceTree = "<group>";
+		};
 		79C19C9528D41BC8003F05F2 = {
 			isa = PBXGroup;
 			children = (
@@ -166,10 +174,10 @@
 			children = (
 				79C19CA128D41BC8003F05F2 /* SpendCraftApp.swift */,
 				79C19CCB28D4A85E003F05F2 /* LoginView.swift */,
+				79ADF87328E5D49B00227F44 /* Accounts */,
 				7946968228DA2732005B6408 /* Categories */,
 				7946968028DA207D005B6408 /* AmountView.swift */,
 				7946966E28D81FF0005B6408 /* PlansView.swift */,
-				7946967028D82006005B6408 /* AccountsView.swift */,
 				7946967228D82018005B6408 /* ReportsView.swift */,
 				7946967428D8203A005B6408 /* MainView.swift */,
 				7946968928DAC578005B6408 /* NumericField.swift */,

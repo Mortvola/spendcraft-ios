@@ -8,26 +8,26 @@
 import SwiftUI
 
 struct CategoriesView: View {
-    @Binding var categories: Categories
+    @StateObject private var categoriesStore = CategoriesStore();
     @StateObject var testCategory = Categories.Category(id: -2, groupId: 0, name: "Unassigned", balance: 100, type: "REGULAR", monthlyExpenses: false)
     
     var body: some View {
         NavigationView {
             List {
-                CategoryView(category: categories.unassigned, categories: $categories)
-                CategoryView(category: categories.fundingPool, categories: $categories)
-                CategoryView(category: categories.accountTransfer, categories: $categories)
-                NavigationLink(destination: RegisterView(category: testCategory, categories: $categories)) {
+                CategoryView(category: categoriesStore.categories.unassigned, categories: $categoriesStore.categories)
+                CategoryView(category: categoriesStore.categories.fundingPool, categories: $categoriesStore.categories)
+                CategoryView(category: categoriesStore.categories.accountTransfer, categories: $categoriesStore.categories)
+                NavigationLink(destination: RegisterView(category: testCategory, categories: $categoriesStore.categories)) {
                     Text("Rebalances")
                 }
                 Divider()
-                ForEach($categories.tree) { $node in
+                ForEach($categoriesStore.categories.tree) { $node in
                     switch node {
                     case .category(let category):
-                        CategoryView(category: category, categories: $categories)
+                        CategoryView(category: category, categories: $categoriesStore.categories)
                     case .group(let group):
                         if (group.type != "SYSTEM") {
-                            GroupView(group: .constant(group), categories: $categories)
+                            GroupView(group: .constant(group), categories: $categoriesStore.categories)
                         }
                     }
                 }
@@ -35,13 +35,21 @@ struct CategoriesView: View {
             .listStyle(.sidebar)
             .navigationTitle("Categories")
         }
+        .onAppear {
+            CategoriesStore.load(completion: { result in
+                switch result {
+                case .failure(let error):
+                    fatalError(error.localizedDescription)
+                case .success(let categories):
+                    self.categoriesStore.categories = categories
+                }
+            })
+        }
     }
 }
 
 struct CategoriesView_Previews: PreviewProvider {
-    static let categories = Categories(tree: [])
-    
     static var previews: some View {
-        CategoriesView(categories: .constant(categories))
+        CategoriesView()
     }
 }

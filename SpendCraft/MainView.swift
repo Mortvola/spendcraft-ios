@@ -8,11 +8,9 @@
 import SwiftUI
 
 struct MainView: View {
-    @StateObject private var categoriesStore = CategoriesStore();
-
     var body: some View {
         TabView {
-            CategoriesView(categories: $categoriesStore.categories)
+            CategoriesView()
                 .tabItem {
                     Label("Categories", systemImage: "tray.and.arrow.down.fill")
                 }
@@ -28,16 +26,6 @@ struct MainView: View {
                 .tabItem {
                     Label("Reports", systemImage: "doc.on.doc")
                 }
-        }
-        .onAppear {
-            CategoriesStore.load(completion: { result in
-                switch result {
-                case .failure(let error):
-                    fatalError(error.localizedDescription)
-                case .success(let categories):
-                    self.categoriesStore.categories = categories
-                }
-            })
         }
     }
 }
