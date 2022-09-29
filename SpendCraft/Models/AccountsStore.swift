@@ -47,6 +47,10 @@ struct Institution: Identifiable {
         self.accounts = institution.accounts.map { account in
             Account(account: account)
         }
+        
+        self.accounts.sort {
+            $0.name < $1.name
+        }
     }
 }
 
@@ -98,9 +102,13 @@ class AccountsStore: ObservableObject {
                 return
             }
 
-            let accounts: [Institution] = accountsResponse.map{
+            var accounts: [Institution] = accountsResponse.map{
                 Institution(institution: $0)
             };
+            
+            accounts.sort {
+                $0.name < $1.name
+            }
         
             DispatchQueue.main.async {
                 completion(.success(accounts))

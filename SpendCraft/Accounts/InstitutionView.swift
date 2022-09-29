@@ -34,7 +34,11 @@ struct InstitutionView: View {
                 !account.closed
             }) { account in
                 VStack(alignment: .leading) {
-                    Text(account.name)
+                    HStack {
+                        Text("Name")
+                        Spacer()
+                        Text(account.name)
+                    }
                     HStack {
                         Text("Balance")
                         Spacer()
