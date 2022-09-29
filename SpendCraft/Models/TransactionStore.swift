@@ -10,7 +10,7 @@ import Foundation
 class TransactionStore: ObservableObject {
     @Published var transactions: [Transaction] = []
 
-    static func load(category: Categories.Category, completion: @escaping (Result<[Transaction], Error>)->Void) {
+    static func load(category: Categories.Category, completion: @escaping (Result<TransactionsResponse, Error>)->Void) {
         guard let url = URL(string: "https://spendcraft.app/api/category/\(category.id)/transactions?offset=0&limit=30") else {
             return
         }
@@ -55,12 +55,8 @@ class TransactionStore: ObservableObject {
                 return
             }
 
-            let transactions: [Transaction] = transactionsResponse.transactions.map {
-                Transaction(trx: $0)
-            }
-        
             DispatchQueue.main.async {
-                completion(.success(transactions))
+                completion(.success(transactionsResponse))
             }
         }
         task.resume()

@@ -18,8 +18,13 @@ struct RegisterView: View {
             switch result {
             case .failure(let error):
                 fatalError(error.localizedDescription)
-            case .success(let transactions):
+            case .success(let transactionsResponse):
+                let transactions: [Transaction] = transactionsResponse.transactions.map {
+                    Transaction(trx: $0)
+                }
+            
                 self.store.transactions = transactions
+                categories.updateBalance(categoryId: category.id, balance: transactionsResponse.balance)
             }
 
             loading = false
