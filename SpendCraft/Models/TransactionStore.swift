@@ -10,11 +10,7 @@ import Foundation
 class TransactionStore: ObservableObject {
     @Published var transactions: [Transaction] = []
 
-    static func load(category: Categories.Category, completion: @escaping (Result<TransactionsResponse, Error>)->Void) {
-        guard let url = URL(string: "https://spendcraft.app/api/category/\(category.id)/transactions?offset=0&limit=30") else {
-            return
-        }
-
+    static private func load(url: URL, completion: @escaping (Result<TransactionsResponse, Error>)->Void) {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "GET"
         urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
@@ -59,6 +55,23 @@ class TransactionStore: ObservableObject {
                 completion(.success(transactionsResponse))
             }
         }
+        
         task.resume()
+    }
+
+    static func load(account: Account, completion: @escaping (Result<TransactionsResponse, Error>)->Void) {
+        guard let url = URL(string: "https://spendcraft.app/api/account/\(account.id)/transactions?offset=0&limit=30") else {
+            return
+        }
+
+        load(url: url, completion: completion)
+    }
+
+    static func load(category: Categories.Category, completion: @escaping (Result<TransactionsResponse, Error>)->Void) {
+        guard let url = URL(string: "https://spendcraft.app/api/category/\(category.id)/transactions?offset=0&limit=30") else {
+            return
+        }
+
+        load(url: url, completion: completion)
     }
 }

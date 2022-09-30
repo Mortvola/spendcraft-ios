@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct MainView: View {
+    @ObservedObject var authentication: Authentication
+
     var body: some View {
         TabView {
             CategoriesView()
@@ -26,12 +28,18 @@ struct MainView: View {
                 .tabItem {
                     Label("Reports", systemImage: "doc.on.doc")
                 }
+            SettingsView(authentication: authentication)
+                .tabItem {
+                    Label("Account", systemImage: "person.crop.circle")
+                }
         }
     }
 }
 
 struct Main_Previews: PreviewProvider {
+    static let authentication = Authentication()
+    
     static var previews: some View {
-        MainView()
+        MainView(authentication: authentication)
     }
 }

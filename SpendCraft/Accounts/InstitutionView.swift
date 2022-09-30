@@ -9,7 +9,8 @@ import SwiftUI
 
 struct InstitutionView: View {
     @Binding var institution: Institution
-    
+    @State var isExpanded: Bool = true
+
     func formatDate(date: Date?) -> String {
         if let date = date {
             let dateFormatter = DateFormatter()
@@ -24,34 +25,31 @@ struct InstitutionView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Text(institution.name)
-                    .padding(.top)
-                Spacer()
-            }
-            ForEach(institution.accounts.filter { account in
+        DisclosureGroup(institution.name, isExpanded: $isExpanded) {
+            ForEach($institution.accounts.filter { $account in
                 !account.closed
-            }) { account in
-                VStack(alignment: .leading) {
-                    HStack {
-                        Text("Name")
-                        Spacer()
-                        Text(account.name)
+            }) { $account in
+                NavigationLink(destination: AccountRegisterView(account: $account)) {
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Text("Name")
+                            Spacer()
+                            Text(account.name)
+                        }
+                        HStack {
+                            Text("Balance")
+                            Spacer()
+                            AmountView(amount: account.balance)
+                        }
+                        HStack {
+                            Text("As Of")
+                            Spacer()
+                            Text(formatDate(date: account.syncDate))
+                        }
                     }
-                    HStack {
-                        Text("Balance")
-                        Spacer()
-                        AmountView(amount: account.balance)
-                    }
-                    HStack {
-                        Text("As Of")
-                        Spacer()
-                        Text(formatDate(date: account.syncDate))
-                    }
+//                    .border(Color.black, width: 1)
+//                    .padding(.top)
                 }
-                .border(Color.black, width: 1)
-                .padding(.top)
             }
             .padding(.leading)
             .font(.body)

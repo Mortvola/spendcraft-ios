@@ -17,6 +17,7 @@ struct AccountsView: View {
                     InstitutionView(institution: $institution)
                 }
             }
+            .listStyle(.sidebar)
             .navigationTitle("Accounts")
         }
         .onAppear {
