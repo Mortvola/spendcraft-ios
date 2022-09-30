@@ -27,10 +27,8 @@ struct AccountRegisterView: View {
     }
 
     var body: some View {
-        List {
-            ForEach($store.transactions) { $trx in
-                AccountTransactionView(trx: $trx)
-            }
+        List($store.transactions) {
+            AccountTransactionView(trx: $0)
         }
         .listStyle(.plain)
         .navigationTitle(account.name)

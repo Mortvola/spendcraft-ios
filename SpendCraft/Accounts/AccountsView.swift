@@ -12,10 +12,8 @@ struct AccountsView: View {
 
     var body: some View {
         NavigationView {
-            List {
-                ForEach($accountsStore.accounts) { $institution in
-                    InstitutionView(institution: $institution)
-                }
+            List($accountsStore.accounts) {
+                InstitutionView(institution: $0)
             }
             .listStyle(.sidebar)
             .navigationTitle("Accounts")
