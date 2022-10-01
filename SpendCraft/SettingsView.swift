@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @ObservedObject var authentication: Authentication
+    @ObservedObject var authenticator: Authenticator
 
     var body: some View {
         Button(action: {
-            authentication.authenticated = false
+            authenticator.authenticated = false
         }) {
             Text("Sign Out")
         }
@@ -20,9 +20,9 @@ struct SettingsView: View {
 }
 
 struct SettingsView_Previews: PreviewProvider {
-    static let authentication = Authentication()
+    static let authentication = Authenticator()
     
     static var previews: some View {
-        SettingsView(authentication: authentication)
+        SettingsView(authenticator: authentication)
     }
 }
