@@ -92,6 +92,7 @@
 		795382E128E7178600133EFA /* AccountRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountRegisterView.swift; sourceTree = "<group>"; };
 		795382E528E71F3500133EFA /* AccountTransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountTransactionView.swift; sourceTree = "<group>"; };
 		795382E728E864B800133EFA /* InactiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InactiveView.swift; sourceTree = "<group>"; };
+		795382E928E8AAA700133EFA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		79ADF87428E5D71800227F44 /* AccountsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsStore.swift; sourceTree = "<group>"; };
 		79ADF87628E5D86600227F44 /* AccountsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsResponse.swift; sourceTree = "<group>"; };
 		79ADF87828E5E0C100227F44 /* InstitutionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstitutionView.swift; sourceTree = "<group>"; };
@@ -190,6 +191,7 @@
 		79C19CA028D41BC8003F05F2 /* SpendCraft */ = {
 			isa = PBXGroup;
 			children = (
+				795382E928E8AAA700133EFA /* Info.plist */,
 				795382DE28E663CB00133EFA /* SpendCraft.entitlements */,
 				79C19CA128D41BC8003F05F2 /* SpendCraftApp.swift */,
 				795382E728E864B800133EFA /* InactiveView.swift */,
@@ -579,6 +581,7 @@
 				DEVELOPMENT_TEAM = N7MR48SV68;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SpendCraft/Info.plist;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -610,6 +613,7 @@
 				DEVELOPMENT_TEAM = N7MR48SV68;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SpendCraft/Info.plist;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

@@ -43,10 +43,10 @@ struct MainView: View {
 }
 
 struct Main_Previews: PreviewProvider {
-    static let authentication = Authenticator()
+    static let authenticator = Authenticator()
     static let selection: String = "categories"
     
     static var previews: some View {
-        MainView(authenticator: authentication, selection: .constant(selection))
+        MainView(authenticator: authenticator, selection: .constant(selection))
     }
 }
