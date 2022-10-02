@@ -124,8 +124,53 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
         let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
         let token = tokenParts.joined()
         print("Device Token: \(token)")
+        uploadToken(token: token);
     }
     
+    func uploadToken(token: String) {
+        guard let url = URL(string: "https://spendcraft.app/api/user/apns-token") else {
+            return
+        }
+        
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "POST"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        guard let session = try? getSession() else {
+            return
+        }
+        
+        struct Data: Encodable {
+            var token: String
+        }
+        
+        let data = Data(token: token)
+        
+        guard let uploadData = try? JSONEncoder().encode(data) else {
+            return
+        }
+        
+        let task = session.uploadTask(with: urlRequest, from: uploadData) {data, response, error in
+            if let error = error {
+                print("Error: \(error)");
+                return
+            }
+            
+            guard let response = response as? HTTPURLResponse else {
+                print ("response is nil")
+                return
+            }
+            
+            guard (200...299).contains(response.statusCode) else {
+                print ("Server error: \(response.statusCode)")
+                return
+            }
+
+            print("success: \(response.statusCode)")
+        }
+        task.resume()
+    }
+
     func application(
         _ application: UIApplication,
         didFailToRegisterForRemoteNotificationsWithError error: Error
