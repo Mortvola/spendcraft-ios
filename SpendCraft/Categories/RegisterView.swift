@@ -12,15 +12,20 @@ struct RegisterView: View {
     @Binding var categories: Categories
     @StateObject private var store = TransactionStore();
     @State var loading = false
-    
+
     func loadTransactions() {
         TransactionStore.load(category: category) { result in
             switch result {
             case .failure(let error):
                 fatalError(error.localizedDescription)
             case .success(let transactionsResponse):
+                var runningBalance = transactionsResponse.balance;
+
                 let transactions: [Transaction] = transactionsResponse.transactions.map {
-                    Transaction(trx: $0)
+                    var trx = Transaction(trx: $0)
+                    trx.runningBalance = runningBalance
+                    runningBalance -= trx.categoryAmount(category: category)
+                    return trx;
                 }
             
                 self.store.transactions = transactions
@@ -38,8 +43,8 @@ struct RegisterView: View {
                 Spacer()
             }
             else {
-                List($store.transactions) {
-                    TransactionView(trx: $0, transactions: $store.transactions, category: category, categories: $categories)
+                List($store.transactions) { $trx in
+                    TransactionView(trx: $trx, transactions: $store.transactions, category: category, categories: $categories)
                 }
                 .listStyle(.plain)
             }

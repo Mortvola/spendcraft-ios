@@ -57,20 +57,24 @@ struct TransactionView: View {
             isEditingTrx = true
             data = trx.data
         }) {
-            VStack(alignment: .leading) {
+            VStack(spacing: 10) {
                 HStack() {
-                    Text(formatDate(date: trx.date))
                     HStack {
                         Text(trx.name)
+                            .lineLimit(1)
                         Spacer()
                     }
                     AmountView(amount: trx.categoryAmount(category: category))
                 }
                 
                 HStack {
+                    Text(formatDate(date: trx.date))
                     Text(formatAccount(institution: trx.institution, account:  trx.account))
-                        .font(.caption)
+                        .lineLimit(1)
+                    Spacer()
+                    AmountView(amount: trx.runningBalance ?? 0)
                 }
+                .font(.caption)
             }
         }
         .sheet(isPresented: $isEditingTrx) {

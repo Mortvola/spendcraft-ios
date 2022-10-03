@@ -11,13 +11,21 @@ struct AccountTransactionView: View {
     @Binding var trx: Transaction
 
     var body: some View {
-        HStack() {
-            Text(formatDate(date: trx.date))
-            HStack {
-                Text(trx.name)
-                Spacer()
+        VStack(spacing: 10) {
+            HStack() {
+                HStack {
+                    Text(trx.name)
+                        .lineLimit(1)
+                    Spacer()
+                }
+                AmountView(amount: trx.amount)
             }
-            AmountView(amount: trx.amount)
+            HStack {
+                Text(formatDate(date: trx.date))
+                Spacer()
+                AmountView(amount: trx.runningBalance ?? 0)
+            }
+            .font(.caption)
         }
     }
 }

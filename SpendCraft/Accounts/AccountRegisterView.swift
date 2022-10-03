@@ -17,8 +17,14 @@ struct AccountRegisterView: View {
             case .failure(let error):
                 fatalError(error.localizedDescription)
             case .success(let transactionsResponse):
+                var runningBalance = transactionsResponse.balance;
+                
                 let transactions: [Transaction] = transactionsResponse.transactions.map {
-                    Transaction(trx: $0)
+                    var trx = Transaction(trx: $0)
+                    trx.runningBalance = runningBalance
+                    runningBalance -= trx.amount
+
+                    return trx
                 }
             
                 self.store.transactions = transactions

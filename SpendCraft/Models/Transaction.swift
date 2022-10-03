@@ -37,6 +37,7 @@ struct Transaction: Identifiable, Codable {
     var date: Date?
     var name: String
     var amount: Double
+    var runningBalance: Double?
     var institution: String
     var account: String
     var comment: String?

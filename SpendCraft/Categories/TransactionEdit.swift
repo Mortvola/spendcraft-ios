@@ -52,7 +52,7 @@ struct TransactionEdit: View {
                 Section(
                     header: Text("Categories"),
                     footer: HStack {
-                        Text("Remaining")
+                        Text("Unassigned")
                         Spacer()
                         AmountView(amount: transaction.remaining)
                     }

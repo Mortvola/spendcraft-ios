@@ -17,8 +17,7 @@ struct InstitutionView: View {
             dateFormatter.dateStyle = .short
             dateFormatter.timeStyle = .short
             
-            let s = dateFormatter.string(from: date)
-            return s
+            return dateFormatter.string(from: date)
         }
         
         return "None"
@@ -35,6 +34,7 @@ struct InstitutionView: View {
                             Text("Name")
                             Spacer()
                             Text(account.name)
+                                .lineLimit(1)
                         }
                         HStack {
                             Text("Balance")
