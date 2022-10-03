@@ -38,6 +38,7 @@ struct LoginView: View {
             }) {
                 Text("Sign In")
             }
+            .disabled(username.isEmpty || password.isEmpty)
         }
         .padding(.horizontal)
     }
