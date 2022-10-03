@@ -40,6 +40,7 @@ struct Transaction: Identifiable, Codable {
     var runningBalance: Double?
     var institution: String
     var account: String
+    var accountOwner: String
     var comment: String?
     var categories: [Category] = []
     
@@ -53,6 +54,7 @@ struct Transaction: Identifiable, Codable {
         self.amount = amount
         self.institution = institution
         self.account = account
+        self.accountOwner = ""
         self.comment = comment
         self.categories = transactionCategories
     }
@@ -65,6 +67,7 @@ struct Transaction: Identifiable, Codable {
         self.amount = trx.accountTransaction?.amount ?? 0
         self.institution = trx.accountTransaction?.account.institution.name ?? ""
         self.account = trx.accountTransaction?.account.name ?? ""
+        self.accountOwner = trx.accountTransaction?.accountOwner?.capitalized ?? ""
         self.categories = trx.transactionCategories.map {
             Category(trxCategory: $0)
         }

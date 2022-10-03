@@ -32,6 +32,7 @@ struct TransactionResponse: Codable {
         var name: String
         var amount: Double
         var account: Account
+        var accountOwner: String?
     }
     
     struct TransactionCategory: Codable {

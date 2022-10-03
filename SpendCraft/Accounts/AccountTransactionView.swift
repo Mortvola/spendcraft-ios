@@ -22,10 +22,12 @@ struct AccountTransactionView: View {
             }
             HStack {
                 Text(formatDate(date: trx.date))
+                Text(trx.accountOwner)
                 Spacer()
                 AmountView(amount: trx.runningBalance ?? 0)
             }
             .font(.caption)
+            .lineLimit(1)
         }
     }
 }

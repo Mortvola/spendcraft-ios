@@ -75,6 +75,15 @@ struct TransactionView: View {
                     AmountView(amount: trx.runningBalance ?? 0)
                 }
                 .font(.caption)
+
+                if (!trx.accountOwner.isEmpty) {
+                    HStack {
+                        Text(trx.accountOwner)
+                            .font(.caption)
+                            .lineLimit(1)
+                        Spacer()
+                    }
+                }
             }
         }
         .sheet(isPresented: $isEditingTrx) {
