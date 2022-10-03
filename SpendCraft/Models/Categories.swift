@@ -7,16 +7,60 @@
 
 import Foundation
 
+enum GroupType {
+    case regular
+    case noGroup
+    case system
+    case unknown
+    
+    init (type: String) {
+        switch type {
+        case "REGULAR":
+            self = .regular
+        case "NO GROUP":
+            self = .noGroup
+        case "SYSTEM":
+            self = .system
+        default:
+            self = .unknown
+        }
+    }
+}
+
+
+enum CategoryType {
+    case fundingPool
+    case regular
+    case unassigned
+    case accountTransfer
+    case unknown
+    
+    init (type: String) {
+        switch type {
+        case "FUNDING POOL":
+            self = .fundingPool
+        case "REGULAR":
+            self = .regular
+        case "UNASSIGNED":
+            self = .unassigned
+        case "ACCOUNT TRANSFER":
+            self = .accountTransfer
+        default:
+            self = .unknown
+        }
+    }
+}
+
 struct Categories {
     class Category: ObservableObject, Identifiable {
         var id: Int
         var groupId: Int
         @Published var name: String
         @Published var balance: Double
-        var type: String
+        var type: CategoryType
         var monthlyExpenses: Bool
         
-        init(id: Int, groupId: Int, name: String, balance: Double, type: String, monthlyExpenses: Bool) {
+        init(id: Int, groupId: Int, name: String, balance: Double, type: CategoryType, monthlyExpenses: Bool) {
             self.id = id
             self.groupId = groupId
             self.name = name
@@ -29,10 +73,10 @@ struct Categories {
     class Group: ObservableObject, Identifiable {
         var id: Int
         @Published var name: String
-        var type: String
+        var type: GroupType
         var categories: [Category]
         
-        init(id: Int, name: String, type: String, categories: [Category]) {
+        init(id: Int, name: String, type: GroupType, categories: [Category]) {
             self.id = id
             self.name = name
             self.type = type
@@ -89,9 +133,9 @@ struct Categories {
     var tree: [TreeNode] = []
     var groupDictionary: Dictionary<Int, Group>
     var categoryDictionary: Dictionary<Int, Category>
-    var unassigned: Category = Category(id: -2, groupId: 0, name: "Unassigned", balance: 0, type: "UNASSIGNED", monthlyExpenses: false)
-    var fundingPool: Category = Category(id: -3, groupId: 0, name: "Funding Pool", balance: 0, type: "FUNDING POOL", monthlyExpenses: false)
-    var accountTransfer: Category = Category(id: -4, groupId: 0, name: "Account Transfer", balance: 0, type: "ACCOUNT TRANSFER", monthlyExpenses: false)
+    var unassigned: Category = Category(id: -2, groupId: 0, name: "Unassigned", balance: 0, type: .unassigned, monthlyExpenses: false)
+    var fundingPool: Category = Category(id: -3, groupId: 0, name: "Funding Pool", balance: 0, type: .fundingPool, monthlyExpenses: false)
+    var accountTransfer: Category = Category(id: -4, groupId: 0, name: "Account Transfer", balance: 0, type: .accountTransfer, monthlyExpenses: false)
 
     init(tree: [CategoryTreeNode]) {
         self.tree = tree.map {
@@ -120,7 +164,7 @@ struct Categories {
         let noGroup = self.tree.first(where: {
             switch($0) {
             case .group(let group):
-                return group.type == "NO GROUP"
+                return group.type == GroupType.noGroup
             case .category:
                 return false
             }
@@ -151,7 +195,7 @@ struct Categories {
         let system = self.tree.first(where: {
             switch($0) {
             case .group(let group):
-                return group.type == "SYSTEM"
+                return group.type == GroupType.system
             case .category:
                 return false
             }
@@ -164,7 +208,7 @@ struct Categories {
                 print("category")
             case .group(let group):
                 let unassigned = group.categories.first(where: { category in
-                    category.type == "UNASSIGNED"
+                    category.type == CategoryType.unassigned
                 })
                 
                 if let unassigned = unassigned {
@@ -172,7 +216,7 @@ struct Categories {
                 }
                 
                 let fundingPool = group.categories.first(where: { category in
-                    category.type == "FUNDING POOL"
+                    category.type == CategoryType.fundingPool
                 })
                 
                 if let fundingPool = fundingPool {
@@ -180,7 +224,7 @@ struct Categories {
                 }
 
                 let accountTransfer = group.categories.first(where: { category in
-                    category.type == "ACCOUNT TRANSFER"
+                    category.type == CategoryType.accountTransfer
                 })
                 
                 if let accountTransfer = accountTransfer {
@@ -201,7 +245,7 @@ struct Categories {
             let group = self.groupDictionary[category.groupId]
             
             if let group = group {
-                if (group.type == "NO GROUP") {
+                if (group.type == GroupType.noGroup) {
                     return category.name
                 }
                 

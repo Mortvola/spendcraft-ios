@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CategoriesView: View {
     @StateObject private var categoriesStore = CategoriesStore();
-    @StateObject var testCategory = Categories.Category(id: -2, groupId: 0, name: "Unassigned", balance: 100, type: "REGULAR", monthlyExpenses: false)
+    @StateObject var testCategory = Categories.Category(id: -2, groupId: 0, name: "Unassigned", balance: 100, type: .regular, monthlyExpenses: false)
     
     var body: some View {
         NavigationView {
@@ -26,7 +26,7 @@ struct CategoriesView: View {
                     case .category(let category):
                         CategoryView(category: category, categories: $categoriesStore.categories)
                     case .group(let group):
-                        if (group.type != "SYSTEM") {
+                        if (group.type != GroupType.system) {
                             GroupView(group: .constant(group), categories: $categoriesStore.categories)
                         }
                     }

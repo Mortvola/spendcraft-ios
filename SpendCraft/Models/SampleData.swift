@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension Transaction {
-    static let sampleData: [Transaction] = [
+struct SampleData {
+    static let transactions: [Transaction] = [
         Transaction(id: 0, date: "2022-09-10", name: "Costco", amount: -170.24, institution: "Citi", account: "Credit Card", comment: nil, transactionCategories: [
             Transaction.Category(id: 0, categoryId: 0, amount: -145.2, comment: "This is a comment"),
             Transaction.Category(id: 1, categoryId: 2, amount: -25.04, comment: "This is another comment")
@@ -19,4 +19,9 @@ extension Transaction {
         ])
     ]
 
+    static let categoryDictionary = [
+        0: Categories.Category(id: 0, groupId: 0, name: "Test Category", balance: 100.0, type: .regular, monthlyExpenses: false)
+    ]
+    
+    static let categories = Categories(tree: [])
 }

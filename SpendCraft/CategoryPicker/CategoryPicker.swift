@@ -30,9 +30,8 @@ struct CategoryPicker: View {
 
 struct CategoryPicker_Previews: PreviewProvider {
     static let selection = 0
-    static let categories = Categories(tree: [])
 
     static var previews: some View {
-        CategoryPicker(selection: .constant(selection), categories: categories)
+        CategoryPicker(selection: .constant(selection), categories: SampleData.categories)
     }
 }

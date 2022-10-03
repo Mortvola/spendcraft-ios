@@ -90,11 +90,8 @@ struct TransactionEdit: View {
 }
 
 struct TransactionEdit_Previews: PreviewProvider {
-    static let categoryDictionary = Dictionary<Int, Category>()
-    static let categories = Categories(tree: [])
-    
     static var previews: some View {
-        TransactionEdit(transaction: .constant(Transaction.sampleData[0].data), categories: categories)
+        TransactionEdit(transaction: .constant(SampleData.transactions[0].data), categories: SampleData.categories)
             .previewInterfaceOrientation(.portraitUpsideDown)
     }
 }

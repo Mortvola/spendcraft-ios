@@ -43,10 +43,9 @@ struct CategoryList: View {
 }
 
 struct CategoryList_Previews: PreviewProvider {
-    static let categories = Categories(tree: [])
     static let selection = 0
     
     static var previews: some View {
-        CategoryList(categories: categories, selection: .constant(selection))
+        CategoryList(categories: SampleData.categories, selection: .constant(selection))
     }
 }

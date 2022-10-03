@@ -76,7 +76,7 @@ struct Transaction: Identifiable, Codable {
     }
     
     func categoryAmount(category: Categories.Category) -> Double {
-        if (category.type == "UNASSIGNED") {
+        if (category.type == CategoryType.unassigned) {
             return self.amount
         }
 

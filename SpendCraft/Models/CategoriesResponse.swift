@@ -7,12 +7,12 @@
 
 import Foundation
 
-class Category: Codable, Identifiable {
+class Category: Decodable, Identifiable {
     var id: Int
     var groupId: Int
     var name: String
     var balance: Double
-    var type: String
+    var type: CategoryType
     var monthlyExpenses: Bool
     
     init(id: Int, groupId: Int, name: String, balance: Double, type: String, monthlyExpenses: Bool) {
@@ -20,26 +20,26 @@ class Category: Codable, Identifiable {
         self.groupId = groupId
         self.name = name
         self.balance = balance
-        self.type = type
+        self.type = CategoryType(type: type)
         self.monthlyExpenses = monthlyExpenses
     }
 }
 
-class Group: Codable, Identifiable {
+class Group: Decodable, Identifiable {
     var id: Int
     var name: String
-    var type: String
+    var type: GroupType
     var categories: [Category]
     
     init(id: Int, name: String, type: String, categories: [Category]) {
         self.id = id
         self.name = name
-        self.type = type
+        self.type = GroupType(type: type)
         self.categories = categories
     }
 }
 
-enum CategoryTreeNode: Codable, Identifiable {
+enum CategoryTreeNode: Decodable, Identifiable {
     case group(Group)
     case category(Category)
     
@@ -94,5 +94,33 @@ extension CategoryTreeNode {
         }
         
         throw MyError.runtimeError("Failed to decode tree node")
+    }
+}
+
+extension CategoryType: Decodable {
+    init(from decoder: Decoder) {
+        do {
+            let container = try decoder.singleValueContainer()
+            let type = try container.decode(String.self)
+            
+            self = CategoryType(type: type)
+        }
+        catch {
+            self = .unknown
+        }
+    }
+}
+
+extension GroupType: Decodable {
+    init(from decoder: Decoder) {
+        do {
+            let container = try decoder.singleValueContainer()
+            let type = try container.decode(String.self)
+            
+            self = GroupType(type: type)
+        }
+        catch {
+            self = .unknown
+        }
     }
 }

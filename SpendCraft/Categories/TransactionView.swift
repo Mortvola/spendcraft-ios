@@ -98,11 +98,10 @@ struct TransactionView: View {
 }
 
 struct TransactionView_Previews: PreviewProvider {
-    static let categories = Categories(tree: [])
-    static let category = Categories.Category(id: 0, groupId: 0, name: "Test", balance: 0, type: "REGULAR", monthlyExpenses: false)
+    static let category = Categories.Category(id: 0, groupId: 0, name: "Test", balance: 0, type: .regular, monthlyExpenses: false)
 
     static var previews: some View {
-        TransactionView(trx: .constant(Transaction.sampleData[0]), transactions: .constant(Transaction.sampleData), category: category, categories: .constant(categories))
+        TransactionView(trx: .constant(SampleData.transactions[0]), transactions: .constant(SampleData.transactions), category: category, categories: .constant(SampleData.categories))
     }
 }
 

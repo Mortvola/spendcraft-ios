@@ -24,6 +24,6 @@ struct AccountTransactionView: View {
 
 struct AccountTransactionView_Previews: PreviewProvider {
     static var previews: some View {
-        AccountTransactionView(trx: .constant(Transaction.sampleData[0]))
+        AccountTransactionView(trx: .constant(SampleData.transactions[0]))
     }
 }

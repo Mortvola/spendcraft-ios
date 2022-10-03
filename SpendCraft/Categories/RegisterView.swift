@@ -56,10 +56,9 @@ struct RegisterView: View {
 }
 
 struct RegisterView_Previews: PreviewProvider {
-    static let category = Categories.Category(id: 0, groupId: 0, name: "Test Category", balance: 100, type: "REGULAR", monthlyExpenses: true)
-    static let categories = Categories(tree: [])
+    static let category = Categories.Category(id: 0, groupId: 0, name: "Test Category", balance: 100, type: .regular, monthlyExpenses: true)
 
     static var previews: some View {
-        RegisterView(category: category, categories: .constant(categories))
+        RegisterView(category: category, categories: .constant(SampleData.categories))
     }
 }
