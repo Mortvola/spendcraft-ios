@@ -9,7 +9,13 @@ import SwiftUI
 
 struct InactiveView: View {
     var body: some View {
-        Text("")
+        VStack {
+            Spacer()
+            Image(uiImage: UIImage(named: "Logo") ?? UIImage())
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+            Spacer()
+        }
     }
 }
 

@@ -19,6 +19,11 @@ struct LoginView: View {
 
     var body: some View {
         VStack {
+            Spacer()
+            Image(uiImage: UIImage(named: "Logo") ?? UIImage())
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+            Spacer()
             TextField("Username", text: $username)
             HStack {
                 SecureField("Password", text: $password)
@@ -39,6 +44,7 @@ struct LoginView: View {
                 Text("Sign In")
             }
             .disabled(username.isEmpty || password.isEmpty)
+            Spacer()
         }
         .padding(.horizontal)
     }
