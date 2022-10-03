@@ -10,6 +10,17 @@ import SwiftUI
 struct AccountsView: View {
     @StateObject private var accountsStore = AccountsStore();
 
+    func loadAccounts() {
+        AccountsStore.load(completion: { result in
+            switch result {
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            case .success(let accounts):
+                self.accountsStore.accounts = accounts
+            }
+        })
+    }
+    
     var body: some View {
         NavigationView {
             List($accountsStore.accounts) {
@@ -17,16 +28,12 @@ struct AccountsView: View {
             }
             .listStyle(.sidebar)
             .navigationTitle("Accounts")
+            .refreshable {
+                loadAccounts()
+            }
         }
         .onAppear {
-            AccountsStore.load(completion: { result in
-                switch result {
-                case .failure(let error):
-                    fatalError(error.localizedDescription)
-                case .success(let accounts):
-                    self.accountsStore.accounts = accounts
-                }
-            })
+            loadAccounts()
         }
     }
 }

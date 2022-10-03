@@ -47,6 +47,9 @@ struct RegisterView: View {
                     TransactionView(trx: $trx, transactions: $store.transactions, category: category, categories: $categories)
                 }
                 .listStyle(.plain)
+                .refreshable {
+                    loadTransactions()
+                }
             }
         }
         .navigationTitle(category.name)

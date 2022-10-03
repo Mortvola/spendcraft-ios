@@ -38,6 +38,9 @@ struct AccountRegisterView: View {
         }
         .listStyle(.plain)
         .navigationTitle(account.name)
+        .refreshable {
+            loadTransactions()
+        }
         .onAppear {
             loadTransactions()
         }

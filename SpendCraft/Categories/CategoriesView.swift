@@ -11,6 +11,17 @@ struct CategoriesView: View {
     @StateObject private var categoriesStore = CategoriesStore();
     @StateObject var testCategory = Categories.Category(id: -2, groupId: 0, name: "Unassigned", balance: 100, type: .regular, monthlyExpenses: false)
     
+    func loadCategories() {
+        CategoriesStore.load(completion: { result in
+            switch result {
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            case .success(let categories):
+                self.categoriesStore.categories = categories
+            }
+        })
+    }
+
     var body: some View {
         NavigationView {
             List {
@@ -34,16 +45,12 @@ struct CategoriesView: View {
             }
             .listStyle(.sidebar)
             .navigationTitle("Categories")
+            .refreshable {
+                loadCategories()
+            }
         }
         .onAppear {
-            CategoriesStore.load(completion: { result in
-                switch result {
-                case .failure(let error):
-                    fatalError(error.localizedDescription)
-                case .success(let categories):
-                    self.categoriesStore.categories = categories
-                }
-            })
+            loadCategories()
         }
     }
 }
