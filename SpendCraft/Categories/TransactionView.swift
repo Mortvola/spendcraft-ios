@@ -35,13 +35,28 @@ struct TransactionView: View {
             case .success(let updateTrxResponse):
                 let transaction = Transaction(trx: updateTrxResponse.transaction)
                 
-                if ((transaction.categories.count == 0 && category.id != -2) || (transaction.categories.count != 0 && !transaction.hasCategory(categoryId: category.id))) {
+                // If the transaction has no categories assigned and the
+                // current category is not the unassigned category
+                // OR if the transation has categories and non of them
+                // match the current category then remove the transaction
+                // from the transactions array
+                if ((transaction.categories.count == 0 && category.type != .unassigned) || (transaction.categories.count != 0 && !transaction.hasCategory(categoryId: category.id))) {
+                    
+                    // Find the index of the transaction in the transactions array
                     let index = transactions.firstIndex(where: {
                         $0.id == trx.id
                     })
                     
+                    // If the index was found then remove the transation from
+                    // the transactions array
                     if let index = index {
                         transactions.remove(at: index)
+                        
+                        // If this is the unassigned category then
+                        // set the badge to the new number of transactions
+                        if (category.type == .unassigned) {
+                            UIApplication.shared.applicationIconBadgeNumber = transactions.count
+                        }
                     }
                 }
                 

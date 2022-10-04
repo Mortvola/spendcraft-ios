@@ -30,6 +30,11 @@ struct RegisterView: View {
             
                 self.store.transactions = transactions
                 categories.updateBalance(categoryId: category.id, balance: transactionsResponse.balance)
+                
+                // Update the badge if the current category is the unassigned category.
+                if (category.type == .unassigned) {
+                    UIApplication.shared.applicationIconBadgeNumber = transactions.count
+                }
             }
 
             loading = false
