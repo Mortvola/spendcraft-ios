@@ -46,6 +46,13 @@ struct AccountRegisterView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
                     TransactionStore.sync(institution: institution, account: account) { result in
+                        switch result {
+                        case .failure(let error):
+                            fatalError(error.localizedDescription)
+                        case .success(let syncResponse):
+                            account.balance = syncResponse.accounts[0].balance
+                            account.syncDate = syncResponse.accounts[0].syncDate
+                        }
                     }
                 }) {
                     Image(systemName: "arrow.triangle.2.circlepath")
