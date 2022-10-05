@@ -10,16 +10,16 @@ import Foundation
 class TransactionStore: ObservableObject {
     @Published var transactions: [Transaction] = []
 
-    static private func load(path: String, completion: @escaping (Result<TransactionsResponse, Error>)->Void) {
+    static private func load(path: String, completion: @escaping (Result<Response.Transactions, Error>)->Void) {
         try? Http.get(path: path) { data in
             guard let data = data else {
                 print ("data is nil")
                 return;
             }
             
-            var transactionsResponse: TransactionsResponse
+            var transactionsResponse: Response.Transactions
             do {
-                transactionsResponse = try JSONDecoder().decode(TransactionsResponse.self, from: data)
+                transactionsResponse = try JSONDecoder().decode(Response.Transactions.self, from: data)
             }
             catch {
                 print ("Error: \(error)")
@@ -32,11 +32,11 @@ class TransactionStore: ObservableObject {
         }
     }
 
-    static func load(account: Account, completion: @escaping (Result<TransactionsResponse, Error>)->Void) {
+    static func load(account: Account, completion: @escaping (Result<Response.Transactions, Error>)->Void) {
         load(path: "/api/account/\(account.id)/transactions?offset=0&limit=30", completion: completion)
     }
 
-    static func load(category: Categories.Category, completion: @escaping (Result<TransactionsResponse, Error>)->Void) {
+    static func load(category: Categories.Category, completion: @escaping (Result<Response.Transactions, Error>)->Void) {
         load(path: "/api/category/\(category.id)/transactions?offset=0&limit=30", completion: completion)
     }
     

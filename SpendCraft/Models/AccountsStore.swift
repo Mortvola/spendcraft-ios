@@ -21,7 +21,7 @@ struct Account: Identifiable {
         self.closed = closed
     }
 
-    init(account: AccountResponse) {
+    init(account: Response.Account) {
         self.id = account.id
         self.name = account.name
         self.balance = account.balance
@@ -41,7 +41,7 @@ struct Institution: Identifiable {
         self.accounts = accounts
     }
 
-    init(institution: InstitutionResponse) {
+    init(institution: Response.Institution) {
         self.id = institution.id
         self.name = institution.name
         self.accounts = institution.accounts.map { account in
@@ -64,9 +64,9 @@ class AccountsStore: ObservableObject {
                 return;
             }
             
-            var accountsResponse: [InstitutionResponse]
+            var accountsResponse: [Response.Institution]
             do {
-                accountsResponse = try JSONDecoder().decode([InstitutionResponse].self, from: data)
+                accountsResponse = try JSONDecoder().decode([Response.Institution].self, from: data)
             }
             catch {
                 print ("Error: \(error)")

@@ -25,7 +25,7 @@ struct Transaction: Identifiable, Codable {
             self.comment = comment ?? ""
         }
         
-        init(trxCategory: TransactionResponse.TransactionCategory) {
+        init(trxCategory: Response.Transaction.TransactionCategory) {
             self.id = trxCategory.id
             self.categoryId = trxCategory.categoryId
             self.amount = trxCategory.amount
@@ -59,7 +59,7 @@ struct Transaction: Identifiable, Codable {
         self.categories = transactionCategories
     }
     
-    init(trx: TransactionResponse) {
+    init(trx: Response.Transaction) {
         self.id = trx.id
         self.date = trx.date
         self.comment = trx.comment
@@ -95,7 +95,7 @@ struct Transaction: Identifiable, Codable {
         })
     }
 
-    func save(completion: @escaping (Result<UpdateTransactionResponse, Error>)->Void) {
+    func save(completion: @escaping (Result<Response.UpdateTransaction, Error>)->Void) {
         struct TrxData: Encodable {
             struct Category: Encodable {
                 var id: Int?
@@ -131,9 +131,9 @@ struct Transaction: Identifiable, Codable {
                 return
             }
             
-            var updateTrxResponse: UpdateTransactionResponse
+            var updateTrxResponse: Response.UpdateTransaction
             do {
-                updateTrxResponse = try JSONDecoder().decode(UpdateTransactionResponse.self, from: data)
+                updateTrxResponse = try JSONDecoder().decode(Response.UpdateTransaction.self, from: data)
             }
             catch {
                 print ("Error: \(error)")

@@ -17,9 +17,9 @@ class CategoriesStore: ObservableObject {
                 return;
             }
             
-            var categoriesResponse: [CategoryTreeNode]
+            var categoriesResponse: [Response.CategoryTreeNode]
             do {
-                categoriesResponse = try JSONDecoder().decode([CategoryTreeNode].self, from: data)
+                categoriesResponse = try JSONDecoder().decode([Response.CategoryTreeNode].self, from: data)
             }
             catch {
                 print ("Error: \(error)")

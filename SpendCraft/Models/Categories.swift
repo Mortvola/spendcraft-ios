@@ -88,7 +88,7 @@ struct Categories {
         case group(Group)
         case category(Category)
         
-        init(node: CategoryTreeNode) {
+        init(node: Response.CategoryTreeNode) {
             switch(node) {
             case .category(let category):
                 self = .category(Category(id: category.id, groupId: category.groupId, name: category.name, balance: category.balance, type: category.type, monthlyExpenses: category.monthlyExpenses))
@@ -137,7 +137,7 @@ struct Categories {
     var fundingPool: Category = Category(id: -3, groupId: 0, name: "Funding Pool", balance: 0, type: .fundingPool, monthlyExpenses: false)
     var accountTransfer: Category = Category(id: -4, groupId: 0, name: "Account Transfer", balance: 0, type: .accountTransfer, monthlyExpenses: false)
 
-    init(tree: [CategoryTreeNode]) {
+    init(tree: [Response.CategoryTreeNode]) {
         self.tree = tree.map {
             Categories.TreeNode(node: $0)
         };

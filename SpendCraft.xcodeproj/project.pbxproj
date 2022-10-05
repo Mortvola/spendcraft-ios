@@ -10,7 +10,6 @@
 		7923782828D7678C0069DB01 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782728D7678C0069DB01 /* Error.swift */; };
 		7923782A28D76BD60069DB01 /* Authenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782928D76BD60069DB01 /* Authenticator.swift */; };
 		7923782C28D77C0A0069DB01 /* TransactionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782B28D77C0A0069DB01 /* TransactionStore.swift */; };
-		7923782E28D78D3E0069DB01 /* TransactionsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782D28D78D3E0069DB01 /* TransactionsResponse.swift */; };
 		7923783228D7F61E0069DB01 /* TransactionEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923783128D7F61E0069DB01 /* TransactionEdit.swift */; };
 		793E6BC128ED1AD900480AC3 /* Http.swift in Sources */ = {isa = PBXBuildFile; fileRef = 793E6BC028ED1AD900480AC3 /* Http.swift */; };
 		793E6BC328EDD06B00480AC3 /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 793E6BC228EDD06B00480AC3 /* Response.swift */; };
@@ -21,7 +20,6 @@
 		7946967528D8203A005B6408 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946967428D8203A005B6408 /* MainView.swift */; };
 		7946967728D8B99B005B6408 /* CategoriesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946967628D8B99B005B6408 /* CategoriesStore.swift */; };
 		7946967928D8B9C0005B6408 /* Categories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946967828D8B9C0005B6408 /* Categories.swift */; };
-		7946967B28D8BB11005B6408 /* CategoriesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946967A28D8BB11005B6408 /* CategoriesResponse.swift */; };
 		7946967D28DA1AD1005B6408 /* GroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946967C28DA1AD1005B6408 /* GroupView.swift */; };
 		7946967F28DA1F0E005B6408 /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946967E28DA1F0E005B6408 /* CategoryView.swift */; };
 		7946968128DA207D005B6408 /* AmountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946968028DA207D005B6408 /* AmountView.swift */; };
@@ -35,7 +33,6 @@
 		795382E628E71F3500133EFA /* AccountTransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795382E528E71F3500133EFA /* AccountTransactionView.swift */; };
 		795382E828E864B800133EFA /* InactiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795382E728E864B800133EFA /* InactiveView.swift */; };
 		79ADF87528E5D71800227F44 /* AccountsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79ADF87428E5D71800227F44 /* AccountsStore.swift */; };
-		79ADF87728E5D86600227F44 /* AccountsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79ADF87628E5D86600227F44 /* AccountsResponse.swift */; };
 		79ADF87928E5E0C100227F44 /* InstitutionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79ADF87828E5E0C100227F44 /* InstitutionView.swift */; };
 		79C19CA228D41BC8003F05F2 /* SpendCraftApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C19CA128D41BC8003F05F2 /* SpendCraftApp.swift */; };
 		79C19CA628D41BCA003F05F2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 79C19CA528D41BCA003F05F2 /* Assets.xcassets */; };
@@ -69,7 +66,6 @@
 		7923782728D7678C0069DB01 /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		7923782928D76BD60069DB01 /* Authenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authenticator.swift; sourceTree = "<group>"; };
 		7923782B28D77C0A0069DB01 /* TransactionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionStore.swift; sourceTree = "<group>"; };
-		7923782D28D78D3E0069DB01 /* TransactionsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsResponse.swift; sourceTree = "<group>"; };
 		7923783128D7F61E0069DB01 /* TransactionEdit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionEdit.swift; sourceTree = "<group>"; };
 		793E6BC028ED1AD900480AC3 /* Http.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Http.swift; sourceTree = "<group>"; };
 		793E6BC228EDD06B00480AC3 /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
@@ -80,7 +76,6 @@
 		7946967428D8203A005B6408 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		7946967628D8B99B005B6408 /* CategoriesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesStore.swift; sourceTree = "<group>"; };
 		7946967828D8B9C0005B6408 /* Categories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Categories.swift; sourceTree = "<group>"; };
-		7946967A28D8BB11005B6408 /* CategoriesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesResponse.swift; sourceTree = "<group>"; };
 		7946967C28DA1AD1005B6408 /* GroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupView.swift; sourceTree = "<group>"; };
 		7946967E28DA1F0E005B6408 /* CategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView.swift; sourceTree = "<group>"; };
 		7946968028DA207D005B6408 /* AmountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountView.swift; sourceTree = "<group>"; };
@@ -96,7 +91,6 @@
 		795382E728E864B800133EFA /* InactiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InactiveView.swift; sourceTree = "<group>"; };
 		795382E928E8AAA700133EFA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		79ADF87428E5D71800227F44 /* AccountsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsStore.swift; sourceTree = "<group>"; };
-		79ADF87628E5D86600227F44 /* AccountsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsResponse.swift; sourceTree = "<group>"; };
 		79ADF87828E5E0C100227F44 /* InstitutionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstitutionView.swift; sourceTree = "<group>"; };
 		79C19C9E28D41BC8003F05F2 /* SpendCraft.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpendCraft.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		79C19CA128D41BC8003F05F2 /* SpendCraftApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendCraftApp.swift; sourceTree = "<group>"; };
@@ -245,11 +239,8 @@
 				79C19CD228D517E7003F05F2 /* Transaction.swift */,
 				7946969428DE1173005B6408 /* SampleData.swift */,
 				79ADF87428E5D71800227F44 /* AccountsStore.swift */,
-				79ADF87628E5D86600227F44 /* AccountsResponse.swift */,
 				7946967628D8B99B005B6408 /* CategoriesStore.swift */,
-				7946967A28D8BB11005B6408 /* CategoriesResponse.swift */,
 				7946967828D8B9C0005B6408 /* Categories.swift */,
-				7923782D28D78D3E0069DB01 /* TransactionsResponse.swift */,
 				7923782B28D77C0A0069DB01 /* TransactionStore.swift */,
 				793E6BC028ED1AD900480AC3 /* Http.swift */,
 				793E6BC228EDD06B00480AC3 /* Response.swift */,
@@ -404,7 +395,6 @@
 				795382E828E864B800133EFA /* InactiveView.swift in Sources */,
 				7946966F28D81FF0005B6408 /* PlansView.swift in Sources */,
 				79C19CD328D517E7003F05F2 /* Transaction.swift in Sources */,
-				7923782E28D78D3E0069DB01 /* TransactionsResponse.swift in Sources */,
 				795382E028E7141100133EFA /* SettingsView.swift in Sources */,
 				7946969528DE1173005B6408 /* SampleData.swift in Sources */,
 				7946967528D8203A005B6408 /* MainView.swift in Sources */,
@@ -415,10 +405,8 @@
 				7946968128DA207D005B6408 /* AmountView.swift in Sources */,
 				7946966D28D81FC8005B6408 /* CategoriesView.swift in Sources */,
 				7923782828D7678C0069DB01 /* Error.swift in Sources */,
-				7946967B28D8BB11005B6408 /* CategoriesResponse.swift in Sources */,
 				793E6BC128ED1AD900480AC3 /* Http.swift in Sources */,
 				79C19CA228D41BC8003F05F2 /* SpendCraftApp.swift in Sources */,
-				79ADF87728E5D86600227F44 /* AccountsResponse.swift in Sources */,
 				79ADF87928E5E0C100227F44 /* InstitutionView.swift in Sources */,
 				7946969328DCBD6F005B6408 /* CategoryList.swift in Sources */,
 				7946968A28DAC578005B6408 /* NumericField.swift in Sources */,
