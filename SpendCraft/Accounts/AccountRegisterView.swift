@@ -11,6 +11,11 @@ struct AccountRegisterView: View {
     @Binding var institution: Institution
     @Binding var account: Account
     @StateObject private var store = TransactionStore();
+    var animation: Animation {
+        .linear(duration: 2.0)
+        .repeatForever(autoreverses: false)
+    }
+    @State var syncing: Bool = false
 
     func loadTransactions() {
         TransactionStore.load(account: account) { result in
@@ -45,6 +50,7 @@ struct AccountRegisterView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
+                    syncing = true
                     TransactionStore.sync(institution: institution, account: account) { result in
                         switch result {
                         case .failure(let error):
@@ -53,9 +59,13 @@ struct AccountRegisterView: View {
                             account.balance = syncResponse.accounts[0].balance
                             account.syncDate = syncResponse.accounts[0].syncDate
                         }
+                        
+                        syncing = false
                     }
                 }) {
                     Image(systemName: "arrow.triangle.2.circlepath")
+                        .rotationEffect(.degrees(syncing ? 360.0 : 0.0))
+                        .animation(syncing ? animation : .default, value: syncing)
                 }
             }
         }
