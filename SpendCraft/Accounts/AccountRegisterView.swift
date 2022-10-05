@@ -41,7 +41,7 @@ struct AccountRegisterView: View {
 
     var body: some View {
         List($store.transactions) {
-            AccountTransactionView(trx: $0, categories: $categories)
+            AccountTransactionView(trx: $0, transactions: $store.transactions, categories: $categories)
         }
         .listStyle(.plain)
         .navigationTitle(account.name)
