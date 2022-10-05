@@ -125,7 +125,7 @@ struct Transaction: Identifiable, Codable {
             TrxData.Category(id: $0.id, categoryId: $0.categoryId, amount: $0.amount, comment: $0.comment)
         })
 
-        try? sendRequest(method: "PATCH", path: "/api/transaction/\(self.id)", data: trxData) { data in
+        try? Http.patch(path: "/api/transaction/\(self.id)", data: trxData) { data in
             guard let data = data else {
                 print ("data is nil")
                 return

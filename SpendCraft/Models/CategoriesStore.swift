@@ -11,7 +11,7 @@ class CategoriesStore: ObservableObject {
     @Published var categories: Categories = Categories(tree: [])
     
     static func load(completion: @escaping (Result<Categories, Error>)->Void) {
-        try? sendRequest(method: "GET", path: "/api/groups") { data in
+        try? Http.get(path: "/api/groups") { data in
             guard let data = data else {
                 print ("data is nil")
                 return;

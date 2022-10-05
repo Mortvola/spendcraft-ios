@@ -29,7 +29,7 @@ class Authenticator: ObservableObject {
         
         let data = Data(username: username, password: password, remember: "on")
 
-        try? sendRequest(method: "POST", path: "/login", data: data) { _ in
+        try? Http.post(path: "/login", data: data) { _ in
             try? Authenticator.addCredentials(username: username, password: password)
 
             DispatchQueue.main.async {

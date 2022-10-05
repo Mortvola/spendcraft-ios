@@ -134,7 +134,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
         
         let data = Data(token: token)
 
-        try? sendRequest(method: "POST", path: "/api/user/apns-token", data: data)
+        try? Http.post(path: "/api/user/apns-token", data: data)
     }
 
     func application(

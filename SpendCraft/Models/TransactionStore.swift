@@ -11,7 +11,7 @@ class TransactionStore: ObservableObject {
     @Published var transactions: [Transaction] = []
 
     static private func load(path: String, completion: @escaping (Result<TransactionsResponse, Error>)->Void) {
-        try? sendRequest(method: "GET", path: path) { data in
+        try? Http.get(path: path) { data in
             guard let data = data else {
                 print ("data is nil")
                 return;
@@ -41,7 +41,7 @@ class TransactionStore: ObservableObject {
     }
     
     static func sync(institution: Institution, account: Account, completion: @escaping (Result<Bool, Error>)->Void) {
-        try? sendRequest(method: "POST", path: "/api/institution/\(institution.id)/accounts/\(account.id)/transactions/sync") { _ in
+        try? Http.post(path: "/api/institution/\(institution.id)/accounts/\(account.id)/transactions/sync") { _ in
 //            guard let data = data else {
 //                print ("data is nil")
 //                return;

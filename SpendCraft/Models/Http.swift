@@ -30,115 +30,140 @@ func getUrl(path: String) -> URL? {
     return URL(string: "https://\(serverName)\(path)")
 }
 
-func sendRequest(method: String, path: String, _ completion: @escaping (Data?) -> Void) throws -> Void {
-    guard let url = getUrl(path: path) else {
-        throw MyError.runtimeError("failed to get URL")
+struct Http {
+    // POST requests
+    static func post(path: String, data: Encodable, _ completion: @escaping (Data?) -> Void) throws -> Void {
+        try Http.sendRequest(method: "POST", path: path, data: data, completion)
     }
 
-    var urlRequest = URLRequest(url: url)
-    urlRequest.httpMethod = method
-    urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
-    
-    let session = try getSession()
+    static func post(path: String, data: Encodable) throws -> Void {
+        try Http.sendRequest(method: "POST", path: path, data: data)
+    }
 
-    let task = session.dataTask(with: urlRequest) { data, response, error in
-        if let error = error {
-            print("Error: \(error)");
-            return
-        }
-        
-        guard let response = response as? HTTPURLResponse else {
-            print ("response is nil")
-            return
-        }
-        
-        guard (200...299).contains(response.statusCode) else {
-            print ("Server error: \(response.statusCode)")
-            return
-        }
-        
-        print("success: \(response.statusCode)")
-        
-        completion(data)
+    static func post(path: String, _ completion: @escaping (Data?) -> Void) throws -> Void {
+        try Http.sendRequest(method: "POST", path: path, completion)
     }
     
-    task.resume()
-}
-
-func sendRequest(method: String, path: String, data: Encodable, _ completion: @escaping (Data?) -> Void) throws -> Void {
-    guard let url = getUrl(path: path) else {
-        throw MyError.runtimeError("failed to get URL")
+    // GET requests
+    static func get(path: String, _ completion: @escaping (Data?) -> Void) throws -> Void {
+        try Http.sendRequest(method: "GET", path: path, completion)
     }
 
-    var urlRequest = URLRequest(url: url)
-    urlRequest.httpMethod = method
-    urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
-    urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-    guard let uploadData = try? JSONEncoder().encode(data) else {
-        return
+    // PATCH requests
+    static func patch(path: String, data: Encodable, _ completion: @escaping (Data?) -> Void) throws -> Void {
+        try Http.sendRequest(method: "PATCH", path: path, data: data, completion)
     }
-    
-    let session = try getSession()
 
-    let task = session.uploadTask(with: urlRequest, from: uploadData) { data, response, error in
-        if let error = error {
-            print("Error: \(error)");
+    private static func sendRequest(method: String, path: String, _ completion: @escaping (Data?) -> Void) throws -> Void {
+        guard let url = getUrl(path: path) else {
+            throw MyError.runtimeError("failed to get URL")
+        }
+
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = method
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        let session = try getSession()
+
+        let task = session.dataTask(with: urlRequest) { data, response, error in
+            if let error = error {
+                print("Error: \(error)");
+                return
+            }
+            
+            guard let response = response as? HTTPURLResponse else {
+                print ("response is nil")
+                return
+            }
+            
+            guard (200...299).contains(response.statusCode) else {
+                print ("Server error: \(response.statusCode)")
+                return
+            }
+            
+            print("success: \(response.statusCode)")
+            
+            completion(data)
+        }
+        
+        task.resume()
+    }
+
+    private static func sendRequest(method: String, path: String, data: Encodable, _ completion: @escaping (Data?) -> Void) throws -> Void {
+        guard let url = getUrl(path: path) else {
+            throw MyError.runtimeError("failed to get URL")
+        }
+
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = method
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        guard let uploadData = try? JSONEncoder().encode(data) else {
             return
         }
         
-        guard let response = response as? HTTPURLResponse else {
-            print ("response is nil")
-            return
-        }
-        
-        guard (200...299).contains(response.statusCode) else {
-            print ("Server error: \(response.statusCode)")
-            return
-        }
-        
-        print("success: \(response.statusCode)")
-        
-        completion(data)
-    }
-    
-    task.resume()
-}
+        let session = try getSession()
 
-func sendRequest(method: String, path: String, data: Encodable) throws -> Void {
-    guard let url = getUrl(path: path) else {
-        throw MyError.runtimeError("failed to get URL")
+        let task = session.uploadTask(with: urlRequest, from: uploadData) { data, response, error in
+            if let error = error {
+                print("Error: \(error)");
+                return
+            }
+            
+            guard let response = response as? HTTPURLResponse else {
+                print ("response is nil")
+                return
+            }
+            
+            guard (200...299).contains(response.statusCode) else {
+                print ("Server error: \(response.statusCode)")
+                return
+            }
+            
+            print("success: \(response.statusCode)")
+            
+            completion(data)
+        }
+        
+        task.resume()
     }
 
-    var urlRequest = URLRequest(url: url)
-    urlRequest.httpMethod = method
-    urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
-    urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    private static func sendRequest(method: String, path: String, data: Encodable) throws -> Void {
+        guard let url = getUrl(path: path) else {
+            throw MyError.runtimeError("failed to get URL")
+        }
 
-    guard let uploadData = try? JSONEncoder().encode(data) else {
-        return
-    }
-    
-    let session = try getSession()
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = method
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-    let task = session.uploadTask(with: urlRequest, from: uploadData) { data, response, error in
-        if let error = error {
-            print("Error: \(error)");
+        guard let uploadData = try? JSONEncoder().encode(data) else {
             return
         }
         
-        guard let response = response as? HTTPURLResponse else {
-            print ("response is nil")
-            return
+        let session = try getSession()
+
+        let task = session.uploadTask(with: urlRequest, from: uploadData) { data, response, error in
+            if let error = error {
+                print("Error: \(error)");
+                return
+            }
+            
+            guard let response = response as? HTTPURLResponse else {
+                print ("response is nil")
+                return
+            }
+            
+            guard (200...299).contains(response.statusCode) else {
+                print ("Server error: \(response.statusCode)")
+                return
+            }
+            
+            print("success: \(response.statusCode)")
         }
         
-        guard (200...299).contains(response.statusCode) else {
-            print ("Server error: \(response.statusCode)")
-            return
-        }
-        
-        print("success: \(response.statusCode)")
+        task.resume()
     }
-    
-    task.resume()
 }

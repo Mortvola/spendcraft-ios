@@ -58,7 +58,7 @@ class AccountsStore: ObservableObject {
     @Published var accounts: [Institution] = []
 
     static func load(completion: @escaping (Result<[Institution], Error>)->Void) {
-        try? sendRequest(method: "GET", path: "/api/connected-accounts") { data in
+        try? Http.get(path: "/api/connected-accounts") { data in
             guard let data = data else {
                 print ("data is nil")
                 return;
