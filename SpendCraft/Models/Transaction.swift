@@ -96,7 +96,7 @@ struct Transaction: Identifiable, Codable {
     }
 
     func save(completion: @escaping (Result<UpdateTransactionResponse, Error>)->Void) {
-        guard let url = URL(string: "https://spendcraft.app/api/transaction/\(self.id)") else {
+        guard let url = URL(string: "https://\(serverName)/api/transaction/\(self.id)") else {
             return
         }
 

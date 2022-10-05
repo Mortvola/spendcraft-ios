@@ -13,6 +13,7 @@
 		7923782C28D77C0A0069DB01 /* TransactionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782B28D77C0A0069DB01 /* TransactionStore.swift */; };
 		7923782E28D78D3E0069DB01 /* TransactionsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782D28D78D3E0069DB01 /* TransactionsResponse.swift */; };
 		7923783228D7F61E0069DB01 /* TransactionEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923783128D7F61E0069DB01 /* TransactionEdit.swift */; };
+		793E6BC128ED1AD900480AC3 /* Http.swift in Sources */ = {isa = PBXBuildFile; fileRef = 793E6BC028ED1AD900480AC3 /* Http.swift */; };
 		7946966D28D81FC8005B6408 /* CategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946966C28D81FC8005B6408 /* CategoriesView.swift */; };
 		7946966F28D81FF0005B6408 /* PlansView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946966E28D81FF0005B6408 /* PlansView.swift */; };
 		7946967128D82006005B6408 /* AccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946967028D82006005B6408 /* AccountsView.swift */; };
@@ -71,6 +72,7 @@
 		7923782B28D77C0A0069DB01 /* TransactionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionStore.swift; sourceTree = "<group>"; };
 		7923782D28D78D3E0069DB01 /* TransactionsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsResponse.swift; sourceTree = "<group>"; };
 		7923783128D7F61E0069DB01 /* TransactionEdit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionEdit.swift; sourceTree = "<group>"; };
+		793E6BC028ED1AD900480AC3 /* Http.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Http.swift; sourceTree = "<group>"; };
 		7946966C28D81FC8005B6408 /* CategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesView.swift; sourceTree = "<group>"; };
 		7946966E28D81FF0005B6408 /* PlansView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlansView.swift; sourceTree = "<group>"; };
 		7946967028D82006005B6408 /* AccountsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsView.swift; sourceTree = "<group>"; };
@@ -249,6 +251,7 @@
 				7946967828D8B9C0005B6408 /* Categories.swift */,
 				7923782D28D78D3E0069DB01 /* TransactionsResponse.swift */,
 				7923782B28D77C0A0069DB01 /* TransactionStore.swift */,
+				793E6BC028ED1AD900480AC3 /* Http.swift */,
 				7923782928D76BD60069DB01 /* Authenticator.swift */,
 				7923782728D7678C0069DB01 /* Error.swift */,
 				7923782528D7656B0069DB01 /* Session.swift */,
@@ -413,6 +416,7 @@
 				7946966D28D81FC8005B6408 /* CategoriesView.swift in Sources */,
 				7923782828D7678C0069DB01 /* Error.swift in Sources */,
 				7946967B28D8BB11005B6408 /* CategoriesResponse.swift in Sources */,
+				793E6BC128ED1AD900480AC3 /* Http.swift in Sources */,
 				79C19CA228D41BC8003F05F2 /* SpendCraftApp.swift in Sources */,
 				79ADF87728E5D86600227F44 /* AccountsResponse.swift in Sources */,
 				79ADF87928E5E0C100227F44 /* InstitutionView.swift in Sources */,

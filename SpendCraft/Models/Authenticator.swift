@@ -10,7 +10,6 @@ import LocalAuthentication
 
 class Authenticator: ObservableObject {
     @Published var authenticated = false
-    static let server = "spendcraft.app"
     
     /// Keychain errors we might encounter.
     struct KeychainError: Error {
@@ -22,7 +21,7 @@ class Authenticator: ObservableObject {
     }
     
     func signIn(username: String, password: String) {
-        guard let url = URL(string: "https://spendcraft.app/login") else {
+        guard let url = URL(string: "https://\(serverName)/login") else {
             return
         }
         
@@ -90,7 +89,7 @@ class Authenticator: ObservableObject {
         // Build the query for use in the add operation.
         let query: [String: Any] = [kSecClass as String: kSecClassInternetPassword,
                                     kSecAttrAccount as String: username,
-                                    kSecAttrServer as String: server,
+                                    kSecAttrServer as String: serverName,
                                     kSecAttrAccessControl as String: access as Any,
                                     kSecUseAuthenticationContext as String: context,
                                     kSecValueData as String: password.data(using: String.Encoding.utf8)!]
@@ -103,7 +102,7 @@ class Authenticator: ObservableObject {
         let context = LAContext()
         context.localizedReason = "Access your password on the keychain"
         let query: [String: Any] = [kSecClass as String: kSecClassInternetPassword,
-                                    kSecAttrServer as String: server,
+                                    kSecAttrServer as String: serverName,
                                     kSecMatchLimit as String: kSecMatchLimitOne,
                                     kSecReturnAttributes as String: true,
                                     kSecUseAuthenticationContext as String: context,

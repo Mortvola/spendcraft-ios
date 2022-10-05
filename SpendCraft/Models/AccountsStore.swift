@@ -58,7 +58,7 @@ class AccountsStore: ObservableObject {
     @Published var accounts: [Institution] = []
 
     static func load(completion: @escaping (Result<[Institution], Error>)->Void) {
-        guard let url = URL(string: "https://spendcraft.app/api/connected-accounts") else {
+        guard let url = URL(string: "https://\(serverName)/api/connected-accounts") else {
             return
         }
 

@@ -128,7 +128,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
     }
     
     func uploadToken(token: String) {
-        guard let url = URL(string: "https://spendcraft.app/api/user/apns-token") else {
+        guard let url = URL(string: "https://\(serverName)/api/user/apns-token") else {
             return
         }
         
