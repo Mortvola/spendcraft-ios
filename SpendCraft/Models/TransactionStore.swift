@@ -60,7 +60,7 @@ class TransactionStore: ObservableObject {
     }
 
     static func load(account: Account, completion: @escaping (Result<TransactionsResponse, Error>)->Void) {
-        guard let url = URL(string: "https://\(serverName)/api/account/\(account.id)/transactions?offset=0&limit=30") else {
+        guard let url = getUrl(path: "/api/account/\(account.id)/transactions?offset=0&limit=30") else {
             return
         }
 
@@ -68,7 +68,7 @@ class TransactionStore: ObservableObject {
     }
 
     static func load(category: Categories.Category, completion: @escaping (Result<TransactionsResponse, Error>)->Void) {
-        guard let url = URL(string: "https://\(serverName)/api/category/\(category.id)/transactions?offset=0&limit=30") else {
+        guard let url = getUrl(path: "/api/category/\(category.id)/transactions?offset=0&limit=30") else {
             return
         }
 
@@ -76,7 +76,7 @@ class TransactionStore: ObservableObject {
     }
     
     static func sync(institution: Institution, account: Account, completion: @escaping (Result<Bool, Error>)->Void) {
-        guard let url = URL(string: "https://\(serverName)/api/institution/\(institution.id)/accounts/\(account.id)/transactions/sync") else {
+        guard let url = getUrl(path: "/api/institution/\(institution.id)/accounts/\(account.id)/transactions/sync") else {
             return
         }
 

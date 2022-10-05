@@ -21,7 +21,7 @@ class Authenticator: ObservableObject {
     }
     
     func signIn(username: String, password: String) {
-        guard let url = URL(string: "https://\(serverName)/login") else {
+        guard let url = getUrl(path: "/login") else {
             return
         }
         

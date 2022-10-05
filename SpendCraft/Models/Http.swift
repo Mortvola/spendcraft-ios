@@ -9,3 +9,6 @@ import Foundation
 
 let serverName = "spendcraft.app"
 
+func getUrl(path: String) -> URL? {
+    return URL(string: "https://\(serverName)\(path)")
+}

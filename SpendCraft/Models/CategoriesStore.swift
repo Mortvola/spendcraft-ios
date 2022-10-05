@@ -11,7 +11,7 @@ class CategoriesStore: ObservableObject {
     @Published var categories: Categories = Categories(tree: [])
     
     static func load(completion: @escaping (Result<Categories, Error>)->Void) {
-        guard let url = URL(string: "https://\(serverName)/api/groups") else {
+        guard let url = getUrl(path: "/api/groups") else {
             return
         }
 
