@@ -10,10 +10,11 @@ import SwiftUI
 struct MainView: View {
     @ObservedObject var authenticator: Authenticator
     @Binding var selection: String
+    @StateObject private var categoriesStore = CategoriesStore();
 
     var body: some View {
         TabView(selection: $selection) {
-            CategoriesView()
+            CategoriesView(categories: $categoriesStore.categories)
                 .tabItem {
                     Label("Categories", systemImage: "tray.and.arrow.down.fill")
                 }
@@ -23,7 +24,7 @@ struct MainView: View {
                     Label("Plans", systemImage: "map")
                 }
                 .tag("plans")
-            AccountsView()
+            AccountsView(categories: $categoriesStore.categories)
                 .tabItem {
                     Label("Accounts", systemImage: "building.columns")
                 }

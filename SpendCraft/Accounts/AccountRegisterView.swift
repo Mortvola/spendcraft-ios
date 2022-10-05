@@ -10,6 +10,7 @@ import SwiftUI
 struct AccountRegisterView: View {
     @Binding var institution: Institution
     @Binding var account: Account
+    @Binding var categories: Categories
     @StateObject private var store = TransactionStore();
     var animation: Animation {
         .linear(duration: 2.0)
@@ -40,7 +41,7 @@ struct AccountRegisterView: View {
 
     var body: some View {
         List($store.transactions) {
-            AccountTransactionView(trx: $0)
+            AccountTransactionView(trx: $0, categories: $categories)
         }
         .listStyle(.plain)
         .navigationTitle(account.name)
@@ -81,6 +82,6 @@ struct AccountRegisterView_Previews: PreviewProvider {
     ])
     
     static var previews: some View {
-        AccountRegisterView(institution: .constant(institution), account: .constant(institution.accounts[0]))
+        AccountRegisterView(institution: .constant(institution), account: .constant(institution.accounts[0]), categories: .constant(SampleData.categories))
     }
 }
