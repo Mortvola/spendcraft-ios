@@ -21,18 +21,6 @@ class Authenticator: ObservableObject {
     }
     
     func signIn(username: String, password: String) {
-        guard let url = getUrl(path: "/login") else {
-            return
-        }
-        
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = "POST"
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        guard let session = try? getSession() else {
-            return
-        }
-        
         struct Data: Encodable {
             var username: String
             var password: String
@@ -40,39 +28,14 @@ class Authenticator: ObservableObject {
         }
         
         let data = Data(username: username, password: password, remember: "on")
-        
-        guard let uploadData = try? JSONEncoder().encode(data) else {
-            return
-        }
-        
-        let task = session.uploadTask(with: urlRequest, from: uploadData) {data, response, error in
-            if let error = error {
-                print("Error: \(error)");
-                return
-            }
-            
-            guard let response = response as? HTTPURLResponse else {
-                print ("response is nil")
-                return
-            }
-            
-            guard (200...299).contains(response.statusCode) else {
-                print ("Server error: \(response.statusCode)")
-                return
-            }
 
-            do {
-                try Authenticator.addCredentials(username: username, password: password)
-            }
-            catch {
-            }
+        try? sendRequest(method: "POST", path: "/login", data: data) { _ in
+            try? Authenticator.addCredentials(username: username, password: password)
 
-            print("success: \(response.statusCode)")
             DispatchQueue.main.async {
                 self.authenticated = true
             }
         }
-        task.resume()
     }
     
     static func addCredentials(username: String, password: String) throws {

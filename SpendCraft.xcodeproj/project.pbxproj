@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7923782628D7656B0069DB01 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782528D7656B0069DB01 /* Session.swift */; };
 		7923782828D7678C0069DB01 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782728D7678C0069DB01 /* Error.swift */; };
 		7923782A28D76BD60069DB01 /* Authenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782928D76BD60069DB01 /* Authenticator.swift */; };
 		7923782C28D77C0A0069DB01 /* TransactionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782B28D77C0A0069DB01 /* TransactionStore.swift */; };
@@ -66,7 +65,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		7923782528D7656B0069DB01 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		7923782728D7678C0069DB01 /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		7923782928D76BD60069DB01 /* Authenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authenticator.swift; sourceTree = "<group>"; };
 		7923782B28D77C0A0069DB01 /* TransactionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionStore.swift; sourceTree = "<group>"; };
@@ -254,7 +252,6 @@
 				793E6BC028ED1AD900480AC3 /* Http.swift */,
 				7923782928D76BD60069DB01 /* Authenticator.swift */,
 				7923782728D7678C0069DB01 /* Error.swift */,
-				7923782528D7656B0069DB01 /* Session.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -396,7 +393,6 @@
 				79ADF87528E5D71800227F44 /* AccountsStore.swift in Sources */,
 				795382E628E71F3500133EFA /* AccountTransactionView.swift in Sources */,
 				79C19CCE28D4D80E003F05F2 /* RegisterView.swift in Sources */,
-				7923782628D7656B0069DB01 /* Session.swift in Sources */,
 				7946967928D8B9C0005B6408 /* Categories.swift in Sources */,
 				7946967128D82006005B6408 /* AccountsView.swift in Sources */,
 				7946967F28DA1F0E005B6408 /* CategoryView.swift in Sources */,

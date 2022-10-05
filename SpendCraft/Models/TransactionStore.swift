@@ -10,33 +10,8 @@ import Foundation
 class TransactionStore: ObservableObject {
     @Published var transactions: [Transaction] = []
 
-    static private func load(url: URL, completion: @escaping (Result<TransactionsResponse, Error>)->Void) {
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = "GET"
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
-        
-        guard let session = try? getSession() else {
-            return
-        }
-
-        let task = session.dataTask(with: urlRequest) {data, response, error in
-            if let error = error {
-                print("Error: \(error)");
-                return
-            }
-            
-            guard let response = response as? HTTPURLResponse else {
-                print ("response is nil")
-                return
-            }
-            
-            guard (200...299).contains(response.statusCode) else {
-                print ("Server error: \(response.statusCode)")
-                return
-            }
-            
-            print("success: \(response.statusCode)")
-            
+    static private func load(path: String, completion: @escaping (Result<TransactionsResponse, Error>)->Void) {
+        try? sendRequest(method: "GET", path: path) { data in
             guard let data = data else {
                 print ("data is nil")
                 return;
@@ -55,57 +30,18 @@ class TransactionStore: ObservableObject {
                 completion(.success(transactionsResponse))
             }
         }
-        
-        task.resume()
     }
 
     static func load(account: Account, completion: @escaping (Result<TransactionsResponse, Error>)->Void) {
-        guard let url = getUrl(path: "/api/account/\(account.id)/transactions?offset=0&limit=30") else {
-            return
-        }
-
-        load(url: url, completion: completion)
+        load(path: "/api/account/\(account.id)/transactions?offset=0&limit=30", completion: completion)
     }
 
     static func load(category: Categories.Category, completion: @escaping (Result<TransactionsResponse, Error>)->Void) {
-        guard let url = getUrl(path: "/api/category/\(category.id)/transactions?offset=0&limit=30") else {
-            return
-        }
-
-        load(url: url, completion: completion)
+        load(path: "/api/category/\(category.id)/transactions?offset=0&limit=30", completion: completion)
     }
     
     static func sync(institution: Institution, account: Account, completion: @escaping (Result<Bool, Error>)->Void) {
-        guard let url = getUrl(path: "/api/institution/\(institution.id)/accounts/\(account.id)/transactions/sync") else {
-            return
-        }
-
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = "POST"
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
-        
-        guard let session = try? getSession() else {
-            return
-        }
-
-        let task = session.dataTask(with: urlRequest) {data, response, error in
-            if let error = error {
-                print("Error: \(error)");
-                return
-            }
-            
-            guard let response = response as? HTTPURLResponse else {
-                print ("response is nil")
-                return
-            }
-            
-            guard (200...299).contains(response.statusCode) else {
-                print ("Server error: \(response.statusCode)")
-                return
-            }
-            
-            print("success: \(response.statusCode)")
-            
+        try? sendRequest(method: "POST", path: "/api/institution/\(institution.id)/accounts/\(account.id)/transactions/sync") { _ in
 //            guard let data = data else {
 //                print ("data is nil")
 //                return;
@@ -124,7 +60,5 @@ class TransactionStore: ObservableObject {
                 completion(.success(true))
             }
         }
-        
-        task.resume()
     }
 }

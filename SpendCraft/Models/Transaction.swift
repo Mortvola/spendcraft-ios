@@ -96,19 +96,6 @@ struct Transaction: Identifiable, Codable {
     }
 
     func save(completion: @escaping (Result<UpdateTransactionResponse, Error>)->Void) {
-        guard let url = getUrl(path: "/api/transaction/\(self.id)") else {
-            return
-        }
-
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = "PATCH"
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
-        
-        guard let session = try? getSession() else {
-            return
-        }
-
         struct TrxData: Encodable {
             struct Category: Encodable {
                 var id: Int?
@@ -138,28 +125,7 @@ struct Transaction: Identifiable, Codable {
             TrxData.Category(id: $0.id, categoryId: $0.categoryId, amount: $0.amount, comment: $0.comment)
         })
 
-        guard let uploadData = try? JSONEncoder().encode(trxData) else {
-            return
-        }
-
-        let task = session.uploadTask(with: urlRequest, from: uploadData) {data, response, error in
-            if let error = error {
-                print("Error: \(error)");
-                return
-            }
-            
-            guard let response = response as? HTTPURLResponse else {
-                print ("response is nil")
-                return
-            }
-            
-            guard (200...299).contains(response.statusCode) else {
-                print ("Server error: \(response.statusCode)")
-                return
-            }
-            
-            print("success: \(response.statusCode)")
-            
+        try? sendRequest(method: "PATCH", path: "/api/transaction/\(self.id)", data: trxData) { data in
             guard let data = data else {
                 print ("data is nil")
                 return
@@ -178,7 +144,6 @@ struct Transaction: Identifiable, Codable {
                 completion(.success(updateTrxResponse))
             }
         }
-        task.resume()
     }
 }
 
