@@ -20,10 +20,17 @@ struct LoginView: View {
     var body: some View {
         VStack {
             Spacer()
-            Image(uiImage: UIImage(named: "Logo") ?? UIImage())
-                .resizable()
-                .aspectRatio(contentMode: .fit)
+                .frame(maxHeight: 128)
+            HStack {
+                Image(uiImage: UIImage(named: "Logo") ?? UIImage())
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                Text("SpendCraft")
+                    .font(.largeTitle)
+            }
+            .frame(maxHeight: 64)
             Spacer()
+                .frame(maxHeight: 64)
             TextField("Username", text: $username)
             HStack {
                 SecureField("Password", text: $password)
