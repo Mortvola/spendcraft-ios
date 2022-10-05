@@ -74,4 +74,57 @@ class TransactionStore: ObservableObject {
 
         load(url: url, completion: completion)
     }
+    
+    static func sync(institution: Institution, account: Account, completion: @escaping (Result<Bool, Error>)->Void) {
+        guard let url = URL(string: "https://spendcraft.app/api/institution/\(institution.id)/accounts/\(account.id)/transactions/sync") else {
+            return
+        }
+
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "POST"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        guard let session = try? getSession() else {
+            return
+        }
+
+        let task = session.dataTask(with: urlRequest) {data, response, error in
+            if let error = error {
+                print("Error: \(error)");
+                return
+            }
+            
+            guard let response = response as? HTTPURLResponse else {
+                print ("response is nil")
+                return
+            }
+            
+            guard (200...299).contains(response.statusCode) else {
+                print ("Server error: \(response.statusCode)")
+                return
+            }
+            
+            print("success: \(response.statusCode)")
+            
+//            guard let data = data else {
+//                print ("data is nil")
+//                return;
+//            }
+//
+//            var transactionsResponse: TransactionsResponse
+//            do {
+//                transactionsResponse = try JSONDecoder().decode(TransactionsResponse.self, from: data)
+//            }
+//            catch {
+//                print ("Error: \(error)")
+//                return
+//            }
+
+            DispatchQueue.main.async {
+                completion(.success(true))
+            }
+        }
+        
+        task.resume()
+    }
 }

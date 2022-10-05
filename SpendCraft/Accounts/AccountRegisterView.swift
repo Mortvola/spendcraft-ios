@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct AccountRegisterView: View {
+    @Binding var institution: Institution
     @Binding var account: Account
     @StateObject private var store = TransactionStore();
 
@@ -41,6 +42,16 @@ struct AccountRegisterView: View {
         .refreshable {
             loadTransactions()
         }
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button(action: {
+                    TransactionStore.sync(institution: institution, account: account) { result in
+                    }
+                }) {
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                }
+            }
+        }
         .onAppear {
             loadTransactions()
         }
@@ -48,9 +59,11 @@ struct AccountRegisterView: View {
 }
 
 struct AccountRegisterView_Previews: PreviewProvider {
-    static let account = Account(id: 0, name: "Test Account", balance: 100.0, closed: false)
+    static let institution = Institution(id: 0, name: "Test", accounts: [
+        Account(id: 0, name: "Test Account", balance: 100.0, closed: false)
+    ])
     
     static var previews: some View {
-        AccountRegisterView(account: .constant(account))
+        AccountRegisterView(institution: .constant(institution), account: .constant(institution.accounts[0]))
     }
 }
