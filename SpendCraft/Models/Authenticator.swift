@@ -52,7 +52,7 @@ class Authenticator: ObservableObject {
         // Build the query for use in the add operation.
         let query: [String: Any] = [kSecClass as String: kSecClassInternetPassword,
                                     kSecAttrAccount as String: username,
-                                    kSecAttrServer as String: serverName,
+                                    kSecAttrServer as String: Http.serverName,
                                     kSecAttrAccessControl as String: access as Any,
                                     kSecUseAuthenticationContext as String: context,
                                     kSecValueData as String: password.data(using: String.Encoding.utf8)!]
@@ -65,7 +65,7 @@ class Authenticator: ObservableObject {
         let context = LAContext()
         context.localizedReason = "Access your password on the keychain"
         let query: [String: Any] = [kSecClass as String: kSecClassInternetPassword,
-                                    kSecAttrServer as String: serverName,
+                                    kSecAttrServer as String: Http.serverName,
                                     kSecMatchLimit as String: kSecMatchLimitOne,
                                     kSecReturnAttributes as String: true,
                                     kSecUseAuthenticationContext as String: context,

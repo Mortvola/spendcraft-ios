@@ -7,81 +7,74 @@
 
 import Foundation
 
-let serverName = "spendcraft.app"
-
-var session: URLSession?
-
-func getSession() throws -> URLSession {
-    if (session == nil) {
-        let configuration = URLSessionConfiguration.default
-        configuration.timeoutIntervalForRequest = 60
-
-        session = URLSession(configuration: configuration)
-    }
-    
-    guard let session = session else {
-        throw MyError.runtimeError("session is nil")
-    }
-
-    return session;
-}
-
-func getUrl(path: String) -> URL? {
-    return URL(string: "https://\(serverName)\(path)")
-}
-
 struct Http {
+    static let serverName = "spendcraft.app"
+
+    private static var session: URLSession?
+
     // POST requests
-    static func post(path: String, data: Encodable, _ completion: @escaping (Data?) -> Void) throws -> Void {
+    static func post(path: String, data: Encodable, _ completion: @escaping (Data?) -> Void) throws {
         try Http.sendRequest(method: "POST", path: path, data: data, completion)
     }
 
-    static func post(path: String, data: Encodable) throws -> Void {
+    static func post(path: String, data: Encodable) throws {
         try Http.sendRequest(method: "POST", path: path, data: data)
     }
 
-    static func post(path: String, _ completion: @escaping (Data?) -> Void) throws -> Void {
+    static func post(path: String, _ completion: @escaping (Data?) -> Void) throws {
         try Http.sendRequest(method: "POST", path: path, completion)
     }
     
     // GET requests
-    static func get(path: String, _ completion: @escaping (Data?) -> Void) throws -> Void {
+    static func get(path: String, _ completion: @escaping (Data?) -> Void) throws {
         try Http.sendRequest(method: "GET", path: path, completion)
     }
 
     // PATCH requests
-    static func patch(path: String, data: Encodable, _ completion: @escaping (Data?) -> Void) throws -> Void {
+    static func patch(path: String, data: Encodable, _ completion: @escaping (Data?) -> Void) throws {
         try Http.sendRequest(method: "PATCH", path: path, data: data, completion)
     }
-
-    private static func sendRequest(method: String, path: String, _ completion: @escaping (Data?) -> Void) throws -> Void {
-        guard let url = getUrl(path: path) else {
-            throw MyError.runtimeError("failed to get URL")
+    
+    private static func checkResponse(error: Error?, response: URLResponse?) -> Bool {
+        if let error = error {
+            print("Error: \(error)");
+            return false
         }
-
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = method
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
         
+        guard let response = response as? HTTPURLResponse else {
+            print ("response is nil")
+            return false
+        }
+        
+        guard (200...299).contains(response.statusCode) else {
+            print ("Server error: \(response.statusCode)")
+            return false
+        }
+        
+        return true
+    }
+    
+    private static func dataTask(urlRequest: URLRequest, _ completion: @escaping (Data?) -> Void) throws {
         let session = try getSession()
-
+        
         let task = session.dataTask(with: urlRequest) { data, response, error in
-            if let error = error {
-                print("Error: \(error)");
+            if !checkResponse(error: error, response: response) {
                 return
             }
             
-            guard let response = response as? HTTPURLResponse else {
-                print ("response is nil")
+            completion(data)
+        }
+        
+        task.resume()
+    }
+    
+    private static func uploadTask(urlRequest: URLRequest, uploadData: Data?, _ completion: @escaping (Data?) -> Void) throws {
+        let session = try getSession()
+        
+        let task = session.uploadTask(with: urlRequest, from: uploadData) { data, response, error in
+            if !checkResponse(error: error, response: response) {
                 return
             }
-            
-            guard (200...299).contains(response.statusCode) else {
-                print ("Server error: \(response.statusCode)")
-                return
-            }
-            
-            print("success: \(response.statusCode)")
             
             completion(data)
         }
@@ -89,7 +82,31 @@ struct Http {
         task.resume()
     }
 
-    private static func sendRequest(method: String, path: String, data: Encodable, _ completion: @escaping (Data?) -> Void) throws -> Void {
+    private static func uploadTask(urlRequest: URLRequest, uploadData: Data?) throws {
+        let session = try getSession()
+        
+        let task = session.uploadTask(with: urlRequest, from: uploadData) { _, response, error in
+            if !checkResponse(error: error, response: response) {
+                return
+            }
+        }
+        
+        task.resume()
+    }
+
+    private static func sendRequest(method: String, path: String, _ completion: @escaping (Data?) -> Void) throws {
+        guard let url = getUrl(path: path) else {
+            throw MyError.runtimeError("failed to get URL")
+        }
+        
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = method
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        try dataTask(urlRequest: urlRequest, completion)
+    }
+    
+    private static func sendRequest(method: String, path: String, data: Encodable, _ completion: @escaping (Data?) -> Void) throws {
         guard let url = getUrl(path: path) else {
             throw MyError.runtimeError("failed to get URL")
         }
@@ -103,30 +120,7 @@ struct Http {
             return
         }
         
-        let session = try getSession()
-
-        let task = session.uploadTask(with: urlRequest, from: uploadData) { data, response, error in
-            if let error = error {
-                print("Error: \(error)");
-                return
-            }
-            
-            guard let response = response as? HTTPURLResponse else {
-                print ("response is nil")
-                return
-            }
-            
-            guard (200...299).contains(response.statusCode) else {
-                print ("Server error: \(response.statusCode)")
-                return
-            }
-            
-            print("success: \(response.statusCode)")
-            
-            completion(data)
-        }
-        
-        task.resume()
+        try uploadTask(urlRequest: urlRequest, uploadData: uploadData, completion)
     }
 
     private static func sendRequest(method: String, path: String, data: Encodable) throws -> Void {
@@ -143,27 +137,25 @@ struct Http {
             return
         }
         
-        let session = try getSession()
+        try uploadTask(urlRequest: urlRequest, uploadData: uploadData)
+    }
+    
+    private static func getSession() throws -> URLSession {
+        if (session == nil) {
+            let configuration = URLSessionConfiguration.default
+            configuration.timeoutIntervalForRequest = 60
 
-        let task = session.uploadTask(with: urlRequest, from: uploadData) { data, response, error in
-            if let error = error {
-                print("Error: \(error)");
-                return
-            }
-            
-            guard let response = response as? HTTPURLResponse else {
-                print ("response is nil")
-                return
-            }
-            
-            guard (200...299).contains(response.statusCode) else {
-                print ("Server error: \(response.statusCode)")
-                return
-            }
-            
-            print("success: \(response.statusCode)")
+            session = URLSession(configuration: configuration)
         }
         
-        task.resume()
+        guard let session = session else {
+            throw MyError.runtimeError("session is nil")
+        }
+
+        return session;
+    }
+
+    private static func getUrl(path: String) -> URL? {
+        return URL(string: "https://\(serverName)\(path)")
     }
 }
