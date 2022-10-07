@@ -52,7 +52,7 @@ enum CategoryType {
 }
 
 class CategoriesStore: ObservableObject {
-    class Category: ObservableObject, Identifiable {
+    class Category: ObservableObject, Identifiable, Hashable {
         var id: Int
         var groupId: Int
         @Published var name: String
@@ -60,6 +60,14 @@ class CategoriesStore: ObservableObject {
         var type: CategoryType
         var monthlyExpenses: Bool
         
+        static func == (lhs: Category, rhs: Category) -> Bool {
+            lhs.id == rhs.id
+        }
+
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
+        }
+
         init(id: Int, groupId: Int, name: String, balance: Double, type: CategoryType, monthlyExpenses: Bool) {
             self.id = id
             self.groupId = groupId
@@ -133,13 +141,17 @@ class CategoriesStore: ObservableObject {
     @Published var tree: [TreeNode] = []
     var groupDictionary: Dictionary<Int, Group>
     var categoryDictionary: Dictionary<Int, Category>
-    @Published var unassigned: Category = Category(id: -2, groupId: 0, name: "Unassigned", balance: 0, type: .unassigned, monthlyExpenses: false)
-    @Published var fundingPool: Category = Category(id: -3, groupId: 0, name: "Funding Pool", balance: 0, type: .fundingPool, monthlyExpenses: false)
-    @Published var accountTransfer: Category = Category(id: -4, groupId: 0, name: "Account Transfer", balance: 0, type: .accountTransfer, monthlyExpenses: false)
+    @Published var unassigned: Category
+    @Published var fundingPool: Category
+    @Published var accountTransfer: Category
 
     init() {
         self.groupDictionary = Dictionary()
         self.categoryDictionary = Dictionary()
+
+        self.unassigned = Category(id: -2, groupId: 0, name: "Unassigned", balance: 0, type: .unassigned, monthlyExpenses: false)
+        self.fundingPool = Category(id: -3, groupId: 0, name: "Funding Pool", balance: 0, type: .fundingPool, monthlyExpenses: false)
+        self.accountTransfer = Category(id: -4, groupId: 0, name: "Account Transfer", balance: 0, type: .accountTransfer, monthlyExpenses: false)
     }
 
     func load() {
@@ -239,7 +251,13 @@ class CategoriesStore: ObservableObject {
                 })
                 
                 if let unassigned = unassigned {
-                    self.unassigned = unassigned
+//                    self.unassigned = unassigned
+                    self.unassigned.id = unassigned.id
+                    self.unassigned.balance = unassigned.balance
+                    self.unassigned.name = unassigned.name
+                    self.unassigned.groupId = unassigned.groupId
+                    self.unassigned.type = unassigned.type
+                    self.unassigned.monthlyExpenses = unassigned.monthlyExpenses
                 }
                 
                 let fundingPool = group.categories.first(where: { category in

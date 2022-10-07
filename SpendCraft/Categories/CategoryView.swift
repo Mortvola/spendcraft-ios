@@ -11,7 +11,7 @@ struct CategoryView: View {
     @ObservedObject var category: CategoriesStore.Category
 
     var body: some View {
-        NavigationLink(destination: RegisterView(category: category)) {
+        NavigationLink(value: category) {
             HStack {
                 Text(category.name)
                 Spacer()

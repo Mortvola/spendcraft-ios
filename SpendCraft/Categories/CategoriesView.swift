@@ -8,16 +8,17 @@
 import SwiftUI
 
 struct CategoriesView: View {
-    @EnvironmentObject var categoriesStore: CategoriesStore
+    @EnvironmentObject private var categoriesStore: CategoriesStore
     @StateObject var testCategory = CategoriesStore.Category(id: -2, groupId: 0, name: "Unassigned", balance: 100, type: .regular, monthlyExpenses: false)
-    
+    @StateObject var navModel = NavModel()
+
     func loadCategories() {
         categoriesStore.load()
     }
 
     var body: some View {
-        NavigationView {
-            List {
+        NavigationSplitView {
+            List(selection: $navModel.selectedCategory) {
                 CategoryView(category: categoriesStore.unassigned)
                 CategoryView(category: categoriesStore.fundingPool)
                 CategoryView(category: categoriesStore.accountTransfer)
@@ -36,10 +37,13 @@ struct CategoriesView: View {
                     }
                 }
             }
-            .listStyle(.sidebar)
             .navigationTitle("Categories")
             .refreshable {
                 loadCategories()
+            }
+        } detail: {
+            if let category = navModel.selectedCategory {
+                RegisterView(category: category)
             }
         }
         .onAppear {
