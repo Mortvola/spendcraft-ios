@@ -52,7 +52,7 @@ struct SpendCraftApp: App {
     }
     
     var opacity: Double {
-        scenePhase == .inactive ? 1 : 0
+        scenePhase == .active ? 0 : 1
     }
 
     var body: some Scene {
@@ -95,7 +95,7 @@ struct SpendCraftApp: App {
             case .background:
                 self.isActive = false
             @unknown default:
-                print("scenePhse unexpted state")
+                print("scenePhse unexpected state")
             }
         }
         .onChange(of: authenticator.authenticated) { authenticated in
