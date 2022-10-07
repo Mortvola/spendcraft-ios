@@ -9,11 +9,11 @@ import SwiftUI
 
 struct CategoryList: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    let categories: Categories
+    @EnvironmentObject var categoriesStore: CategoriesStore
     @Binding var selection: Int?
     
     var body: some View {
-        List(.constant(categories.tree)) { $node in
+        List(categoriesStore.categories.tree) { node in
             switch (node) {
             case .category(let category):
                 Button(action: {
@@ -25,7 +25,7 @@ struct CategoryList: View {
                 }
             case .group(let group):
                 Text(group.name)
-                ForEach(.constant(group.categories)) { $category in
+                ForEach(group.categories) { category in
                     Button(action: {
                         selection = category.id
                         self.presentationMode.wrappedValue.dismiss()
@@ -46,6 +46,6 @@ struct CategoryList_Previews: PreviewProvider {
     static let selection = 0
     
     static var previews: some View {
-        CategoryList(categories: SampleData.categories, selection: .constant(selection))
+        CategoryList(selection: .constant(selection))
     }
 }

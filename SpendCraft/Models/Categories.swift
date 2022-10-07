@@ -51,7 +51,7 @@ enum CategoryType {
     }
 }
 
-struct Categories {
+class Categories: ObservableObject {
     class Category: ObservableObject, Identifiable {
         var id: Int
         var groupId: Int

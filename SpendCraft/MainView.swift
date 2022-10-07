@@ -14,7 +14,7 @@ struct MainView: View {
 
     var body: some View {
         TabView(selection: $selection) {
-            CategoriesView(categories: $categoriesStore.categories)
+            CategoriesView()
                 .tabItem {
                     Label("Categories", systemImage: "tray.and.arrow.down.fill")
                 }
@@ -24,7 +24,7 @@ struct MainView: View {
                     Label("Plans", systemImage: "map")
                 }
                 .tag("plans")
-            AccountsView(categories: $categoriesStore.categories)
+            AccountsView()
                 .tabItem {
                     Label("Accounts", systemImage: "building.columns")
                 }
@@ -40,6 +40,7 @@ struct MainView: View {
                 }
                 .tag("settings")
         }
+        .environmentObject(categoriesStore)
     }
 }
 

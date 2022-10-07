@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct AccountsView: View {
-    @Binding var categories: Categories
     @StateObject private var accountsStore = AccountsStore();
 
     func loadAccounts() {
@@ -25,7 +24,7 @@ struct AccountsView: View {
     var body: some View {
         NavigationView {
             List($accountsStore.accounts) {
-                InstitutionView(institution: $0, categories: $categories)
+                InstitutionView(institution: $0)
             }
             .listStyle(.sidebar)
             .navigationTitle("Accounts")
@@ -41,6 +40,6 @@ struct AccountsView: View {
 
 struct AccountsView_Previews: PreviewProvider {
     static var previews: some View {
-        AccountsView(categories: .constant(SampleData.categories))
+        AccountsView()
     }
 }

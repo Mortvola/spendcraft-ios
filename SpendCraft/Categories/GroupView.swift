@@ -8,14 +8,13 @@
 import SwiftUI
 
 struct GroupView: View {
-    @Binding var group: Categories.Group
-    @Binding var categories: Categories
+    @ObservedObject var group: Categories.Group
     @State var isExpanded: Bool = true
     
     var body: some View {
         DisclosureGroup(group.name, isExpanded: $isExpanded) {
             ForEach($group.categories) { $category in
-                CategoryView(category: category, categories: $categories)
+                CategoryView(category: category)
             }
         }
     }
@@ -26,6 +25,6 @@ struct GroupView_Previews: PreviewProvider {
     static let categoryDictionary = Dictionary<Int, Category>()
 
     static var previews: some View {
-        GroupView(group: .constant(group), categories: .constant(SampleData.categories))
+        GroupView(group: group)
     }
 }

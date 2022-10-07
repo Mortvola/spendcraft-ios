@@ -11,7 +11,6 @@ struct TransactionView: View {
     @Binding var trx: Transaction
     @Binding var transactions: [Transaction]
     @ObservedObject var category: Categories.Category
-    @Binding var categories: Categories
     @State var data = Transaction.Data()
     @State var isEditingTrx = false
     
@@ -63,7 +62,7 @@ struct TransactionView: View {
         }
         .sheet(isPresented: $isEditingTrx) {
             NavigationView {
-                TransactionEdit(transaction: $trx, isEditingTrx: $isEditingTrx, trxData: $data, transactions: $transactions, category: category, categories: categories)
+                TransactionEdit(transaction: $trx, isEditingTrx: $isEditingTrx, trxData: $data, transactions: $transactions, category: category)
             }
         }
     }
@@ -73,7 +72,7 @@ struct TransactionView_Previews: PreviewProvider {
     static let category = Categories.Category(id: 0, groupId: 0, name: "Test", balance: 0, type: .regular, monthlyExpenses: false)
 
     static var previews: some View {
-        TransactionView(trx: .constant(SampleData.transactions[0]), transactions: .constant(SampleData.transactions), category: category, categories: .constant(SampleData.categories))
+        TransactionView(trx: .constant(SampleData.transactions[0]), transactions: .constant(SampleData.transactions), category: category)
     }
 }
 

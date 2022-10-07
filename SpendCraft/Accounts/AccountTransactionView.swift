@@ -10,7 +10,6 @@ import SwiftUI
 struct AccountTransactionView: View {
     @Binding var trx: Transaction
     @Binding var transactions: [Transaction]
-    @Binding var categories: Categories
     @State var data = Transaction.Data()
     @State var isEditingTrx = false
 
@@ -40,7 +39,7 @@ struct AccountTransactionView: View {
         }
         .sheet(isPresented: $isEditingTrx) {
             NavigationView {
-                TransactionEdit(transaction: $trx, isEditingTrx: $isEditingTrx, trxData: $data, transactions: $transactions, category: nil, categories: categories)
+                TransactionEdit(transaction: $trx, isEditingTrx: $isEditingTrx, trxData: $data, transactions: $transactions, category: nil)
             }
         }
     }
@@ -48,6 +47,6 @@ struct AccountTransactionView: View {
 
 struct AccountTransactionView_Previews: PreviewProvider {
     static var previews: some View {
-        AccountTransactionView(trx: .constant(SampleData.transactions[0]), transactions: .constant(SampleData.transactions), categories: .constant(SampleData.categories))
+        AccountTransactionView(trx: .constant(SampleData.transactions[0]), transactions: .constant(SampleData.transactions))
     }
 }

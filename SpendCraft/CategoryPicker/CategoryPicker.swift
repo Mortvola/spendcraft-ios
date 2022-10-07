@@ -9,18 +9,18 @@ import SwiftUI
 
 struct CategoryPicker: View {
     @Binding var selection: Int?
-    let categories: Categories
+    @EnvironmentObject var categoriesStore: CategoriesStore
 
     func categoryText(selection: Int?) -> String {
         guard let selection = selection else {
             return "Category"
         }
         
-        return categories.getCategoryName(categoryId: selection);
+        return categoriesStore.categories.getCategoryName(categoryId: selection);
     }
 
     var body: some View {
-        NavigationLink(destination: CategoryList(categories: categories, selection: $selection)) {
+        NavigationLink(destination: CategoryList(selection: $selection)) {
             Text(categoryText(selection: selection))
                 .truncationMode(.tail)
                 .foregroundColor(selection == nil ? Color(uiColor: .placeholderText) : nil)
@@ -32,6 +32,6 @@ struct CategoryPicker_Previews: PreviewProvider {
     static let selection = 0
 
     static var previews: some View {
-        CategoryPicker(selection: .constant(selection), categories: SampleData.categories)
+        CategoryPicker(selection: .constant(selection))
     }
 }

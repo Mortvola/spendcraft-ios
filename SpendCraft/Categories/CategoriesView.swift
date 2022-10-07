@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CategoriesView: View {
-    @Binding var categories: Categories
+    @EnvironmentObject var categoriesStore: CategoriesStore
     @StateObject var testCategory = Categories.Category(id: -2, groupId: 0, name: "Unassigned", balance: 100, type: .regular, monthlyExpenses: false)
     
     func loadCategories() {
@@ -17,7 +17,7 @@ struct CategoriesView: View {
             case .failure(let error):
                 fatalError(error.localizedDescription)
             case .success(let categories):
-                self.categories = categories
+                self.categoriesStore.categories = categories
             }
         })
     }
@@ -25,20 +25,20 @@ struct CategoriesView: View {
     var body: some View {
         NavigationView {
             List {
-                CategoryView(category: categories.unassigned, categories: $categories)
-                CategoryView(category: categories.fundingPool, categories: $categories)
-                CategoryView(category: categories.accountTransfer, categories: $categories)
-                NavigationLink(destination: RegisterView(category: testCategory, categories: $categories)) {
+                CategoryView(category: categoriesStore.categories.unassigned)
+                CategoryView(category: categoriesStore.categories.fundingPool)
+                CategoryView(category: categoriesStore.categories.accountTransfer)
+                NavigationLink(destination: RegisterView(category: testCategory)) {
                     Text("Rebalances")
                 }
                 Divider()
-                ForEach($categories.tree) { $node in
+                ForEach(categoriesStore.categories.tree) { node in
                     switch node {
                     case .category(let category):
-                        CategoryView(category: category, categories: $categories)
+                        CategoryView(category: category)
                     case .group(let group):
                         if (group.type != GroupType.system) {
-                            GroupView(group: .constant(group), categories: $categories)
+                            GroupView(group: group)
                         }
                     }
                 }
@@ -57,6 +57,6 @@ struct CategoriesView: View {
 
 struct CategoriesView_Previews: PreviewProvider {
     static var previews: some View {
-        CategoriesView(categories: .constant(SampleData.categories))
+        CategoriesView()
     }
 }

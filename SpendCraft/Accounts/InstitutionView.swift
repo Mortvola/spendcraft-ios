@@ -9,7 +9,6 @@ import SwiftUI
 
 struct InstitutionView: View {
     @Binding var institution: Institution
-    @Binding var categories: Categories
     @State var isExpanded: Bool = true
 
     func formatDate(date: Date?) -> String {
@@ -29,7 +28,7 @@ struct InstitutionView: View {
             ForEach($institution.accounts.filter { $account in
                 !account.closed
             }) { $account in
-                NavigationLink(destination: AccountRegisterView(institution: $institution, account: $account, categories: $categories)) {
+                NavigationLink(destination: AccountRegisterView(institution: $institution, account: $account)) {
                     VStack(alignment: .leading) {
                         HStack {
                             Text("Name")
@@ -66,6 +65,6 @@ struct InstitutionView_Previews: PreviewProvider {
     ])
 
     static var previews: some View {
-        InstitutionView(institution: .constant(institution), categories: .constant(SampleData.categories))
+        InstitutionView(institution: .constant(institution))
     }
 }

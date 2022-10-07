@@ -13,7 +13,7 @@ struct TransactionEdit: View {
     @Binding var trxData: Transaction.Data
     @Binding var transactions: [Transaction]
     let category: Categories.Category?
-    let categories: Categories
+    @EnvironmentObject var categoriesStore: CategoriesStore
     static var next: Int = 0
 
     static func nextId() -> Int {
@@ -58,7 +58,7 @@ struct TransactionEdit: View {
                 }
                 
                 updateTrxResponse.categories.forEach { cat in
-                    categories.updateBalance(categoryId: cat.id, balance: cat.balance)
+                    categoriesStore.categories.updateBalance(categoryId: cat.id, balance: cat.balance)
                 }
             }
         }
@@ -107,7 +107,7 @@ struct TransactionEdit: View {
                     ForEach($trxData.categories) { $trxCat in
                         VStack(alignment: .leading) {
                             HStack() {
-                                CategoryPicker(selection: $trxCat.categoryId, categories: categories)
+                                CategoryPicker(selection: $trxCat.categoryId)
                                 Spacer()
                                 NumericField(value: $trxCat.amount)
                                     .frame(maxWidth: 100)
@@ -156,7 +156,7 @@ struct TransactionEdit_Previews: PreviewProvider {
     static let category = Categories.Category(id: 0, groupId: 0, name: "Test", balance: 0, type: .regular, monthlyExpenses: false)
 
     static var previews: some View {
-        TransactionEdit(transaction: .constant(SampleData.transactions[0]), isEditingTrx: .constant(isEditingTrx), trxData: .constant(SampleData.transactions[0].data), transactions: .constant(SampleData.transactions), category: category, categories: SampleData.categories)
+        TransactionEdit(transaction: .constant(SampleData.transactions[0]), isEditingTrx: .constant(isEditingTrx), trxData: .constant(SampleData.transactions[0].data), transactions: .constant(SampleData.transactions), category: category)
             .previewInterfaceOrientation(.portraitUpsideDown)
     }
 }
