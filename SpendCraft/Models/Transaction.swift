@@ -7,6 +7,16 @@
 
 import Foundation
 
+enum TransactionType: Int {
+    case regular = 0
+    case transfer = 1
+    case funding = 2
+    case rebalance = 3
+    case starting = 4
+    case manual = 5
+    case unknown
+}
+
 struct Transaction: Identifiable, Codable {
     struct Category: Identifiable, Codable {
         var id: Int?
@@ -43,33 +53,56 @@ struct Transaction: Identifiable, Codable {
     var accountOwner: String
     var comment: String?
     var categories: [Category] = []
+    var type: TransactionType
     
-    init(id: Int, date: String, name: String, amount: Double, institution: String, account: String, comment: String?, transactionCategories: [Category]) {
+    init(id: Int, date: String, name: String, amount: Double, institution: String, account: String, comment: String?, transactionCategories: [Category], type: TransactionType) {
         let dateFormatter = DateFormatter();
         dateFormatter.dateFormat = "y-M-d"
         
         self.id = id
         self.date = dateFormatter.date(from: date)
         self.name = name
+        self.name = Transaction.convertName(name: name, type: type)
         self.amount = amount
         self.institution = institution
         self.account = account
         self.accountOwner = ""
         self.comment = comment
         self.categories = transactionCategories
+        self.type = type
     }
     
     init(trx: Response.Transaction) {
         self.id = trx.id
         self.date = trx.date
         self.comment = trx.comment
-        self.name = trx.accountTransaction?.name ?? ""
+        self.name = Transaction.convertName(name: trx.accountTransaction?.name ?? "", type: trx.type)
         self.amount = trx.accountTransaction?.amount ?? 0
         self.institution = trx.accountTransaction?.account.institution.name ?? ""
         self.account = trx.accountTransaction?.account.name ?? ""
         self.accountOwner = trx.accountTransaction?.accountOwner?.capitalized ?? ""
         self.categories = trx.transactionCategories.map {
             Category(trxCategory: $0)
+        }
+        self.type = trx.type
+    }
+    
+    static func convertName(name: String, type: TransactionType) -> String {
+        switch type {
+        case .regular:
+            return name
+        case .manual:
+            return name
+        case .funding:
+            return "Category Funding"
+        case .rebalance:
+            return "Category Rebalance"
+        case .starting:
+            return "Starting Balance"
+        case .transfer:
+            return "Category Transfer"
+        case .unknown:
+            return "Unknown"
         }
     }
     

@@ -88,6 +88,7 @@ struct Response {
         var comment: String?
         var accountTransaction: AccountTransaction?
         var transactionCategories: [TransactionCategory]
+        var type: TransactionType
         
         public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -103,12 +104,9 @@ struct Response {
                 throw MyError.runtimeError("date is invalid")
             }
             
-            do {
-                self.accountTransaction = try container.decode(AccountTransaction.self, forKey: .accountTransaction)
-            }
-            catch {
-                print("accountTransaction decoding failed")
-            }
+            self.type = try container.decode(TransactionType.self, forKey: .type)
+            
+            self.accountTransaction = try container.decodeIfPresent(AccountTransaction.self, forKey: .accountTransaction)
             
             do {
                 self.transactionCategories = try container.decode([TransactionCategory].self, forKey: .transactionCategories)
@@ -280,6 +278,26 @@ extension GroupType: Decodable {
             let type = try container.decode(String.self)
             
             self = GroupType(type: type)
+        }
+        catch {
+            self = .unknown
+        }
+    }
+}
+
+extension TransactionType: Codable {
+    init(from decoder: Decoder) {
+        do {
+            let container = try decoder.singleValueContainer()
+            let type = try container.decode(Int.self)
+            
+            let t = TransactionType(rawValue: type)
+            
+            guard let t = t else {
+                throw MyError.runtimeError("Invalid transaction type: \(type)")
+            }
+            
+            self = t
         }
         catch {
             self = .unknown
