@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct AccountRegisterView: View {
-    @Binding var institution: Institution
-    @Binding var account: Account
+    @ObservedObject var account: Account
     @StateObject private var store = TransactionStore();
     var animation: Animation {
         .linear(duration: 2.0)
@@ -51,7 +50,7 @@ struct AccountRegisterView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
                     syncing = true
-                    TransactionStore.sync(institution: institution, account: account) { result in
+                    TransactionStore.sync(account: account) { result in
                         switch result {
                         case .failure(let error):
                             fatalError(error.localizedDescription)
@@ -81,6 +80,6 @@ struct AccountRegisterView_Previews: PreviewProvider {
     ])
     
     static var previews: some View {
-        AccountRegisterView(institution: .constant(institution), account: .constant(institution.accounts[0]))
+        AccountRegisterView(account: institution.accounts[0])
     }
 }

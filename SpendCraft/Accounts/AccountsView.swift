@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct AccountsView: View {
+    @EnvironmentObject private var navModel: NavModel
     @StateObject private var accountsStore = AccountsStore();
 
     func loadAccounts() {
@@ -22,14 +23,18 @@ struct AccountsView: View {
     }
     
     var body: some View {
-        NavigationView {
-            List($accountsStore.accounts) {
+        NavigationSplitView {
+            List($accountsStore.accounts, selection: $navModel.selectedAccount) {
                 InstitutionView(institution: $0)
             }
             .listStyle(.sidebar)
             .navigationTitle("Accounts")
             .refreshable {
                 loadAccounts()
+            }
+        } detail: {
+            if let account = navModel.selectedAccount {
+                AccountRegisterView(account: account)
             }
         }
         .onAppear {

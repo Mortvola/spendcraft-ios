@@ -9,6 +9,7 @@ import Foundation
 
 final class NavModel: ObservableObject, Codable {
     @Published var selectedCategory: CategoriesStore.Category?
+    @Published var selectedAccount: Account?
     
     enum CodingKeys: String, CodingKey {
         case selectedCategory

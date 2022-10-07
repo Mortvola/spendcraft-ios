@@ -40,23 +40,25 @@ class TransactionStore: ObservableObject {
         load(path: "/api/category/\(category.id)/transactions?offset=0&limit=30", completion: completion)
     }
     
-    static func sync(institution: Institution, account: Account, completion: @escaping (Result<Response.AccountSync, Error>)->Void) {
-        try? Http.post(path: "/api/institution/\(institution.id)/accounts/\(account.id)/transactions/sync") { data in
-            guard let data = data else {
-                return
-            }
-            
-            let accountSync: Response.AccountSync
-            do {
-                accountSync = try JSONDecoder().decode(Response.AccountSync.self, from: data)
-            }
-            catch {
-                print ("Error: \(error)")
-                return
-            }
-    
-            DispatchQueue.main.async {
-                completion(.success(accountSync))
+    static func sync(account: Account, completion: @escaping (Result<Response.AccountSync, Error>)->Void) {
+        if let institution = account.institution {
+            try? Http.post(path: "/api/institution/\(institution.id)/accounts/\(account.id)/transactions/sync") { data in
+                guard let data = data else {
+                    return
+                }
+                
+                let accountSync: Response.AccountSync
+                do {
+                    accountSync = try JSONDecoder().decode(Response.AccountSync.self, from: data)
+                }
+                catch {
+                    print ("Error: \(error)")
+                    return
+                }
+        
+                DispatchQueue.main.async {
+                    completion(.success(accountSync))
+                }
             }
         }
     }

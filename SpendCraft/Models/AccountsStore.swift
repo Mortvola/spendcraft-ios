@@ -7,12 +7,13 @@
 
 import Foundation
 
-struct Account: Identifiable {
+class Account: ObservableObject, Identifiable, Hashable {
     var id: Int
-    var name: String
-    var balance: Double
+    @Published var name: String
+    @Published var balance: Double
     var closed: Bool
-    var syncDate: Date?
+    @Published var syncDate: Date?
+    var institution: Institution?
 
     init(id: Int, name: String, balance: Double, closed: Bool) {
         self.id = id
@@ -21,18 +22,28 @@ struct Account: Identifiable {
         self.closed = closed
     }
 
-    init(account: Response.Account) {
+    init(account: Response.Account, institution: Institution) {
         self.id = account.id
         self.name = account.name
         self.balance = account.balance
         self.closed = account.closed
         self.syncDate = account.syncDate
+        self.institution = institution
     }
+
+    static func == (lhs: Account, rhs: Account) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
 }
 
-struct Institution: Identifiable {
+class Institution: ObservableObject, Identifiable {
     var id: Int
-    var name: String
+    @Published var name: String
     var accounts: [Account]
     
     init(id: Int, name: String, accounts: [Account]) {
@@ -44,10 +55,12 @@ struct Institution: Identifiable {
     init(institution: Response.Institution) {
         self.id = institution.id
         self.name = institution.name
+        self.accounts = []
+
         self.accounts = institution.accounts.map { account in
-            Account(account: account)
+            Account(account: account, institution: self)
         }
-        
+
         self.accounts.sort {
             $0.name < $1.name
         }

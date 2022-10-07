@@ -28,7 +28,7 @@ struct InstitutionView: View {
             ForEach($institution.accounts.filter { $account in
                 !account.closed
             }) { $account in
-                NavigationLink(destination: AccountRegisterView(institution: $institution, account: $account)) {
+                NavigationLink(value: account) {
                     VStack(alignment: .leading) {
                         HStack {
                             Text("Name")

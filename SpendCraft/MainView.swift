@@ -11,6 +11,7 @@ struct MainView: View {
     @ObservedObject var authenticator: Authenticator
     @Binding var selection: String
     @StateObject private var categoriesStore = CategoriesStore();
+    @StateObject private var navModel = NavModel()
 
     var body: some View {
         TabView(selection: $selection) {
@@ -41,6 +42,7 @@ struct MainView: View {
                 .tag("settings")
         }
         .environmentObject(categoriesStore)
+        .environmentObject(navModel)
     }
 }
 
