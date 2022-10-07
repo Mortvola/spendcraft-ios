@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RegisterView: View {
-    @ObservedObject var category: Categories.Category
+    @ObservedObject var category: CategoriesStore.Category
     @EnvironmentObject var categoriesStore: CategoriesStore
     @StateObject private var store = TransactionStore();
     @State var loading = false
@@ -29,7 +29,7 @@ struct RegisterView: View {
                 }
             
                 self.store.transactions = transactions
-                categoriesStore.categories.updateBalance(categoryId: category.id, balance: transactionsResponse.balance)
+                categoriesStore.updateBalance(categoryId: category.id, balance: transactionsResponse.balance)
                 
                 // Update the badge if the current category is the unassigned category.
                 if (category.type == .unassigned) {
@@ -69,7 +69,7 @@ struct RegisterView: View {
 }
 
 struct RegisterView_Previews: PreviewProvider {
-    static let category = Categories.Category(id: 0, groupId: 0, name: "Test Category", balance: 100, type: .regular, monthlyExpenses: true)
+    static let category = CategoriesStore.Category(id: 0, groupId: 0, name: "Test Category", balance: 100, type: .regular, monthlyExpenses: true)
 
     static var previews: some View {
         RegisterView(category: category)

@@ -36,7 +36,7 @@ class TransactionStore: ObservableObject {
         load(path: "/api/account/\(account.id)/transactions?offset=0&limit=30", completion: completion)
     }
 
-    static func load(category: Categories.Category, completion: @escaping (Result<Response.Transactions, Error>)->Void) {
+    static func load(category: CategoriesStore.Category, completion: @escaping (Result<Response.Transactions, Error>)->Void) {
         load(path: "/api/category/\(category.id)/transactions?offset=0&limit=30", completion: completion)
     }
     

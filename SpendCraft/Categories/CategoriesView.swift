@@ -9,30 +9,23 @@ import SwiftUI
 
 struct CategoriesView: View {
     @EnvironmentObject var categoriesStore: CategoriesStore
-    @StateObject var testCategory = Categories.Category(id: -2, groupId: 0, name: "Unassigned", balance: 100, type: .regular, monthlyExpenses: false)
+    @StateObject var testCategory = CategoriesStore.Category(id: -2, groupId: 0, name: "Unassigned", balance: 100, type: .regular, monthlyExpenses: false)
     
     func loadCategories() {
-        CategoriesStore.load(completion: { result in
-            switch result {
-            case .failure(let error):
-                fatalError(error.localizedDescription)
-            case .success(let categories):
-                self.categoriesStore.categories = categories
-            }
-        })
+        categoriesStore.load()
     }
 
     var body: some View {
         NavigationView {
             List {
-                CategoryView(category: categoriesStore.categories.unassigned)
-                CategoryView(category: categoriesStore.categories.fundingPool)
-                CategoryView(category: categoriesStore.categories.accountTransfer)
+                CategoryView(category: categoriesStore.unassigned)
+                CategoryView(category: categoriesStore.fundingPool)
+                CategoryView(category: categoriesStore.accountTransfer)
                 NavigationLink(destination: RegisterView(category: testCategory)) {
                     Text("Rebalances")
                 }
                 Divider()
-                ForEach(categoriesStore.categories.tree) { node in
+                ForEach(categoriesStore.tree) { node in
                     switch node {
                     case .category(let category):
                         CategoryView(category: category)

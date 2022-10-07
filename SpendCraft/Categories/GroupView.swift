@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct GroupView: View {
-    @ObservedObject var group: Categories.Group
+    @ObservedObject var group: CategoriesStore.Group
     @State var isExpanded: Bool = true
     
     var body: some View {
@@ -21,7 +21,7 @@ struct GroupView: View {
 }
 
 struct GroupView_Previews: PreviewProvider {
-    static let group = Categories.Group(id: 0, name: "Test Group", type: .regular, categories: [])
+    static let group = CategoriesStore.Group(id: 0, name: "Test Group", type: .regular, categories: [])
     static let categoryDictionary = Dictionary<Int, Category>()
 
     static var previews: some View {

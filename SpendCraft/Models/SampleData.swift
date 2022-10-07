@@ -20,8 +20,8 @@ struct SampleData {
     ]
 
     static let categoryDictionary = [
-        0: Categories.Category(id: 0, groupId: 0, name: "Test Category", balance: 100.0, type: .regular, monthlyExpenses: false)
+        0: CategoriesStore.Category(id: 0, groupId: 0, name: "Test Category", balance: 100.0, type: .regular, monthlyExpenses: false)
     ]
     
-    static let categories = Categories(tree: [])
+    static let categories = CategoriesStore()
 }

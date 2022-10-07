@@ -16,7 +16,7 @@ struct CategoryPicker: View {
             return "Category"
         }
         
-        return categoriesStore.categories.getCategoryName(categoryId: selection);
+        return categoriesStore.getCategoryName(categoryId: selection);
     }
 
     var body: some View {

@@ -10,7 +10,7 @@ import SwiftUI
 struct TransactionView: View {
     @Binding var trx: Transaction
     @Binding var transactions: [Transaction]
-    @ObservedObject var category: Categories.Category
+    @ObservedObject var category: CategoriesStore.Category
     @State var data = Transaction.Data()
     @State var isEditingTrx = false
     
@@ -69,7 +69,7 @@ struct TransactionView: View {
 }
 
 struct TransactionView_Previews: PreviewProvider {
-    static let category = Categories.Category(id: 0, groupId: 0, name: "Test", balance: 0, type: .regular, monthlyExpenses: false)
+    static let category = CategoriesStore.Category(id: 0, groupId: 0, name: "Test", balance: 0, type: .regular, monthlyExpenses: false)
 
     static var previews: some View {
         TransactionView(trx: .constant(SampleData.transactions[0]), transactions: .constant(SampleData.transactions), category: category)

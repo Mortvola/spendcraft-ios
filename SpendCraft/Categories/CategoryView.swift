@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CategoryView: View {
-    @ObservedObject var category: Categories.Category
+    @ObservedObject var category: CategoriesStore.Category
 
     var body: some View {
         NavigationLink(destination: RegisterView(category: category)) {
@@ -22,7 +22,7 @@ struct CategoryView: View {
 }
 
 struct CategoryView_Previews: PreviewProvider {
-    static let category = Categories.Category(id: 0, groupId: 0, name: "Test Category", balance: 100, type: .regular, monthlyExpenses: true)
+    static let category = CategoriesStore.Category(id: 0, groupId: 0, name: "Test Category", balance: 100, type: .regular, monthlyExpenses: true)
 
     static var previews: some View {
         CategoryView(category: category)

@@ -79,7 +79,7 @@ struct Transaction: Identifiable, Codable {
         }
     }
     
-    func categoryAmount(category: Categories.Category) -> Double {
+    func categoryAmount(category: CategoriesStore.Category) -> Double {
         if (category.type == CategoryType.unassigned) {
             return self.amount
         }

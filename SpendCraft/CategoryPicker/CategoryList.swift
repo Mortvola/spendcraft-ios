@@ -13,7 +13,7 @@ struct CategoryList: View {
     @Binding var selection: Int?
     
     var body: some View {
-        List(categoriesStore.categories.tree) { node in
+        List(categoriesStore.tree) { node in
             switch (node) {
             case .category(let category):
                 Button(action: {
