@@ -114,18 +114,18 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
         UNUserNotificationCenter.current().delegate = self
         
         // Check if launched from notification
-        let notificationOption = launchOptions?[.remoteNotification]
-        
-        // 1
-        if
-            let notification = notificationOption as? [String: AnyObject],
-            let aps = notification["aps"] as? [String: AnyObject] {
-            // 2
-            print("launched by notification")
-            
-            // 3
-            //          (window?.rootViewController as? UITabBarController)?.selectedIndex = 1
-        }
+//        let notificationOption = launchOptions?[.remoteNotification]
+//
+//        // 1
+//        if
+//            let notification = notificationOption as? [String: AnyObject],
+//            let aps = notification["aps"] as? [String: AnyObject] {
+//            // 2
+//            print("launched by notification")
+//
+//            // 3
+//            //          (window?.rootViewController as? UITabBarController)?.selectedIndex = 1
+//        }
         
         return true
     }
@@ -182,7 +182,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     withCompletionHandler completionHandler: @escaping () -> Void
   ) {
     print("Did recieve")
-    let userInfo = response.notification.request.content.userInfo
+//    let userInfo = response.notification.request.content.userInfo
 
 //    if let aps = userInfo["aps"] as? [String: AnyObject],
 //      let newsItem = NewsItem.makeNewsItem(aps) {
