@@ -69,7 +69,13 @@ class Institution: ObservableObject, Identifiable {
 
 class AccountsStore: ObservableObject {
     @Published var accounts: [Institution] = []
+    
+    var loaded = false
+    
+    private var accountDictionary: Dictionary<Int, Account> = Dictionary()
 
+    static let shared: AccountsStore = AccountsStore()
+    
     func load() {
         try? Http.get(path: "/api/connected-accounts") { data in
             guard let data = data else {
@@ -96,7 +102,22 @@ class AccountsStore: ObservableObject {
         
             DispatchQueue.main.async {
                 self.accounts = accounts
+
+                // Build a dictionary of the accounts for faster lookup
+                self.accountDictionary = Dictionary()
+
+                self.accounts.forEach { institution in
+                    institution.accounts.forEach { account in
+                        self.accountDictionary.updateValue(account, forKey: account.id)
+                    }
+                }
+                
+                self.loaded = true
             }
         }
+    }
+    
+    func getAccount(accountId: Int) -> Account? {
+        accountDictionary[accountId]
     }
 }

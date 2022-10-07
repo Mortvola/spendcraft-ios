@@ -10,8 +10,8 @@ import SwiftUI
 struct MainView: View {
     @ObservedObject var authenticator: Authenticator
     @Binding var selection: String
-    @StateObject private var categoriesStore = CategoriesStore();
     @StateObject private var navModel = NavModel()
+    @SceneStorage("navigation") private var navigationData: Data?
 
     var body: some View {
         TabView(selection: $selection) {
@@ -41,8 +41,16 @@ struct MainView: View {
                 }
                 .tag("settings")
         }
-        .environmentObject(categoriesStore)
         .environmentObject(navModel)
+        .task {
+            if let jsonData = navigationData {
+                navModel.jsonData = jsonData
+            }
+            
+            for await _ in navModel.objectWillChangeSequence {
+                navigationData = navModel.jsonData
+            }
+        }
     }
 }
 

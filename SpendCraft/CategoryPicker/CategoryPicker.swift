@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CategoryPicker: View {
     @Binding var selection: Int?
-    @EnvironmentObject var categoriesStore: CategoriesStore
+    var categoriesStore = CategoriesStore.shared
 
     func categoryText(selection: Int?) -> String {
         guard let selection = selection else {

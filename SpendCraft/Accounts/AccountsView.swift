@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AccountsView: View {
     @EnvironmentObject private var navModel: NavModel
-    @StateObject private var accountsStore = AccountsStore();
+    @ObservedObject private var accountsStore = AccountsStore.shared;
 
     var body: some View {
         NavigationSplitView {
@@ -27,7 +27,9 @@ struct AccountsView: View {
             }
         }
         .onAppear {
-            accountsStore.load()
+            if (!accountsStore.loaded) {
+                accountsStore.load()
+            }
         }
     }
 }

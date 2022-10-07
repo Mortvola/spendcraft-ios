@@ -13,7 +13,7 @@ struct TransactionEdit: View {
     @Binding var trxData: Transaction.Data
     @Binding var transactions: [Transaction]
     let category: CategoriesStore.Category?
-    @EnvironmentObject var categoriesStore: CategoriesStore
+    var categoriesStore = CategoriesStore.shared
     static var next: Int = 0
 
     static func nextId() -> Int {

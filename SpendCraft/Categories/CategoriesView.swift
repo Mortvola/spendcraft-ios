@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CategoriesView: View {
-    @EnvironmentObject private var categoriesStore: CategoriesStore
+    @ObservedObject var categoriesStore = CategoriesStore.shared
     @EnvironmentObject private var navModel: NavModel
     @StateObject var testCategory = CategoriesStore.Category(id: -2, groupId: 0, name: "Unassigned", balance: 100, type: .regular, monthlyExpenses: false)
 
@@ -43,7 +43,9 @@ struct CategoriesView: View {
             }
         }
         .onAppear {
-            categoriesStore.load()
+            if (!categoriesStore.loaded) {
+                categoriesStore.load()
+            }
         }
     }
 }

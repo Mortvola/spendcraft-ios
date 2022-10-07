@@ -82,7 +82,7 @@ class CategoriesStore: ObservableObject {
         var id: Int
         @Published var name: String
         var type: GroupType
-        var categories: [Category]
+        @Published var categories: [Category]
         
         init(id: Int, name: String, type: GroupType, categories: [Category]) {
             self.id = id
@@ -139,11 +139,16 @@ class CategoriesStore: ObservableObject {
     }
     
     @Published var tree: [TreeNode] = []
-    var groupDictionary: Dictionary<Int, Group>
-    var categoryDictionary: Dictionary<Int, Category>
     @Published var unassigned: Category
     @Published var fundingPool: Category
     @Published var accountTransfer: Category
+
+    var loaded = false
+    
+    private var groupDictionary: Dictionary<Int, Group>
+    private var categoryDictionary: Dictionary<Int, Category>
+
+    static let shared: CategoriesStore = CategoriesStore()
 
     init() {
         self.groupDictionary = Dictionary()
@@ -172,6 +177,7 @@ class CategoriesStore: ObservableObject {
         
             DispatchQueue.main.async {
                 self.makeTree(tree: categoriesResponse)
+                self.loaded = true
             }
         }
     }
@@ -281,6 +287,10 @@ class CategoriesStore: ObservableObject {
 //                }
             }
         }
+    }
+
+    public func getCategory(categoryId: Int) -> Category? {
+        return self.categoryDictionary[categoryId]
     }
 
     public func getCategoryName(categoryId: Int) -> String {

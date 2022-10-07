@@ -58,7 +58,7 @@ struct SpendCraftApp: App {
             }
             else if (authenticator.authenticated) {
                 MainView(authenticator: authenticator, selection: $tabSelection)
-                    .onAppear() {
+                    .onAppear {
                         registerForPushNotifications()
                     }
             }

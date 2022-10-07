@@ -9,7 +9,7 @@ import SwiftUI
 
 struct RegisterView: View {
     @ObservedObject var category: CategoriesStore.Category
-    @EnvironmentObject var categoriesStore: CategoriesStore
+    var categoriesStore = CategoriesStore.shared
     @StateObject private var store = TransactionStore();
     @State var loading = false
 

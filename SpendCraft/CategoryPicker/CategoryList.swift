@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CategoryList: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @EnvironmentObject var categoriesStore: CategoriesStore
+    var categoriesStore = CategoriesStore.shared
     @Binding var selection: Int?
     
     var body: some View {
