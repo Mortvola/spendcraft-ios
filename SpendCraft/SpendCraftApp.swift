@@ -50,20 +50,31 @@ struct SpendCraftApp: App {
             }
         }
     }
+    
+    var opacity: Double {
+        scenePhase == .inactive ? 1 : 0
+    }
 
     var body: some Scene {
         WindowGroup {
-            if (scenePhase == .inactive) {
-                InactiveView()
-            }
-            else if (authenticator.authenticated) {
-                MainView(authenticator: authenticator, selection: $tabSelection)
-                    .onAppear {
-                        registerForPushNotifications()
-                    }
+            if (authenticator.authenticated) {
+                ZStack {
+                    MainView(authenticator: authenticator, selection: $tabSelection)
+                        .onAppear {
+                            registerForPushNotifications()
+                        }
+                    InactiveView()
+                        .opacity(opacity)
+                }
+                .animation(.easeInOut(duration: 0.25), value: opacity)
             }
             else {
-                LoginView(authenticator: authenticator)
+                ZStack {
+                    LoginView(authenticator: authenticator)
+                    InactiveView()
+                        .opacity(opacity)
+                }
+                .animation(.easeInOut(duration: 0.25), value: opacity)
             }
         }
         .onChange(of: scenePhase) { phase in

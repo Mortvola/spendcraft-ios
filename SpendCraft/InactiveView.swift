@@ -12,15 +12,18 @@ struct InactiveView: View {
         VStack {
             Spacer()
             HStack {
+                Spacer()
                 Image(uiImage: UIImage(named: "Logo") ?? UIImage())
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                 Text("SpendCraft")
                     .font(.largeTitle)
+                Spacer()
             }
             .frame(maxHeight: 64)
             Spacer()
         }
+        .background()
     }
 }
 
