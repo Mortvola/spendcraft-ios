@@ -15,20 +15,24 @@ struct CategoriesView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $navModel.selectedCategory) {
-                CategoryView(category: categoriesStore.unassigned)
-                CategoryView(category: categoriesStore.fundingPool)
-                CategoryView(category: categoriesStore.accountTransfer)
-                NavigationLink(destination: RegisterView(category: testCategory)) {
-                    Text("Rebalances")
+                Section(header: Text("System Categories")) {
+                    CategoryView(category: categoriesStore.unassigned)
+                    CategoryView(category: categoriesStore.fundingPool)
+                    CategoryView(category: categoriesStore.accountTransfer)
+                    NavigationLink(destination: RegisterView(category: testCategory)) {
+                        Text("Rebalances")
+                    }
                 }
-                Divider()
-                ForEach(categoriesStore.tree) { node in
-                    switch node {
-                    case .category(let category):
-                        CategoryView(category: category)
-                    case .group(let group):
-                        if (group.type != GroupType.system) {
-                            GroupView(group: group)
+                
+                Section(header: Text("Your Categories")) {
+                    ForEach(categoriesStore.tree) { node in
+                        switch node {
+                        case .category(let category):
+                            CategoryView(category: category)
+                        case .group(let group):
+                            if (group.type != GroupType.system) {
+                                GroupView(group: group)
+                            }
                         }
                     }
                 }
