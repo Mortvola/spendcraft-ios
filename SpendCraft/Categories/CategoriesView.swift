@@ -12,10 +12,6 @@ struct CategoriesView: View {
     @EnvironmentObject private var navModel: NavModel
     @StateObject var testCategory = CategoriesStore.Category(id: -2, groupId: 0, name: "Unassigned", balance: 100, type: .regular, monthlyExpenses: false)
 
-    func loadCategories() {
-        categoriesStore.load()
-    }
-
     var body: some View {
         NavigationSplitView {
             List(selection: $navModel.selectedCategory) {
@@ -39,7 +35,7 @@ struct CategoriesView: View {
             }
             .navigationTitle("Categories")
             .refreshable {
-                loadCategories()
+                categoriesStore.load()
             }
         } detail: {
             if let category = navModel.selectedCategory {
@@ -47,7 +43,7 @@ struct CategoriesView: View {
             }
         }
         .onAppear {
-            loadCategories()
+            categoriesStore.load()
         }
     }
 }

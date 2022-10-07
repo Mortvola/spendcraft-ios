@@ -70,7 +70,7 @@ class Institution: ObservableObject, Identifiable {
 class AccountsStore: ObservableObject {
     @Published var accounts: [Institution] = []
 
-    static func load(completion: @escaping (Result<[Institution], Error>)->Void) {
+    func load() {
         try? Http.get(path: "/api/connected-accounts") { data in
             guard let data = data else {
                 print ("data is nil")
@@ -95,7 +95,7 @@ class AccountsStore: ObservableObject {
             }
         
             DispatchQueue.main.async {
-                completion(.success(accounts))
+                self.accounts = accounts
             }
         }
     }

@@ -11,17 +11,6 @@ struct AccountsView: View {
     @EnvironmentObject private var navModel: NavModel
     @StateObject private var accountsStore = AccountsStore();
 
-    func loadAccounts() {
-        AccountsStore.load(completion: { result in
-            switch result {
-            case .failure(let error):
-                fatalError(error.localizedDescription)
-            case .success(let accounts):
-                self.accountsStore.accounts = accounts
-            }
-        })
-    }
-    
     var body: some View {
         NavigationSplitView {
             List($accountsStore.accounts, selection: $navModel.selectedAccount) {
@@ -30,7 +19,7 @@ struct AccountsView: View {
             .listStyle(.sidebar)
             .navigationTitle("Accounts")
             .refreshable {
-                loadAccounts()
+                accountsStore.load()
             }
         } detail: {
             if let account = navModel.selectedAccount {
@@ -38,7 +27,7 @@ struct AccountsView: View {
             }
         }
         .onAppear {
-            loadAccounts()
+            accountsStore.load()
         }
     }
 }
