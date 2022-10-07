@@ -38,7 +38,7 @@ struct AccountTransactionView: View {
             }
         }
         .sheet(isPresented: $isEditingTrx) {
-            NavigationView {
+            NavigationStack {
                 TransactionEdit(transaction: $trx, isEditingTrx: $isEditingTrx, trxData: $data, transactions: $transactions, category: nil)
             }
         }
