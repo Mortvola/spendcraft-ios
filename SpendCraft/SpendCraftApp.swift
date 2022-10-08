@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SpendCraftFramework
 
 enum Identifiers {
   static let viewAction = "VIEW_IDENTIFIER"

@@ -7,31 +7,31 @@
 
 import Foundation
 
-struct Http {
-    static let serverName = "spendcraft.app"
+public struct Http {
+    public static let serverName = "spendcraft.app"
 
     private static var session: URLSession?
 
     // POST requests
-    static func post(path: String, data: Encodable, _ completion: @escaping (Data?) -> Void) throws {
+    public static func post(path: String, data: Encodable, _ completion: @escaping (Data?) -> Void) throws {
         try Http.sendRequest(method: "POST", path: path, data: data, completion)
     }
 
-    static func post(path: String, data: Encodable) throws {
+    public static func post(path: String, data: Encodable) throws {
         try Http.sendRequest(method: "POST", path: path, data: data)
     }
 
-    static func post(path: String, _ completion: @escaping (Data?) -> Void) throws {
+    public static func post(path: String, _ completion: @escaping (Data?) -> Void) throws {
         try Http.sendRequest(method: "POST", path: path, completion)
     }
     
     // GET requests
-    static func get(path: String, _ completion: @escaping (Data?) -> Void) throws {
+    public static func get(path: String, _ completion: @escaping (Data?) -> Void) throws {
         try Http.sendRequest(method: "GET", path: path, completion)
     }
 
     // PATCH requests
-    static func patch(path: String, data: Encodable, _ completion: @escaping (Data?) -> Void) throws {
+    public static func patch(path: String, data: Encodable, _ completion: @escaping (Data?) -> Void) throws {
         try Http.sendRequest(method: "PATCH", path: path, data: data, completion)
     }
     

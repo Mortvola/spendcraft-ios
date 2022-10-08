@@ -7,6 +7,6 @@
 
 import Foundation
 
-enum MyError: Error {
+public enum MyError: Error {
     case runtimeError(String)
 }

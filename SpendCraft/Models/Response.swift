@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SpendCraftFramework
 
 extension DateFormatter {
     static let yyyyMMdd: DateFormatter = {

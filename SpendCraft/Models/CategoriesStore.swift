@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SpendCraftFramework
 
 enum GroupType {
     case regular

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SpendCraftFramework
 
 class TransactionStore: ObservableObject {
     @Published var transactions: [Transaction] = []

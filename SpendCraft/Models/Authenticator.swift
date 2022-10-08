@@ -7,6 +7,7 @@
 
 import Foundation
 import LocalAuthentication
+import SpendCraftFramework
 
 class Authenticator: ObservableObject {
     @Published var authenticated = false

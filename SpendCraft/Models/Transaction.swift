@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SpendCraftFramework
 
 enum TransactionType: Int {
     case regular = 0

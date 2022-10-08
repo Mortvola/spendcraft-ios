@@ -48,6 +48,17 @@
                ReferencedContainer = "container:SpendCraft.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "79A17C2228F1BC78006FD368"
+               BuildableName = "FrameworkTests.xctest"
+               BlueprintName = "FrameworkTests"
+               ReferencedContainer = "container:SpendCraft.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
