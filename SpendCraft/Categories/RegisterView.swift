@@ -10,7 +10,7 @@ import SwiftUI
 struct RegisterView: View {
     @ObservedObject var category: CategoriesStore.Category
     var categoriesStore = CategoriesStore.shared
-    @StateObject private var store = TransactionStore();
+    @StateObject private var transactionStore = TransactionStore();
     @State var loading = false
 
     func loadTransactions() {
@@ -22,13 +22,13 @@ struct RegisterView: View {
                 var runningBalance = transactionsResponse.balance;
 
                 let transactions: [Transaction] = transactionsResponse.transactions.map {
-                    var trx = Transaction(trx: $0)
+                    let trx = Transaction(trx: $0)
                     trx.runningBalance = runningBalance
                     runningBalance -= trx.categoryAmount(category: category)
                     return trx;
                 }
             
-                self.store.transactions = transactions
+                self.transactionStore.transactions = transactions
                 categoriesStore.updateBalance(categoryId: category.id, balance: transactionsResponse.balance)
                 
                 // Update the badge if the current category is the unassigned category.
@@ -48,8 +48,8 @@ struct RegisterView: View {
                 Spacer()
             }
             else {
-                List($store.transactions) { $trx in
-                    TransactionView(trx: $trx, transactions: $store.transactions, category: category)
+                List(transactionStore.transactions) { trx in
+                    TransactionView(trx: trx, transactionStore: transactionStore, category: category)
                 }
                 .listStyle(.plain)
                 .refreshable {

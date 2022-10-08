@@ -106,7 +106,12 @@ struct Response {
             
             self.type = try container.decode(TransactionType.self, forKey: .type)
             
-            self.accountTransaction = try container.decodeIfPresent(AccountTransaction.self, forKey: .accountTransaction)
+            do {
+                self.accountTransaction = try container.decodeIfPresent(AccountTransaction.self, forKey: .accountTransaction)
+            }
+            catch {
+                print("error decoding accountTransaction")
+            }
             
             do {
                 self.transactionCategories = try container.decode([TransactionCategory].self, forKey: .transactionCategories)

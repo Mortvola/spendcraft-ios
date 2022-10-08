@@ -17,7 +17,7 @@ enum TransactionType: Int {
     case unknown
 }
 
-struct Transaction: Identifiable, Codable {
+class Transaction: ObservableObject, Identifiable, Codable {
     struct Category: Identifiable, Codable {
         var id: Int?
         var categoryId: Int?
@@ -215,7 +215,7 @@ extension Transaction {
         Data(date: date, name: name, amount: amount, institution: institution, account: account, comment: comment, categories: categories)
     }
     
-    mutating func update(from data: Data) {
+    func update(from data: Data) {
         categories = data.categories
     }
 }

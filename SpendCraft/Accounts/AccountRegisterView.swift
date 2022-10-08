@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AccountRegisterView: View {
     @ObservedObject var account: Account
-    @StateObject private var store = TransactionStore();
+    @StateObject private var transactionStore = TransactionStore();
     var animation: Animation {
         .linear(duration: 2.0)
         .repeatForever(autoreverses: false)
@@ -25,21 +25,21 @@ struct AccountRegisterView: View {
                 var runningBalance = transactionsResponse.balance;
                 
                 let transactions: [Transaction] = transactionsResponse.transactions.map {
-                    var trx = Transaction(trx: $0)
+                    let trx = Transaction(trx: $0)
                     trx.runningBalance = runningBalance
                     runningBalance -= trx.amount
 
                     return trx
                 }
             
-                self.store.transactions = transactions
+                self.transactionStore.transactions = transactions
             }
         }
     }
 
     var body: some View {
-        List($store.transactions) {
-            AccountTransactionView(trx: $0, transactions: $store.transactions)
+        List(transactionStore.transactions) {
+            AccountTransactionView(trx: $0, transactionStore: transactionStore)
         }
         .listStyle(.plain)
         .navigationTitle(account.name)

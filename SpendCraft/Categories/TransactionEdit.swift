@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct TransactionEdit: View {
-    @Binding var transaction: Transaction
+    @ObservedObject var transaction: Transaction
     @Binding var isEditingTrx: Bool
     @Binding var trxData: Transaction.Data
-    @Binding var transactions: [Transaction]
+    @ObservedObject var transactionStore: TransactionStore
     let category: CategoriesStore.Category?
     var categoriesStore = CategoriesStore.shared
     static var next: Int = 0
@@ -39,19 +39,19 @@ struct TransactionEdit: View {
                     if ((trx.categories.count == 0 && category.type != .unassigned) || (trx.categories.count != 0 && !trx.hasCategory(categoryId: category.id))) {
                         
                         // Find the index of the transaction in the transactions array
-                        let index = transactions.firstIndex(where: {
+                        let index = transactionStore.transactions.firstIndex(where: {
                             $0.id == trx.id
                         })
                         
                         // If the index was found then remove the transation from
                         // the transactions array
                         if let index = index {
-                            transactions.remove(at: index)
+                            transactionStore.transactions.remove(at: index)
                             
                             // If this is the unassigned category then
                             // set the badge to the new number of transactions
                             if (category.type == .unassigned) {
-                                UIApplication.shared.applicationIconBadgeNumber = transactions.count
+                                UIApplication.shared.applicationIconBadgeNumber = transactionStore.transactions.count
                             }
                         }
                     }
@@ -154,9 +154,10 @@ struct TransactionEdit: View {
 struct TransactionEdit_Previews: PreviewProvider {
     static let isEditingTrx = true
     static let category = CategoriesStore.Category(id: 0, groupId: 0, name: "Test", balance: 0, type: .regular, monthlyExpenses: false)
+    static let transactionStore = TransactionStore();
 
     static var previews: some View {
-        TransactionEdit(transaction: .constant(SampleData.transactions[0]), isEditingTrx: .constant(isEditingTrx), trxData: .constant(SampleData.transactions[0].data), transactions: .constant(SampleData.transactions), category: category)
+        TransactionEdit(transaction: SampleData.transactions[0], isEditingTrx: .constant(isEditingTrx), trxData: .constant(SampleData.transactions[0].data), transactionStore: transactionStore, category: category)
             .previewInterfaceOrientation(.portraitUpsideDown)
     }
 }

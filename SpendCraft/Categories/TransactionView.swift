@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct TransactionView: View {
-    @Binding var trx: Transaction
-    @Binding var transactions: [Transaction]
+    @ObservedObject var trx: Transaction
+    @ObservedObject var transactionStore: TransactionStore
     @ObservedObject var category: CategoriesStore.Category
     @State var data = Transaction.Data()
     @State var isEditingTrx = false
@@ -62,7 +62,7 @@ struct TransactionView: View {
         }
         .sheet(isPresented: $isEditingTrx) {
             NavigationStack {
-                TransactionEdit(transaction: $trx, isEditingTrx: $isEditingTrx, trxData: $data, transactions: $transactions, category: category)
+                TransactionEdit(transaction: trx, isEditingTrx: $isEditingTrx, trxData: $data, transactionStore: transactionStore, category: category)
             }
         }
     }
@@ -70,9 +70,10 @@ struct TransactionView: View {
 
 struct TransactionView_Previews: PreviewProvider {
     static let category = CategoriesStore.Category(id: 0, groupId: 0, name: "Test", balance: 0, type: .regular, monthlyExpenses: false)
+    static let transactionStore = TransactionStore()
 
     static var previews: some View {
-        TransactionView(trx: .constant(SampleData.transactions[0]), transactions: .constant(SampleData.transactions), category: category)
+        TransactionView(trx: SampleData.transactions[0], transactionStore: transactionStore, category: category)
     }
 }
 
