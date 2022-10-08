@@ -24,7 +24,7 @@ struct CategoriesView: View {
                     }
                 }
                 
-                Section(header: Text("Your Categories")) {
+                Section(header: Text("My Categories")) {
                     ForEach(categoriesStore.tree) { node in
                         switch node {
                         case .category(let category):
