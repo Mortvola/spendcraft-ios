@@ -32,7 +32,7 @@ class Account: ObservableObject, Identifiable, Hashable {
     }
 
     static func == (lhs: Account, rhs: Account) -> Bool {
-        lhs.id == rhs.id
+        lhs === rhs
     }
     
     func hash(into hasher: inout Hasher) {

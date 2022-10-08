@@ -61,7 +61,7 @@ class CategoriesStore: ObservableObject {
         var monthlyExpenses: Bool
         
         static func == (lhs: Category, rhs: Category) -> Bool {
-            lhs.id == rhs.id
+            lhs === rhs
         }
 
         func hash(into hasher: inout Hasher) {
@@ -257,13 +257,7 @@ class CategoriesStore: ObservableObject {
                 })
                 
                 if let unassigned = unassigned {
-//                    self.unassigned = unassigned
-                    self.unassigned.id = unassigned.id
-                    self.unassigned.balance = unassigned.balance
-                    self.unassigned.name = unassigned.name
-                    self.unassigned.groupId = unassigned.groupId
-                    self.unassigned.type = unassigned.type
-                    self.unassigned.monthlyExpenses = unassigned.monthlyExpenses
+                    self.unassigned = unassigned
                 }
                 
                 let fundingPool = group.categories.first(where: { category in
