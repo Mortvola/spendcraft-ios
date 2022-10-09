@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Framework
 
 struct SampleData {
     static let transactions: [Transaction] = [
@@ -20,7 +21,7 @@ struct SampleData {
     ]
 
     static let categoryDictionary = [
-        0: CategoriesStore.Category(id: 0, groupId: 0, name: "Test Category", balance: 100.0, type: .regular, monthlyExpenses: false)
+        0: SpendCraft.Category(id: 0, groupId: 0, name: "Test Category", balance: 100.0, type: .regular, monthlyExpenses: false)
     ]
     
     static let categories = CategoriesStore()

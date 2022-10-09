@@ -7,9 +7,7 @@
 
 import Foundation
 import Combine
-import SpendCraftFramework
-
-import Foundation
+import Framework
 
 extension FileManager {
   static func sharedContainerURL() -> URL {
@@ -19,184 +17,16 @@ extension FileManager {
   }
 }
 
-enum GroupType: String, Codable {
-    case regular = "REGULAR"
-    case noGroup = "NO GROUP"
-    case system = "SYSTEM"
-    case unknown = "UNKNOWN"
-}
-
-
-enum CategoryType: String, Codable {
-    case fundingPool = "FUNDING POOL"
-    case regular = "REGULAR"
-    case unassigned = "UNASSIGNED"
-    case accountTransfer = "ACCOUNT TRANSFER"
-    case unknown = "UNKNOWN"
-}
-
-final class CategoriesStore: ObservableObject {
-    class Category: ObservableObject, Identifiable, Hashable, Codable {
-        var id: Int
-        var groupId: Int
-        @Published var name: String
-        @Published var balance: Double
-        var type: CategoryType
-        var monthlyExpenses: Bool
-        
-        static func == (lhs: Category, rhs: Category) -> Bool {
-            lhs === rhs
-        }
-        
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(id)
-        }
-        
-        init(id: Int, groupId: Int, name: String, balance: Double, type: CategoryType, monthlyExpenses: Bool) {
-            self.id = id
-            self.groupId = groupId
-            self.name = name
-            self.balance = balance
-            self.type = type
-            self.monthlyExpenses = monthlyExpenses
-        }
-        
-        enum CodingKeys: String, CodingKey {
-            case id
-            case groupId
-            case name
-            case balance
-            case type
-            case monthlyExpenses
-        }
-
-        required init(from decoder: Decoder) throws {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-
-            id = try container.decode(Int.self, forKey: .id)
-            groupId = try container.decode(Int.self, forKey: .groupId)
-            name = try container.decode(String.self, forKey: .name)
-            balance = try container.decode(Double.self, forKey: .balance)
-            type = try container.decode(CategoryType.self, forKey: .type)
-            monthlyExpenses = try container.decode(Bool.self, forKey: .type)
-        }
-
-        func encode(to encoder: Encoder) throws {
-            var container = encoder.container(keyedBy: CodingKeys.self)
-            try container.encode(id, forKey: .id)
-            try container.encode(groupId, forKey: .groupId)
-            try container.encode(name, forKey: .name)
-            try container.encode(Decimal(balance), forKey: .balance)
-            try container.encode(type, forKey: .type)
-            try container.encode(monthlyExpenses, forKey: .monthlyExpenses)
-        }
-    }
-    
-    class Group: ObservableObject, Identifiable, Codable {
-        var id: Int
-        @Published var name: String
-        var type: GroupType
-        @Published var categories: [Category]
-        
-        init(id: Int, name: String, type: GroupType, categories: [Category]) {
-            self.id = id
-            self.name = name
-            self.type = type
-            self.categories = categories
-        }
-
-        enum CodingKeys: String, CodingKey {
-            case id
-            case name
-            case type
-            case categories
-        }
-
-        required init(from decoder: Decoder) throws {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-            
-            id = try container.decode(Int.self, forKey: .id)
-            name = try container.decode(String.self, forKey: .name)
-            type = try container.decode(GroupType.self, forKey: .type)
-            categories = try container.decode([Category].self, forKey: .categories)
-        }
-
-        func encode(to encoder: Encoder) throws {
-            var container = encoder.container(keyedBy: CodingKeys.self)
-            
-            try container.encode(id, forKey: .id)
-            try container.encode(name, forKey: .name)
-            try container.encode(type, forKey: .type)
-            try container.encode(categories, forKey: .categories)
-        }
-    }
-    
-    enum TreeNode: Identifiable, Codable {
-        case group(Group)
-        case category(Category)
-        
-        init(node: Response.CategoryTreeNode) {
-            switch(node) {
-            case .category(let category):
-                self = .category(Category(id: category.id, groupId: category.groupId, name: category.name, balance: category.balance, type: category.type, monthlyExpenses: category.monthlyExpenses))
-            case .group(let group):
-                let cats = group.categories.map {
-                    Category(id: $0.id, groupId: $0.groupId, name: $0.name, balance: $0.balance, type: $0.type, monthlyExpenses: $0.monthlyExpenses)
-                }
-                self = .group(Group(id: group.id, name: group.name, type: group.type, categories: cats))
-            }
-        }
-        
-        var id: String {
-            switch self {
-            case .category(let category):
-                return String("Cat-\(category.id)")
-            case .group(let group):
-                return String("Grp-\(group.id)")
-            }
-        }
-        
-        var name: String {
-            switch self {
-            case .category(let category):
-                return category.name
-            case .group(let group):
-                return group.name
-            }
-        }
-        
-        var children: [TreeNode]? {
-            switch self {
-            case .category:
-                return nil
-            case .group(let group):
-                return group.categories.map{
-                    TreeNode.category($0)
-                }
-            }
-        }
-
-        func encode(to encoder: Encoder) throws {
-            var container = encoder.singleValueContainer()
-            
-            switch self {
-            case .category(let category):
-                try container.encode(category)
-            case .group(let group):
-                try container.encode(group)
-            }
-        }
-    }
-    
-    @Published var tree: [TreeNode] = []
-    @Published var unassigned: Category
-    @Published var fundingPool: Category
-    @Published var accountTransfer: Category
+final class CategoriesStore: ObservableObject {    
+    @Published var tree: [SpendCraft.TreeNode] = []
+    @Published var unassigned: SpendCraft.Category
+    @Published var fundingPool: SpendCraft.Category
+    @Published var accountTransfer: SpendCraft.Category
     
     var loaded = false
     
-    private var groupDictionary: Dictionary<Int, Group>
-    private var categoryDictionary: Dictionary<Int, Category>
+    private var groupDictionary: Dictionary<Int, SpendCraft.Group>
+    private var categoryDictionary: Dictionary<Int, SpendCraft.Category>
     
     static let shared: CategoriesStore = CategoriesStore()
     
@@ -204,9 +34,9 @@ final class CategoriesStore: ObservableObject {
         self.groupDictionary = Dictionary()
         self.categoryDictionary = Dictionary()
         
-        self.unassigned = Category(id: -2, groupId: 0, name: "Unassigned", balance: 0, type: .unassigned, monthlyExpenses: false)
-        self.fundingPool = Category(id: -3, groupId: 0, name: "Funding Pool", balance: 0, type: .fundingPool, monthlyExpenses: false)
-        self.accountTransfer = Category(id: -4, groupId: 0, name: "Account Transfer", balance: 0, type: .accountTransfer, monthlyExpenses: false)
+        self.unassigned = SpendCraft.Category(id: -2, groupId: 0, name: "Unassigned", balance: 0, type: .unassigned, monthlyExpenses: false)
+        self.fundingPool = SpendCraft.Category(id: -3, groupId: 0, name: "Funding Pool", balance: 0, type: .fundingPool, monthlyExpenses: false)
+        self.accountTransfer = SpendCraft.Category(id: -4, groupId: 0, name: "Account Transfer", balance: 0, type: .accountTransfer, monthlyExpenses: false)
     }
     
     func load() {
@@ -216,9 +46,9 @@ final class CategoriesStore: ObservableObject {
                 return;
             }
             
-            var categoriesResponse: [Response.CategoryTreeNode]
+            var categoriesResponse: [SpendCraft.Response.CategoryTreeNode]
             do {
-                categoriesResponse = try JSONDecoder().decode([Response.CategoryTreeNode].self, from: data)
+                categoriesResponse = try JSONDecoder().decode([SpendCraft.Response.CategoryTreeNode].self, from: data)
             }
             catch {
                 print ("Error: \(error)")
@@ -233,9 +63,9 @@ final class CategoriesStore: ObservableObject {
         }
     }
     
-    func makeTree(tree: [Response.CategoryTreeNode]) {
+    func makeTree(tree: [SpendCraft.Response.CategoryTreeNode]) {
         self.tree = tree.map {
-            CategoriesStore.TreeNode(node: $0)
+            SpendCraft.TreeNode(node: $0)
         };
         
         self.groupDictionary = Dictionary()
@@ -334,7 +164,7 @@ final class CategoriesStore: ObservableObject {
         }
     }
     
-    public func getCategory(categoryId: Int) -> Category? {
+    public func getCategory(categoryId: Int) -> SpendCraft.Category? {
         return self.categoryDictionary[categoryId]
     }
     

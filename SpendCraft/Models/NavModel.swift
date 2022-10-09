@@ -7,9 +7,10 @@
 
 import Foundation
 import Combine
+import Framework
 
 final class NavModel: ObservableObject, Codable {
-    @Published var selectedCategory: CategoriesStore.Category?
+    @Published var selectedCategory: SpendCraft.Category?
     @Published var selectedAccount: Account?
     
     private lazy var decoder = JSONDecoder()

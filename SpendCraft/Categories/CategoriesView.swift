@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
+import Framework
 
 struct CategoriesView: View {
     @ObservedObject var categoriesStore = CategoriesStore.shared
     @EnvironmentObject private var navModel: NavModel
-    @StateObject var testCategory = CategoriesStore.Category(id: -2, groupId: 0, name: "Unassigned", balance: 100, type: .regular, monthlyExpenses: false)
+    @StateObject var testCategory = SpendCraft.Category(id: -2, groupId: 0, name: "Unassigned", balance: 100, type: .regular, monthlyExpenses: false)
 
     var body: some View {
         NavigationSplitView {

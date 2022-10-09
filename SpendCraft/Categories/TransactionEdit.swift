@@ -6,13 +6,14 @@
 //
 
 import SwiftUI
+import Framework
 
 struct TransactionEdit: View {
     @ObservedObject var transaction: Transaction
     @Binding var isEditingTrx: Bool
     @Binding var trxData: Transaction.Data
     @ObservedObject var transactionStore: TransactionStore
-    let category: CategoriesStore.Category?
+    let category: SpendCraft.Category?
     var categoriesStore = CategoriesStore.shared
     static var next: Int = 0
 
@@ -81,7 +82,7 @@ struct TransactionEdit: View {
                     HStack {
                         Text("Amount")
                         Spacer()
-                        AmountView(amount: trxData.amount)
+                        SpendCraft.AmountView(amount: trxData.amount)
                     }
                     HStack {
                         Text("Institution")
@@ -100,7 +101,7 @@ struct TransactionEdit: View {
                     footer: HStack {
                         Text("Unassigned")
                         Spacer()
-                        AmountView(amount: trxData.remaining)
+                        SpendCraft.AmountView(amount: trxData.remaining)
                     }
                         .font(.body)
                 ) {
@@ -153,7 +154,7 @@ struct TransactionEdit: View {
 
 struct TransactionEdit_Previews: PreviewProvider {
     static let isEditingTrx = true
-    static let category = CategoriesStore.Category(id: 0, groupId: 0, name: "Test", balance: 0, type: .regular, monthlyExpenses: false)
+    static let category = SpendCraft.Category(id: 0, groupId: 0, name: "Test", balance: 0, type: .regular, monthlyExpenses: false)
     static let transactionStore = TransactionStore();
 
     static var previews: some View {

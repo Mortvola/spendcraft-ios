@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Framework
 
 struct InstitutionView: View {
     @Binding var institution: Institution
@@ -39,7 +40,7 @@ struct InstitutionView: View {
                         HStack {
                             Text("Balance")
                             Spacer()
-                            AmountView(amount: account.balance)
+                            SpendCraft.AmountView(amount: account.balance)
                         }
                         HStack {
                             Text("As Of")

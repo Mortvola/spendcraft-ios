@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Framework
 
 struct AccountTransactionView: View {
     @ObservedObject var trx: Transaction
@@ -25,13 +26,13 @@ struct AccountTransactionView: View {
                             .lineLimit(1)
                         Spacer()
                     }
-                    AmountView(amount: trx.amount)
+                    SpendCraft.AmountView(amount: trx.amount)
                 }
                 HStack {
                     Text(formatDate(date: trx.date))
                     Text(trx.accountOwner)
                     Spacer()
-                    AmountView(amount: trx.runningBalance ?? 0)
+                    SpendCraft.AmountView(amount: trx.runningBalance ?? 0)
                 }
                 .font(.caption)
                 .lineLimit(1)

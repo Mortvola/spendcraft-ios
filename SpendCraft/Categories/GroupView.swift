@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import Framework
 
 struct GroupView: View {
-    @ObservedObject var group: CategoriesStore.Group
+    @ObservedObject var group: SpendCraft.Group
     @State var isExpanded: Bool = true
     
     var body: some View {
@@ -21,7 +22,7 @@ struct GroupView: View {
 }
 
 struct GroupView_Previews: PreviewProvider {
-    static let group = CategoriesStore.Group(id: 0, name: "Test Group", type: .regular, categories: [])
+    static let group = SpendCraft.Group(id: 0, name: "Test Group", type: .regular, categories: [])
     static let categoryDictionary = Dictionary<Int, Category>()
 
     static var previews: some View {

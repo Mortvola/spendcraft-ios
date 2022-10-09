@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import SpendCraftFramework
+import Framework
 
 enum TransactionType: Int {
     case regular = 0
@@ -113,7 +113,7 @@ class Transaction: ObservableObject, Identifiable, Codable {
         }
     }
     
-    func categoryAmount(category: CategoriesStore.Category) -> Double {
+    func categoryAmount(category: SpendCraft.Category) -> Double {
         if (category.type == CategoryType.unassigned) {
             return self.amount
         }
@@ -230,4 +230,24 @@ func formatDate(date: Date?) -> String {
     dateFormatter.dateFormat = "MM/dd/yy"
     dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
     return dateFormatter.string(from: date)
+}
+
+extension TransactionType: Codable {
+    init(from decoder: Decoder) {
+        do {
+            let container = try decoder.singleValueContainer()
+            let type = try container.decode(Int.self)
+            
+            let t = TransactionType(rawValue: type)
+            
+            guard let t = t else {
+                throw MyError.runtimeError("Invalid transaction type: \(type)")
+            }
+            
+            self = t
+        }
+        catch {
+            self = .unknown
+        }
+    }
 }

@@ -10,7 +10,6 @@
 		7923782A28D76BD60069DB01 /* Authenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782928D76BD60069DB01 /* Authenticator.swift */; };
 		7923782C28D77C0A0069DB01 /* TransactionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782B28D77C0A0069DB01 /* TransactionStore.swift */; };
 		7923783228D7F61E0069DB01 /* TransactionEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923783128D7F61E0069DB01 /* TransactionEdit.swift */; };
-		793E6BC328EDD06B00480AC3 /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 793E6BC228EDD06B00480AC3 /* Response.swift */; };
 		7946966D28D81FC8005B6408 /* CategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946966C28D81FC8005B6408 /* CategoriesView.swift */; };
 		7946966F28D81FF0005B6408 /* PlansView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946966E28D81FF0005B6408 /* PlansView.swift */; };
 		7946967128D82006005B6408 /* AccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946967028D82006005B6408 /* AccountsView.swift */; };
@@ -19,7 +18,6 @@
 		7946967728D8B99B005B6408 /* CategoriesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946967628D8B99B005B6408 /* CategoriesStore.swift */; };
 		7946967D28DA1AD1005B6408 /* GroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946967C28DA1AD1005B6408 /* GroupView.swift */; };
 		7946967F28DA1F0E005B6408 /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946967E28DA1F0E005B6408 /* CategoryView.swift */; };
-		7946968128DA207D005B6408 /* AmountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946968028DA207D005B6408 /* AmountView.swift */; };
 		7946968A28DAC578005B6408 /* NumericField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946968928DAC578005B6408 /* NumericField.swift */; };
 		7946968C28DB50CE005B6408 /* TransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946968B28DB50CE005B6408 /* TransactionView.swift */; };
 		7946968E28DCADFE005B6408 /* CategoryPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946968D28DCADFE005B6408 /* CategoryPicker.swift */; };
@@ -47,6 +45,12 @@
 		79A17C3928F1C30D006FD368 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782728D7678C0069DB01 /* Error.swift */; };
 		79ADF87528E5D71800227F44 /* AccountsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79ADF87428E5D71800227F44 /* AccountsStore.swift */; };
 		79ADF87928E5E0C100227F44 /* InstitutionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79ADF87828E5E0C100227F44 /* InstitutionView.swift */; };
+		79B2595028F31DCF000D6763 /* Categories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B2594F28F31DCF000D6763 /* Categories.swift */; };
+		79B2595128F31FAB000D6763 /* Framework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79A17C1A28F1BC78006FD368 /* Framework.framework */; };
+		79B2595228F31FAB000D6763 /* Framework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79A17C1A28F1BC78006FD368 /* Framework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		79B2595628F329D7000D6763 /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 793E6BC228EDD06B00480AC3 /* Response.swift */; };
+		79B2595828F32A7E000D6763 /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B2595728F32A7E000D6763 /* Response.swift */; };
+		79B2595A28F34DB6000D6763 /* AmountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946968028DA207D005B6408 /* AmountView.swift */; };
 		79C19CA228D41BC8003F05F2 /* SpendCraftApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C19CA128D41BC8003F05F2 /* SpendCraftApp.swift */; };
 		79C19CA628D41BCA003F05F2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 79C19CA528D41BCA003F05F2 /* Assets.xcassets */; };
 		79C19CA928D41BCA003F05F2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 79C19CA828D41BCA003F05F2 /* Preview Assets.xcassets */; };
@@ -81,6 +85,13 @@
 			remoteInfo = SpendCraft;
 		};
 		79A17C2D28F1BC78006FD368 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 79C19C9628D41BC8003F05F2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 79A17C1928F1BC78006FD368;
+			remoteInfo = Framework;
+		};
+		79B2595328F31FAB000D6763 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 79C19C9628D41BC8003F05F2 /* Project object */;
 			proxyType = 1;
@@ -122,6 +133,17 @@
 			dstSubfolderSpec = 10;
 			files = (
 				79A17C3028F1BC78006FD368 /* Framework.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		79B2595528F31FAB000D6763 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				79B2595228F31FAB000D6763 /* Framework.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -171,6 +193,8 @@
 		79A17C3A28F1E17E006FD368 /* widgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = widgetExtension.entitlements; sourceTree = "<group>"; };
 		79ADF87428E5D71800227F44 /* AccountsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsStore.swift; sourceTree = "<group>"; };
 		79ADF87828E5E0C100227F44 /* InstitutionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstitutionView.swift; sourceTree = "<group>"; };
+		79B2594F28F31DCF000D6763 /* Categories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Categories.swift; sourceTree = "<group>"; };
+		79B2595728F32A7E000D6763 /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
 		79C19C9E28D41BC8003F05F2 /* SpendCraft.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpendCraft.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		79C19CA128D41BC8003F05F2 /* SpendCraftApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendCraftApp.swift; sourceTree = "<group>"; };
 		79C19CA528D41BCA003F05F2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -191,6 +215,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				79A17C0428F1A3BD006FD368 /* SwiftUI.framework in Frameworks */,
+				79B2595128F31FAB000D6763 /* Framework.framework in Frameworks */,
 				79A17C0228F1A3BD006FD368 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -282,7 +307,10 @@
 			children = (
 				79A17C1C28F1BC78006FD368 /* Framework.h */,
 				7923782728D7678C0069DB01 /* Error.swift */,
+				79B2594F28F31DCF000D6763 /* Categories.swift */,
+				7946968028DA207D005B6408 /* AmountView.swift */,
 				793E6BC028ED1AD900480AC3 /* Http.swift */,
+				793E6BC228EDD06B00480AC3 /* Response.swift */,
 				79A17C1D28F1BC78006FD368 /* Framework.docc */,
 			);
 			path = Framework;
@@ -345,7 +373,6 @@
 				79C19CCB28D4A85E003F05F2 /* LoginView.swift */,
 				79ADF87328E5D49B00227F44 /* Accounts */,
 				7946968228DA2732005B6408 /* Categories */,
-				7946968028DA207D005B6408 /* AmountView.swift */,
 				7946966E28D81FF0005B6408 /* PlansView.swift */,
 				7946967228D82018005B6408 /* ReportsView.swift */,
 				7946967428D8203A005B6408 /* MainView.swift */,
@@ -393,8 +420,8 @@
 				797BDEDF28F072C400640173 /* NavModel.swift */,
 				7946967628D8B99B005B6408 /* CategoriesStore.swift */,
 				7923782B28D77C0A0069DB01 /* TransactionStore.swift */,
-				793E6BC228EDD06B00480AC3 /* Response.swift */,
 				7923782928D76BD60069DB01 /* Authenticator.swift */,
+				79B2595728F32A7E000D6763 /* Response.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -420,10 +447,12 @@
 				79A17BFB28F1A3BD006FD368 /* Sources */,
 				79A17BFC28F1A3BD006FD368 /* Frameworks */,
 				79A17BFD28F1A3BD006FD368 /* Resources */,
+				79B2595528F31FAB000D6763 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				79B2595428F31FAB000D6763 /* PBXTargetDependency */,
 			);
 			name = widgetExtension;
 			productName = widgetExtension;
@@ -643,8 +672,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				79A17C1E28F1BC78006FD368 /* Framework.docc in Sources */,
+				79B2595028F31DCF000D6763 /* Categories.swift in Sources */,
+				79B2595A28F34DB6000D6763 /* AmountView.swift in Sources */,
 				79A17C3928F1C30D006FD368 /* Error.swift in Sources */,
 				79A17C3828F1C1EB006FD368 /* Http.swift in Sources */,
+				79B2595628F329D7000D6763 /* Response.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -664,6 +696,7 @@
 				7946967328D82018005B6408 /* ReportsView.swift in Sources */,
 				7946967D28DA1AD1005B6408 /* GroupView.swift in Sources */,
 				7923783228D7F61E0069DB01 /* TransactionEdit.swift in Sources */,
+				79B2595828F32A7E000D6763 /* Response.swift in Sources */,
 				79A17C0D28F1A3BF006FD368 /* widget.intentdefinition in Sources */,
 				79ADF87528E5D71800227F44 /* AccountsStore.swift in Sources */,
 				795382E628E71F3500133EFA /* AccountTransactionView.swift in Sources */,
@@ -680,10 +713,8 @@
 				7946969528DE1173005B6408 /* SampleData.swift in Sources */,
 				7946967528D8203A005B6408 /* MainView.swift in Sources */,
 				795382E228E7178600133EFA /* AccountRegisterView.swift in Sources */,
-				793E6BC328EDD06B00480AC3 /* Response.swift in Sources */,
 				7946967728D8B99B005B6408 /* CategoriesStore.swift in Sources */,
 				7946968E28DCADFE005B6408 /* CategoryPicker.swift in Sources */,
-				7946968128DA207D005B6408 /* AmountView.swift in Sources */,
 				7946966D28D81FC8005B6408 /* CategoriesView.swift in Sources */,
 				79C19CA228D41BC8003F05F2 /* SpendCraftApp.swift in Sources */,
 				79ADF87928E5E0C100227F44 /* InstitutionView.swift in Sources */,
@@ -732,6 +763,11 @@
 			isa = PBXTargetDependency;
 			target = 79A17C1928F1BC78006FD368 /* Framework */;
 			targetProxy = 79A17C2D28F1BC78006FD368 /* PBXContainerItemProxy */;
+		};
+		79B2595428F31FAB000D6763 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 79A17C1928F1BC78006FD368 /* Framework */;
+			targetProxy = 79B2595328F31FAB000D6763 /* PBXContainerItemProxy */;
 		};
 		79C19CB028D41BCA003F05F2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -809,6 +845,7 @@
 		79A17C3228F1BC78006FD368 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -841,6 +878,7 @@
 		79A17C3328F1BC78006FD368 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;

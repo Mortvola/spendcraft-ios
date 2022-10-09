@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import Framework
 
 struct RegisterView: View {
-    @ObservedObject var category: CategoriesStore.Category
+    @ObservedObject var category: SpendCraft.Category
     var categoriesStore = CategoriesStore.shared
     @StateObject private var transactionStore = TransactionStore();
     @State var loading = false
@@ -69,7 +70,7 @@ struct RegisterView: View {
 }
 
 struct RegisterView_Previews: PreviewProvider {
-    static let category = CategoriesStore.Category(id: 0, groupId: 0, name: "Test Category", balance: 100, type: .regular, monthlyExpenses: true)
+    static let category = SpendCraft.Category(id: 0, groupId: 0, name: "Test Category", balance: 100, type: .regular, monthlyExpenses: true)
 
     static var previews: some View {
         RegisterView(category: category)
