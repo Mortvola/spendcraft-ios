@@ -1,6 +1,6 @@
 //
-//  Response.swift
-//  SpendCraft
+//  Categories.swift
+//  Framework
 //
 //  Created by Richard Shields on 10/9/22.
 //

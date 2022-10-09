@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainView: View {
     @ObservedObject var authenticator: Authenticator
+    @ObservedObject var categoriesStore = CategoriesStore.shared
     @Binding var selection: String
     @StateObject private var navModel = NavModel()
     @SceneStorage("navigation") private var navigationData: Data?
