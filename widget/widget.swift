@@ -60,6 +60,7 @@ struct SimpleEntry: TimelineEntry {
 
 struct widgetEntryView : View {
     var entry: Provider.Entry
+    let categories: [Int] = [7, 5]
 
     func category(categoryId: Int) -> SpendCraft.Category? {
         entry.tree.getCategory(categoryId: categoryId)
@@ -70,9 +71,8 @@ struct widgetEntryView : View {
             Text("No Categories")
         }
         else {
-            VStack {
-                CategoryView(category: category(categoryId: 7))
-                CategoryView(category: category(categoryId: 5))
+            ForEach(categories, id: \.self) { id in
+                CategoryView(category: category(categoryId: id))
             }
         }
     }

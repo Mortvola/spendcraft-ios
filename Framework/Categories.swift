@@ -59,20 +59,14 @@ public enum SpendCraft {
         }
         
         public required init(from decoder: Decoder) throws {
-            do {
-                let container = try decoder.container(keyedBy: CodingKeys.self)
-                
-                id = try container.decode(Int.self, forKey: .id)
-                groupId = try container.decode(Int.self, forKey: .groupId)
-                name = try container.decode(String.self, forKey: .name)
-                balance = try container.decode(Double.self, forKey: .balance)
-                type = try container.decode(CategoryType.self, forKey: .type)
-                monthlyExpenses = try container.decode(Bool.self, forKey: .monthlyExpenses)
-            }
-            catch {
-                print("Error decoding category: \(error)")
-                throw error
-            }
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            
+            id = try container.decode(Int.self, forKey: .id)
+            groupId = try container.decode(Int.self, forKey: .groupId)
+            name = try container.decode(String.self, forKey: .name)
+            balance = try container.decode(Double.self, forKey: .balance)
+            type = try container.decode(CategoryType.self, forKey: .type)
+            monthlyExpenses = try container.decode(Bool.self, forKey: .monthlyExpenses)
         }
         
         public func encode(to encoder: Encoder) throws {
@@ -107,18 +101,12 @@ public enum SpendCraft {
         }
 
         public required init(from decoder: Decoder) throws {
-            do {
-                let container = try decoder.container(keyedBy: CodingKeys.self)
-                
-                id = try container.decode(Int.self, forKey: .id)
-                name = try container.decode(String.self, forKey: .name)
-                type = try container.decode(GroupType.self, forKey: .type)
-                categories = try container.decode([SpendCraft.Category].self, forKey: .categories)
-            }
-            catch {
-                print("Error decoding group: \(error)")
-                throw error
-            }
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            
+            id = try container.decode(Int.self, forKey: .id)
+            name = try container.decode(String.self, forKey: .name)
+            type = try container.decode(GroupType.self, forKey: .type)
+            categories = try container.decode([SpendCraft.Category].self, forKey: .categories)
         }
 
         public func encode(to encoder: Encoder) throws {
