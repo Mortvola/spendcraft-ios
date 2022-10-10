@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import SpendCraftFramework
+import Framework
 
 class Account: ObservableObject, Identifiable, Hashable {
     var id: Int

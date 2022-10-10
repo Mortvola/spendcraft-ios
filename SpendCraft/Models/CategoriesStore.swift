@@ -198,7 +198,6 @@ final class CategoriesStore: ObservableObject {
     
     func write() {
         if let data = try? JSONEncoder().encode(self.tree) {
-            print(data.toString())
             do {
                 let archiveURL = FileManager.sharedContainerURL()
                     .appendingPathComponent("categories.json")

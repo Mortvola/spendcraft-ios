@@ -17,7 +17,7 @@ extension SpendCraft {
         
         func format(value: Double) -> String {
             let formatter = NumberFormatter()
-            formatter.numberStyle = NumberFormatter.Style.currency
+            formatter.minimumFractionDigits = 2
             
             var v = value
             if (v == 0.0 && v.sign == .minus) {

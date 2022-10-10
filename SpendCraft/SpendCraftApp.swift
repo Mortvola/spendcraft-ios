@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SpendCraftFramework
+import Framework
 
 enum Identifiers {
   static let viewAction = "VIEW_IDENTIFIER"
@@ -58,25 +58,19 @@ struct SpendCraftApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if (authenticator.authenticated) {
-                ZStack {
+            ZStack {
+                if (authenticator.authenticated) {
                     MainView(authenticator: authenticator, selection: $tabSelection)
                         .onAppear {
                             registerForPushNotifications()
                         }
-                    InactiveView()
-                        .opacity(opacity)
-                }
-                .animation(.easeInOut(duration: 0.25), value: opacity)
-            }
-            else {
-                ZStack {
+                } else {
                     LoginView(authenticator: authenticator)
-                    InactiveView()
-                        .opacity(opacity)
                 }
-                .animation(.easeInOut(duration: 0.25), value: opacity)
+                InactiveView()
+                    .opacity(opacity)
             }
+            .animation(.easeInOut(duration: 0.25), value: opacity)
         }
         .onChange(of: scenePhase) { phase in
             switch phase {

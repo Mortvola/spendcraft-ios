@@ -16,34 +16,49 @@ extension Data {
     }
 }
 
+let sampleTree = SpendCraft.CategoryTree([
+    SpendCraft.TreeNode(SpendCraft.Group(id: 0, name: "Allowance", type: .regular, categories: [
+            SpendCraft.Category(id: 4, groupId: 0, name: "Richard", balance: 100.0, type: .regular, monthlyExpenses: true)
+        ])),
+    SpendCraft.TreeNode(SpendCraft.Group(id: 1, name: "Food", type: .regular, categories: [
+            SpendCraft.Category(id: 7, groupId: 1, name: "Groceries", balance: 385.34, type: .regular, monthlyExpenses: true)
+        ])),
+    SpendCraft.TreeNode(SpendCraft.Category(id: 11, groupId: -1, name: "Miscellaneous", balance: 787.30, type: .regular, monthlyExpenses: true)),
+    SpendCraft.TreeNode(SpendCraft.Category(id: 40, groupId: -1, name: "Leisure", balance: 126.32, type: .regular, monthlyExpenses: true))
+])
+
+
 struct Provider: IntentTimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), tree: SpendCraft.CategoryTree(), configuration: ConfigurationIntent())
+        return SimpleEntry(date: Date(), tree: SpendCraft.CategoryTree(), configuration: ConfigurationIntent())
     }
     
     func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), tree: SpendCraft.CategoryTree(), configuration: configuration)
-        completion(entry)
+        if (context.isPreview) {
+            let entry = SimpleEntry(date: Date(), tree: sampleTree, configuration: configuration)
+            completion(entry)
+        }
+        else {
+            let tree = readCategoryTree()
+
+            let entry = SimpleEntry(date: Date(), tree: tree, configuration: configuration)
+            completion(entry)
+        }
     }
     
     func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        let tree = readContents()
-        var entries: [SimpleEntry] = []
+        let tree = readCategoryTree()
         
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
         let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let date = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: date, tree: tree, configuration: ConfigurationIntent())
-//            let entry = SimpleEntry(date: entryDate, configuration: configuration)
-            entries.append(entry)
-        }
+        let nextUpdateDate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!
+        let entry = SimpleEntry(date: currentDate, tree: tree, configuration: ConfigurationIntent())
         
-        let timeline = Timeline(entries: entries, policy: .atEnd)
+        let timeline = Timeline(entries: [entry], policy: .after(nextUpdateDate))
+        
         completion(timeline)
     }
     
-    func readContents() -> SpendCraft.CategoryTree {
+    func readCategoryTree() -> SpendCraft.CategoryTree {
         let tree = SpendCraft.CategoryTree()
         
         tree.read()
@@ -60,20 +75,43 @@ struct SimpleEntry: TimelineEntry {
 
 struct widgetEntryView : View {
     var entry: Provider.Entry
-    let categories: [Int] = [7, 5]
-
-    func category(categoryId: Int) -> SpendCraft.Category? {
-        entry.tree.getCategory(categoryId: categoryId)
-    }
 
     var body: some View {
-        if entry.tree.tree.count == 0 {
+        BudgetView(tree: entry.tree)
+    }
+}
+
+struct PlaceHolderView: View {
+    var tree: SpendCraft.CategoryTree
+
+    var body: some View {
+        BudgetView(tree: tree)
+            .redacted(reason: .placeholder)
+    }
+}
+
+struct BudgetView: View {
+    var tree: SpendCraft.CategoryTree
+    let categories: [Int] = [4, 7, 11, 40]
+
+    func category(categoryId: Int) -> SpendCraft.Category? {
+        tree.getCategory(categoryId: categoryId)
+    }
+    
+    var body: some View {
+        if tree.tree.count == 0 {
             Text("No Categories")
         }
         else {
-            ForEach(categories, id: \.self) { id in
-                CategoryView(category: category(categoryId: id))
+            VStack(alignment: .leading) {
+                ForEach(categories, id: \.self) { id in
+                    CategoryView(category: category(categoryId: id))
+                }
+                Spacer()
+                Link("Configure", destination: URL(string: "test")!)
+                    .foregroundColor(Color(uiColor: .link))
             }
+            .padding()
         }
     }
 }
@@ -84,9 +122,22 @@ struct CategoryView: View {
     var body: some View {
         if let category = category {
             HStack {
-                Text("\(category.name):")
+                if let group = category.group {
+                    Group {
+                        Text("\(group.name)")
+                            .padding(.trailing, 0)
+                        Text(":")
+                            .padding(.leading, 0)
+                            .padding(.trailing, 0)
+                    }
+                }
+                Text(category.name)
+                Spacer()
                 SpendCraft.AmountView(amount: category.balance)
+                    .frame(maxWidth: 100, alignment: .trailing)
+                    .padding(.trailing, 0)
             }
+            .lineLimit(1)
         }
         else {
             Text("Category not found.")
@@ -96,20 +147,27 @@ struct CategoryView: View {
 
 @main
 struct widget: Widget {
-    let kind: String = "SpendCraft"
+    let kind: String = "app.spendcraft"
 
     var body: some WidgetConfiguration {
         IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
             widgetEntryView(entry: entry)
         }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
+        .configurationDisplayName("SpendCraft")
+        .description("Quickly view budget categories you care most about.")
+        .supportedFamilies([.systemMedium, .systemLarge])
     }
 }
 
 struct widget_Previews: PreviewProvider {
+    @Environment(\.widgetFamily) var family
+    
     static var previews: some View {
-        widgetEntryView(entry: SimpleEntry(date: Date(), tree: SpendCraft.CategoryTree(), configuration: ConfigurationIntent()))
-            .previewContext(WidgetPreviewContext(family: .systemSmall))
+        Group {
+            widgetEntryView(entry: SimpleEntry(date: Date(), tree: sampleTree, configuration: ConfigurationIntent()))
+                .previewContext(WidgetPreviewContext(family: .systemMedium))
+            PlaceHolderView(tree: sampleTree)
+                .previewContext(WidgetPreviewContext(family: .systemMedium))
+        }
     }
 }

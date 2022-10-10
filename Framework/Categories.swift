@@ -31,6 +31,7 @@ public enum SpendCraft {
         @Published public var balance: Double
         public var type: CategoryType
         public var monthlyExpenses: Bool
+        public var group: Group?
         
         public static func == (lhs: Category, rhs: Category) -> Bool {
             lhs === rhs
@@ -107,6 +108,10 @@ public enum SpendCraft {
             name = try container.decode(String.self, forKey: .name)
             type = try container.decode(GroupType.self, forKey: .type)
             categories = try container.decode([SpendCraft.Category].self, forKey: .categories)
+            
+            categories.forEach { category in
+                category.group = self
+            }
         }
 
         public func encode(to encoder: Encoder) throws {
@@ -133,6 +138,14 @@ public enum SpendCraft {
                 }
                 self = .group(SpendCraft.Group(id: group.id, name: group.name, type: group.type, categories: cats))
             }
+        }
+        
+        public init(_ group: Group) {
+            self = .group(group)
+        }
+        
+        public init(_ category: Category) {
+            self = .category(category)
         }
         
         public var id: String {
@@ -199,25 +212,27 @@ public enum SpendCraft {
         private var groupDictionary: Dictionary<Int, SpendCraft.Group>
         private var categoryDictionary: Dictionary<Int, SpendCraft.Category>
 
-        public init() {
-            tree = []
-            groupDictionary = Dictionary()
-            categoryDictionary = Dictionary()
-        }
-
-        public func read() {
-          let archiveURL =
-            FileManager.sharedContainerURL()
-              .appendingPathComponent("categories.json")
+        public init(_ tree: [TreeNode] = []) {
+            self.tree = tree
+            self.groupDictionary = Dictionary()
+            self.categoryDictionary = Dictionary()
             
-          if let data = try? Data(contentsOf: archiveURL) {
-              do {
-                  self.tree = try JSONDecoder().decode([SpendCraft.TreeNode].self, from: data)
-                  buildDictionaries()
-              } catch {
-                  print("Error: Can't decode contents \(error)")
-              }
-          }
+            buildDictionaries()
+        }
+        
+        public func read() {
+            let archiveURL =
+                FileManager.sharedContainerURL()
+                  .appendingPathComponent("categories.json")
+            
+            if let data = try? Data(contentsOf: archiveURL) {
+                do {
+                    self.tree = try JSONDecoder().decode([SpendCraft.TreeNode].self, from: data)
+                    buildDictionaries()
+                } catch {
+                    print("Error: Can't decode contents of categories.json \(error)")
+                }
+            }
         }
         
         private func buildDictionaries() {
@@ -231,6 +246,7 @@ public enum SpendCraft {
                     groupDictionary.updateValue(group, forKey: group.id)
                     group.categories.forEach { category in
                         categoryDictionary.updateValue(category, forKey: category.id)
+                        category.group = group
                     }
                     break
                 }

@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import SpendCraftFramework
+@testable import Framework
 
 final class FrameworkTests: XCTestCase {
 
