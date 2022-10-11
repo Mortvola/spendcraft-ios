@@ -31,7 +31,10 @@ let sampleCatIds = [4, 7, 11, 40]
 
 struct Provider: IntentTimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-        return SimpleEntry(date: Date(), tree: SpendCraft.CategoryTree(), catIds: sampleCatIds, configuration: ConfigurationIntent())
+        let tree = readCategoryTree()
+        let catIds = SpendCraft.readWatchList()
+
+        return SimpleEntry(date: Date(), tree: tree, catIds: catIds, configuration: ConfigurationIntent())
     }
     
     func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (SimpleEntry) -> ()) {
