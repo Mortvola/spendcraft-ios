@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit
 import Framework
 
 struct Cat: Identifiable, Hashable {
@@ -47,6 +48,8 @@ struct ConfigureWidgetView: View {
                 print("Error: Can't write \(watchedFile)")
             }
         }
+        
+        WidgetCenter.shared.reloadTimelines(ofKind: "app.spendcraft")
     }
     
     var body: some View {

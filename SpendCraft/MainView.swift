@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Framework
 
 struct MainView: View {
     @ObservedObject var authenticator: Authenticator
@@ -59,20 +60,10 @@ struct MainView: View {
         }
         .onOpenURL { url in
             if (url.path() == "/widget/configure") {
-                let watchedFile = "watched.json"
-                let archiveURL =
-                    FileManager.sharedContainerURL()
-                      .appendingPathComponent(watchedFile)
-
-                if let data = try? Data(contentsOf: archiveURL) {
-                    do {
-                        let cats = try JSONDecoder().decode([Int].self, from: data)
-                        categories.categories = cats.map {
-                            Cat(id: $0)
-                        }
-                    } catch {
-                        print("Error: Can't decode contents of \(watchedFile): \(error)")
-                    }
+                let catIds = SpendCraft.readWatchList()
+                
+                categories.categories = catIds.map {
+                    Cat(id: $0)
                 }
                 
                 isConfiguringWidget = true

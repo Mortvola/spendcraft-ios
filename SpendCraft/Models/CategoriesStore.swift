@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import WidgetKit
 import Framework
 
 extension FileManager {
@@ -203,7 +204,7 @@ final class CategoriesStore: ObservableObject {
                     .appendingPathComponent("categories.json")
                 
                 try data.write(to: archiveURL)
-                print(archiveURL)
+                WidgetCenter.shared.reloadTimelines(ofKind: "app.spendcraft")
             } catch {
                 print("Error: Can't write categories")
             }

@@ -27,31 +27,34 @@ let sampleTree = SpendCraft.CategoryTree([
     SpendCraft.TreeNode(SpendCraft.Category(id: 40, groupId: -1, name: "Leisure", balance: 126.32, type: .regular, monthlyExpenses: true))
 ])
 
+let sampleCatIds = [4, 7, 11, 40]
 
 struct Provider: IntentTimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-        return SimpleEntry(date: Date(), tree: SpendCraft.CategoryTree(), configuration: ConfigurationIntent())
+        return SimpleEntry(date: Date(), tree: SpendCraft.CategoryTree(), catIds: sampleCatIds, configuration: ConfigurationIntent())
     }
     
     func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (SimpleEntry) -> ()) {
         if (context.isPreview) {
-            let entry = SimpleEntry(date: Date(), tree: sampleTree, configuration: configuration)
+            let entry = SimpleEntry(date: Date(), tree: sampleTree, catIds: sampleCatIds, configuration: configuration)
             completion(entry)
         }
         else {
             let tree = readCategoryTree()
+            let catIds = SpendCraft.readWatchList()
 
-            let entry = SimpleEntry(date: Date(), tree: tree, configuration: configuration)
+            let entry = SimpleEntry(date: Date(), tree: tree, catIds: catIds, configuration: configuration)
             completion(entry)
         }
     }
     
     func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         let tree = readCategoryTree()
+        let catIds = SpendCraft.readWatchList()
         
         let currentDate = Date()
         let nextUpdateDate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!
-        let entry = SimpleEntry(date: currentDate, tree: tree, configuration: ConfigurationIntent())
+        let entry = SimpleEntry(date: currentDate, tree: tree, catIds: catIds, configuration: ConfigurationIntent())
         
         let timeline = Timeline(entries: [entry], policy: .after(nextUpdateDate))
         
@@ -70,6 +73,7 @@ struct Provider: IntentTimelineProvider {
 struct SimpleEntry: TimelineEntry {
     let date: Date
     let tree: SpendCraft.CategoryTree
+    let catIds: [Int]
     let configuration: ConfigurationIntent
 }
 
@@ -77,22 +81,23 @@ struct widgetEntryView : View {
     var entry: Provider.Entry
 
     var body: some View {
-        BudgetView(tree: entry.tree)
+        BudgetView(tree: entry.tree, categories: entry.catIds)
     }
 }
 
 struct PlaceHolderView: View {
     var tree: SpendCraft.CategoryTree
+    var categories: [Int]
 
     var body: some View {
-        BudgetView(tree: tree)
+        BudgetView(tree: tree, categories: categories)
             .redacted(reason: .placeholder)
     }
 }
 
 struct BudgetView: View {
     var tree: SpendCraft.CategoryTree
-    let categories: [Int] = [4, 7, 11, 40]
+    let categories: [Int]
 
     func category(categoryId: Int) -> SpendCraft.Category? {
         tree.getCategory(categoryId: categoryId)
@@ -164,9 +169,9 @@ struct widget_Previews: PreviewProvider {
     
     static var previews: some View {
         Group {
-            widgetEntryView(entry: SimpleEntry(date: Date(), tree: sampleTree, configuration: ConfigurationIntent()))
+            widgetEntryView(entry: SimpleEntry(date: Date(), tree: sampleTree, catIds: sampleCatIds, configuration: ConfigurationIntent()))
                 .previewContext(WidgetPreviewContext(family: .systemMedium))
-            PlaceHolderView(tree: sampleTree)
+            PlaceHolderView(tree: sampleTree, categories: sampleCatIds)
                 .previewContext(WidgetPreviewContext(family: .systemMedium))
         }
     }

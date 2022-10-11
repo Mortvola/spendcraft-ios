@@ -93,14 +93,14 @@ public enum SpendCraft {
             self.type = type
             self.categories = categories
         }
-
+       
         enum CodingKeys: String, CodingKey {
             case id
             case name
             case type
             case categories
         }
-
+       
         public required init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             
@@ -113,7 +113,7 @@ public enum SpendCraft {
                 category.group = self
             }
         }
-
+       
         public func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             
@@ -176,7 +176,7 @@ public enum SpendCraft {
                 }
             }
         }
-
+        
         public init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             
@@ -194,7 +194,7 @@ public enum SpendCraft {
             
             throw MyError.runtimeError("Failed to decode tree node")
         }
-
+        
         public func encode(to encoder: Encoder) throws {
             var container = encoder.singleValueContainer()
             
@@ -211,7 +211,7 @@ public enum SpendCraft {
         public var tree: [TreeNode]
         private var groupDictionary: Dictionary<Int, SpendCraft.Group>
         private var categoryDictionary: Dictionary<Int, SpendCraft.Category>
-
+        
         public init(_ tree: [TreeNode] = []) {
             self.tree = tree
             self.groupDictionary = Dictionary()
@@ -222,8 +222,8 @@ public enum SpendCraft {
         
         public func read() {
             let archiveURL =
-                FileManager.sharedContainerURL()
-                  .appendingPathComponent("categories.json")
+            FileManager.sharedContainerURL()
+                .appendingPathComponent("categories.json")
             
             if let data = try? Data(contentsOf: archiveURL) {
                 do {
@@ -252,10 +252,29 @@ public enum SpendCraft {
                 }
             }
         }
-
+        
         public func getCategory(categoryId: Int) -> SpendCraft.Category? {
             return self.categoryDictionary[categoryId]
         }
+    }
+    
+    public static func readWatchList() -> [Int] {
+        let watchedFile = "watched.json"
+        let archiveURL =
+            FileManager.sharedContainerURL()
+              .appendingPathComponent(watchedFile)
+
+        if let data = try? Data(contentsOf: archiveURL) {
+            do {
+                let catIds = try JSONDecoder().decode([Int].self, from: data)
+                
+                return catIds;
+            } catch {
+                print("Error: Can't decode contents of \(watchedFile): \(error)")
+            }
+        }
+        
+        return []
     }
 }
 

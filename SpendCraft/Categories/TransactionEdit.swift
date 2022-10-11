@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit
 import Framework
 
 struct TransactionEdit: View {
@@ -59,8 +60,12 @@ struct TransactionEdit: View {
                     }
                 }
                 
-                updateTrxResponse.categories.forEach { cat in
-                    categoriesStore.updateBalance(categoryId: cat.id, balance: cat.balance)
+                if (updateTrxResponse.categories.count > 0) {
+                    updateTrxResponse.categories.forEach { cat in
+                        categoriesStore.updateBalance(categoryId: cat.id, balance: cat.balance)
+                    }
+                    
+                    categoriesStore.write()
                 }
             }
         }
