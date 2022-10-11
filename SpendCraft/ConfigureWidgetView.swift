@@ -56,7 +56,7 @@ struct ConfigureWidgetView: View {
         NavigationStack {
             Form {
                 ControlGroup {
-                    Text("Select up to four categories to view in the SpendCraft widget. \(categories.categories.count)")
+                    Text("Select up to four categories to view in the SpendCraft widget.")
                 }
                 List {
                     ForEach($categories.categories, id: \.uuid) { $cat in
