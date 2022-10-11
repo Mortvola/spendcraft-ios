@@ -11,19 +11,30 @@ struct CategoryPicker: View {
     @Binding var selection: Int?
     var categoriesStore = CategoriesStore.shared
 
-    func categoryText(selection: Int?) -> String {
+    var categoryText: String {
         guard let selection = selection else {
-            return "Category"
+            return "Add Category"
         }
         
         return categoriesStore.getCategoryName(categoryId: selection);
     }
+    
+    var color: Color? {
+        if selection != nil {
+            return nil
+        }
+        
+        return Color(uiColor: .link)
+    }
 
     var body: some View {
         NavigationLink(destination: CategoryList(selection: $selection)) {
-            Text(categoryText(selection: selection))
-                .truncationMode(.tail)
-                .foregroundColor(selection == nil ? Color(uiColor: .placeholderText) : nil)
+            HStack {
+                Text(categoryText)
+                    .truncationMode(.tail)
+                    .foregroundColor(color)
+                Spacer()
+            }
         }
     }
 }

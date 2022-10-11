@@ -62,9 +62,7 @@ struct TransactionView: View {
             }
         }
         .sheet(isPresented: $isEditingTrx) {
-            NavigationStack {
-                TransactionEdit(transaction: trx, isEditingTrx: $isEditingTrx, trxData: $data, transactionStore: transactionStore, category: category)
-            }
+            TransactionEdit(transaction: trx, isEditingTrx: $isEditingTrx, trxData: $data, transactionStore: transactionStore, category: category)
         }
     }
 }

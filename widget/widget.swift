@@ -108,7 +108,7 @@ struct BudgetView: View {
                     CategoryView(category: category(categoryId: id))
                 }
                 Spacer()
-                Link("Configure", destination: URL(string: "test")!)
+                Link("Configure", destination: URL(string: "/widget/configure")!)
                     .foregroundColor(Color(uiColor: .link))
             }
             .padding()
@@ -155,7 +155,7 @@ struct widget: Widget {
         }
         .configurationDisplayName("SpendCraft")
         .description("Quickly view budget categories you care most about.")
-        .supportedFamilies([.systemMedium, .systemLarge])
+        .supportedFamilies([.systemMedium])
     }
 }
 

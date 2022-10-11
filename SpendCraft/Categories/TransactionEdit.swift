@@ -16,6 +16,7 @@ struct TransactionEdit: View {
     let category: SpendCraft.Category?
     var categoriesStore = CategoriesStore.shared
     static var next: Int = 0
+    @State var newSelection: Int? = nil
 
     static func nextId() -> Int {
         next -= 1
@@ -66,87 +67,89 @@ struct TransactionEdit: View {
     }
     
     var body: some View {
-        Form {
-            List {
-                Section {
-                    HStack {
-                        Text("Date")
-                        Spacer()
-                        Text(formatDate(date: trxData.date))
-                    }
-                    HStack {
-                        Text("Name")
-                        Spacer()
-                        Text(trxData.name)
-                    }
-                    HStack {
-                        Text("Amount")
-                        Spacer()
-                        SpendCraft.AmountView(amount: trxData.amount)
-                    }
-                    HStack {
-                        Text("Institution")
-                        Spacer()
-                        Text(trxData.institution)
-                    }
-                    HStack {
-                        Text("Account")
-                        Spacer()
-                        Text(trxData.account)
-                    }
-                }
-
-                Section(
-                    header: Text("Categories"),
-                    footer: HStack {
-                        Text("Unassigned")
-                        Spacer()
-                        SpendCraft.AmountView(amount: trxData.remaining)
-                    }
-                        .font(.body)
-                ) {
-                    ForEach($trxData.categories) { $trxCat in
-                        VStack(alignment: .leading) {
-                            HStack() {
-                                CategoryPicker(selection: $trxCat.categoryId)
-                                Spacer()
-                                NumericField(value: $trxCat.amount)
-                                    .frame(maxWidth: 100)
-                            }
-                            TextField("Comment", text: $trxCat.comment)
-                                .truncationMode(.tail)
+        NavigationStack {
+            Form {
+                List {
+                    Section {
+                        HStack {
+                            Text("Date")
+                            Spacer()
+                            Text(formatDate(date: trxData.date))
+                        }
+                        HStack {
+                            Text("Name")
+                            Spacer()
+                            Text(trxData.name)
+                        }
+                        HStack {
+                            Text("Amount")
+                            Spacer()
+                            SpendCraft.AmountView(amount: trxData.amount)
+                        }
+                        HStack {
+                            Text("Institution")
+                            Spacer()
+                            Text(trxData.institution)
+                        }
+                        HStack {
+                            Text("Account")
+                            Spacer()
+                            Text(trxData.account)
                         }
                     }
-                    .onDelete { indices in
-                        trxData.categories.remove(atOffsets: indices)
-                    }
-                    
-                    Button(action: {
-                        var category = Transaction.Category();
-                        category.id = TransactionEdit.nextId()
-                        category.amount = trxData.remaining
-                        trxData.categories.append(category)
-                    }) {
-                        Text("Add Category")
-                            .foregroundColor(Color.accentColor)
+
+                    Section(
+                        header: Text("Categories"),
+                        footer: HStack {
+                            Text("Unassigned")
+                            Spacer()
+                            SpendCraft.AmountView(amount: trxData.remaining)
+                        }
+                            .font(.body)
+                    ) {
+                        ForEach($trxData.categories) { $trxCat in
+                            VStack(alignment: .leading) {
+                                HStack() {
+                                    CategoryPicker(selection: $trxCat.categoryId)
+                                    NumericField(value: $trxCat.amount)
+                                        .frame(maxWidth: 100)
+                                }
+                                TextField("Comment", text: $trxCat.comment)
+                                    .truncationMode(.tail)
+                            }
+                        }
+                        .onDelete { indices in
+                            trxData.categories.remove(atOffsets: indices)
+                        }
+                        CategoryPicker(selection: $newSelection)
+                            .onChange(of: newSelection) { id in
+                                if let id = id {
+                                    var category = Transaction.Category();
+                                    category.id = TransactionEdit.nextId()
+                                    category.categoryId = id
+                                    category.amount = trxData.remaining
+                                    trxData.categories.append(category)
+                                    newSelection = nil
+                                }
+                            }
                     }
                 }
             }
-        }
-        .navigationTitle("Editing Transaction")
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel") {
-                    isEditingTrx = false
+            .navigationTitle("Editing Transaction")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        isEditingTrx = false
+                    }
                 }
-            }
-            ToolbarItem(placement: .confirmationAction) {
-                Button("Done") {
-                    isEditingTrx = false;
-                    transaction.update(from: trxData)
-                    saveTransaction()
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") {
+                        isEditingTrx = false;
+                        transaction.update(from: trxData)
+                        saveTransaction()
+                    }
+                    .disabled(!trxData.isValid)
                 }
-                .disabled(!trxData.isValid)
             }
         }
     }

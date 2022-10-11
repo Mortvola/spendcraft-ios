@@ -13,7 +13,9 @@ struct MainView: View {
     @Binding var selection: String
     @StateObject private var navModel = NavModel()
     @SceneStorage("navigation") private var navigationData: Data?
-
+    @State var isConfiguringWidget = false
+    @StateObject var categories = CatList()
+    
     var body: some View {
         TabView(selection: $selection) {
             CategoriesView()
@@ -42,6 +44,9 @@ struct MainView: View {
                 }
                 .tag("settings")
         }
+        .sheet(isPresented: $isConfiguringWidget) {
+            ConfigureWidgetView(isConfiguringWidget: $isConfiguringWidget, categories: categories)
+        }
         .environmentObject(navModel)
         .task {
             if let jsonData = navigationData {
@@ -50,6 +55,27 @@ struct MainView: View {
             
             for await _ in navModel.objectWillChangeSequence {
                 navigationData = navModel.jsonData
+            }
+        }
+        .onOpenURL { url in
+            if (url.path() == "/widget/configure") {
+                let watchedFile = "watched.json"
+                let archiveURL =
+                    FileManager.sharedContainerURL()
+                      .appendingPathComponent(watchedFile)
+
+                if let data = try? Data(contentsOf: archiveURL) {
+                    do {
+                        let cats = try JSONDecoder().decode([Int].self, from: data)
+                        categories.categories = cats.map {
+                            Cat(id: $0)
+                        }
+                    } catch {
+                        print("Error: Can't decode contents of \(watchedFile): \(error)")
+                    }
+                }
+                
+                isConfiguringWidget = true
             }
         }
     }
