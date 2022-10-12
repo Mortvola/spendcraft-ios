@@ -23,6 +23,25 @@ extension SpendCraft {
             public var name: String
             public var type: GroupType
             public var categories: [Category]
+
+            enum CodingKeys: String, CodingKey {
+                case id
+                case name
+                case type
+                case categories
+            }
+
+            public required init(from decoder: Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                
+                self.id = try container.decode(Int.self, forKey: .id)
+                self.name = try container.decode(String.self, forKey: .name)
+                
+                let groupType = try container.decode(String.self, forKey: .type)
+                self.type = GroupType(rawValue: groupType) ?? .unknown
+                
+                self.categories = try container.decodeIfPresent([SpendCraft.Response.Category].self, forKey: .categories) ?? []
+            }
         }
         
         public enum CategoryTreeNode: Decodable, Identifiable {

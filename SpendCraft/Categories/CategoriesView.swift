@@ -12,9 +12,19 @@ struct CategoriesView: View {
     @ObservedObject var categoriesStore = CategoriesStore.shared
     @EnvironmentObject private var navModel: NavModel
     @StateObject var testCategory = SpendCraft.Category(id: -2, groupId: 0, name: "Unassigned", balance: 100, type: .regular, monthlyExpenses: false)
-
+    @State var isAddingCategory = false
+    @State var isAddingGroup = false
+    
     var body: some View {
         NavigationSplitView {
+            HStack {
+                Button(action: { isAddingCategory = true }) {
+                    Text("Add Category")
+                }
+                Button(action: { isAddingGroup = true }) {
+                    Text("Add Group")
+                }
+            }
             List(selection: $navModel.selectedCategory) {
                 Section(header: Text("System Categories")) {
                     CategoryView(category: categoriesStore.unassigned)
@@ -46,6 +56,14 @@ struct CategoriesView: View {
             if let category = navModel.selectedCategory {
                 RegisterView(category: category)
             }
+        }
+        .sheet(isPresented: $isAddingCategory) {
+            AddCategoryView(isAddingCategory: $isAddingCategory)
+                .presentationDetents([.medium])
+        }
+        .sheet(isPresented: $isAddingGroup) {
+            AddGroupView(isAddingGroup: $isAddingGroup)
+                .presentationDetents([.medium])
         }
         .onAppear {
             if (!categoriesStore.loaded) {

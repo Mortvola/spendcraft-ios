@@ -63,6 +63,8 @@
 		79C19CCC28D4A85F003F05F2 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C19CCB28D4A85E003F05F2 /* LoginView.swift */; };
 		79C19CCE28D4D80E003F05F2 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C19CCD28D4D80D003F05F2 /* RegisterView.swift */; };
 		79C19CD328D517E7003F05F2 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C19CD228D517E7003F05F2 /* Transaction.swift */; };
+		79CF2E4928F6F39000448D65 /* AddCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E4828F6F39000448D65 /* AddCategoryView.swift */; };
+		79CF2E4B28F7250800448D65 /* AddGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E4A28F7250800448D65 /* AddGroupView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -213,6 +215,8 @@
 		79C19CCB28D4A85E003F05F2 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		79C19CCD28D4D80D003F05F2 /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
 		79C19CD228D517E7003F05F2 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
+		79CF2E4828F6F39000448D65 /* AddCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryView.swift; sourceTree = "<group>"; };
+		79CF2E4A28F7250800448D65 /* AddGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGroupView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -275,6 +279,8 @@
 				7946967E28DA1F0E005B6408 /* CategoryView.swift */,
 				7946967C28DA1AD1005B6408 /* GroupView.swift */,
 				7923783128D7F61E0069DB01 /* TransactionEdit.swift */,
+				79CF2E4828F6F39000448D65 /* AddCategoryView.swift */,
+				79CF2E4A28F7250800448D65 /* AddGroupView.swift */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -710,8 +716,10 @@
 				79A17C0D28F1A3BF006FD368 /* widget.intentdefinition in Sources */,
 				79ADF87528E5D71800227F44 /* AccountsStore.swift in Sources */,
 				795382E628E71F3500133EFA /* AccountTransactionView.swift in Sources */,
+				79CF2E4928F6F39000448D65 /* AddCategoryView.swift in Sources */,
 				79C19CCE28D4D80E003F05F2 /* RegisterView.swift in Sources */,
 				7946967128D82006005B6408 /* AccountsView.swift in Sources */,
+				79CF2E4B28F7250800448D65 /* AddGroupView.swift in Sources */,
 				7946967F28DA1F0E005B6408 /* CategoryView.swift in Sources */,
 				7946968C28DB50CE005B6408 /* TransactionView.swift in Sources */,
 				7923782C28D77C0A0069DB01 /* TransactionStore.swift in Sources */,

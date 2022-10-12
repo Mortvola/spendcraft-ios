@@ -50,6 +50,15 @@ public enum SpendCraft {
             self.monthlyExpenses = monthlyExpenses
         }
         
+        public init(categoryResponse: SpendCraft.Response.Category) {
+            self.id = categoryResponse.id
+            self.groupId = categoryResponse.groupId
+            self.name = categoryResponse.name
+            self.balance = categoryResponse.balance
+            self.type = categoryResponse.type
+            self.monthlyExpenses = categoryResponse.monthlyExpenses
+        }
+        
         enum CodingKeys: String, CodingKey {
             case id
             case groupId
@@ -101,6 +110,15 @@ public enum SpendCraft {
             case categories
         }
        
+        public init(groupResponse: SpendCraft.Response.Group) {
+            self.id = groupResponse.id
+            self.name = groupResponse.name
+            self.type = groupResponse.type
+            self.categories = groupResponse.categories.map {
+                SpendCraft.Category(categoryResponse: $0)
+            }
+        }
+
         public required init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             
@@ -148,6 +166,15 @@ public enum SpendCraft {
             self = .category(category)
         }
         
+        public func getGroup() -> Group? {
+            switch self {
+            case .category:
+                return nil
+            case .group(let group):
+                return group
+            }
+        }
+
         public var id: String {
             switch self {
             case .category(let category):

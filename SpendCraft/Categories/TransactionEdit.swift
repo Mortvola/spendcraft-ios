@@ -77,29 +77,19 @@ struct TransactionEdit: View {
             Form {
                 List {
                     Section {
-                        HStack {
-                            Text("Date")
-                            Spacer()
+                        LabeledContent("Date") {
                             Text(formatDate(date: trxData.date))
                         }
-                        HStack {
-                            Text("Name")
-                            Spacer()
+                        LabeledContent("Name") {
                             Text(trxData.name)
                         }
-                        HStack {
-                            Text("Amount")
-                            Spacer()
+                        LabeledContent("Amount") {
                             SpendCraft.AmountView(amount: trxData.amount)
                         }
-                        HStack {
-                            Text("Institution")
-                            Spacer()
+                        LabeledContent("Institution") {
                             Text(trxData.institution)
                         }
-                        HStack {
-                            Text("Account")
-                            Spacer()
+                        LabeledContent("Account") {
                             Text(trxData.account)
                         }
                     }
@@ -107,9 +97,7 @@ struct TransactionEdit: View {
                     if postedTransaction {
                         Section(
                             header: Text("Categories"),
-                            footer: HStack {
-                                Text("Unassigned")
-                                Spacer()
+                            footer: LabeledContent("Unassigned") {
                                 SpendCraft.AmountView(amount: trxData.remaining)
                             }
                                 .font(.body)
@@ -143,7 +131,7 @@ struct TransactionEdit: View {
                     }
                 }
             }
-            .navigationTitle("Editing Transaction")
+            .navigationTitle("Edit Transaction")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
