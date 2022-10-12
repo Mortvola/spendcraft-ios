@@ -18,6 +18,7 @@ struct TransactionEdit: View {
     var categoriesStore = CategoriesStore.shared
     static var next: Int = 0
     @State var newSelection: Int? = nil
+    var postedTransaction: Bool
 
     static func nextId() -> Int {
         next -= 1
@@ -103,40 +104,42 @@ struct TransactionEdit: View {
                         }
                     }
 
-                    Section(
-                        header: Text("Categories"),
-                        footer: HStack {
-                            Text("Unassigned")
-                            Spacer()
-                            SpendCraft.AmountView(amount: trxData.remaining)
-                        }
-                            .font(.body)
-                    ) {
-                        ForEach($trxData.categories) { $trxCat in
-                            VStack(alignment: .leading) {
-                                HStack() {
-                                    CategoryPicker(selection: $trxCat.categoryId)
-                                    NumericField(value: $trxCat.amount)
-                                        .frame(maxWidth: 100)
-                                }
-                                TextField("Comment", text: $trxCat.comment)
-                                    .truncationMode(.tail)
+                    if postedTransaction {
+                        Section(
+                            header: Text("Categories"),
+                            footer: HStack {
+                                Text("Unassigned")
+                                Spacer()
+                                SpendCraft.AmountView(amount: trxData.remaining)
                             }
-                        }
-                        .onDelete { indices in
-                            trxData.categories.remove(atOffsets: indices)
-                        }
-                        CategoryPicker(selection: $newSelection)
-                            .onChange(of: newSelection) { id in
-                                if let id = id {
-                                    var category = Transaction.Category();
-                                    category.id = TransactionEdit.nextId()
-                                    category.categoryId = id
-                                    category.amount = trxData.remaining
-                                    trxData.categories.append(category)
-                                    newSelection = nil
+                                .font(.body)
+                        ) {
+                            ForEach($trxData.categories) { $trxCat in
+                                VStack(alignment: .leading) {
+                                    HStack() {
+                                        CategoryPicker(selection: $trxCat.categoryId)
+                                        NumericField(value: $trxCat.amount)
+                                            .frame(maxWidth: 100)
+                                    }
+                                    TextField("Comment", text: $trxCat.comment)
+                                        .truncationMode(.tail)
                                 }
                             }
+                            .onDelete { indices in
+                                trxData.categories.remove(atOffsets: indices)
+                            }
+                            CategoryPicker(selection: $newSelection)
+                                .onChange(of: newSelection) { id in
+                                    if let id = id {
+                                        var category = Transaction.Category();
+                                        category.id = TransactionEdit.nextId()
+                                        category.categoryId = id
+                                        category.amount = trxData.remaining
+                                        trxData.categories.append(category)
+                                        newSelection = nil
+                                    }
+                                }
+                        }
                     }
                 }
             }
@@ -153,7 +156,7 @@ struct TransactionEdit: View {
                         transaction.update(from: trxData)
                         saveTransaction()
                     }
-                    .disabled(!trxData.isValid)
+                    .disabled(!trxData.isValid || !postedTransaction)
                 }
             }
         }
@@ -164,9 +167,10 @@ struct TransactionEdit_Previews: PreviewProvider {
     static let isEditingTrx = true
     static let category = SpendCraft.Category(id: 0, groupId: 0, name: "Test", balance: 0, type: .regular, monthlyExpenses: false)
     static let transactionStore = TransactionStore();
+    static let postedTransaction = true
 
     static var previews: some View {
-        TransactionEdit(transaction: SampleData.transactions[0], isEditingTrx: .constant(isEditingTrx), trxData: .constant(SampleData.transactions[0].data), transactionStore: transactionStore, category: category)
+        TransactionEdit(transaction: SampleData.transactions[0], isEditingTrx: .constant(isEditingTrx), trxData: .constant(SampleData.transactions[0].data), transactionStore: transactionStore, category: category, postedTransaction: postedTransaction)
             .previewInterfaceOrientation(.portraitUpsideDown)
     }
 }

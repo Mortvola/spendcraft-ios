@@ -13,6 +13,7 @@ struct AccountTransactionView: View {
     @ObservedObject var transactionStore: TransactionStore
     @State var data = Transaction.Data()
     @State var isEditingTrx = false
+    var postedTransaction: Bool
 
     var body: some View {
         Button(action: {
@@ -32,14 +33,16 @@ struct AccountTransactionView: View {
                     Text(formatDate(date: trx.date))
                     Text(trx.accountOwner)
                     Spacer()
-                    SpendCraft.AmountView(amount: trx.runningBalance ?? 0)
+                    if let runningBalance = trx.runningBalance {
+                        SpendCraft.AmountView(amount: runningBalance)
+                    }
                 }
                 .font(.caption)
                 .lineLimit(1)
             }
         }
         .sheet(isPresented: $isEditingTrx) {
-            TransactionEdit(transaction: trx, isEditingTrx: $isEditingTrx, trxData: $data, transactionStore: transactionStore, category: nil)
+            TransactionEdit(transaction: trx, isEditingTrx: $isEditingTrx, trxData: $data, transactionStore: transactionStore, category: nil, postedTransaction: postedTransaction)
         }
     }
 }
@@ -48,6 +51,6 @@ struct AccountTransactionView_Previews: PreviewProvider {
     static let transactionStore = TransactionStore()
     
     static var previews: some View {
-        AccountTransactionView(trx: SampleData.transactions[0], transactionStore: transactionStore)
+        AccountTransactionView(trx: SampleData.transactions[0], transactionStore: transactionStore, postedTransaction: true)
     }
 }

@@ -14,6 +14,7 @@ struct TransactionView: View {
     @ObservedObject var category: SpendCraft.Category
     @State var data = Transaction.Data()
     @State var isEditingTrx = false
+    var postedTransaction: Bool
     
     func formatAccount(institution: String?, account: String?) -> String {
         guard let institution = institution, let account = account else {
@@ -47,7 +48,9 @@ struct TransactionView: View {
                     Text(formatAccount(institution: trx.institution, account:  trx.account))
                         .lineLimit(1)
                     Spacer()
-                    SpendCraft.AmountView(amount: trx.runningBalance ?? 0)
+                    if let runningBalance = trx.runningBalance {
+                        SpendCraft.AmountView(amount: runningBalance)
+                    }
                 }
                 .font(.caption)
 
@@ -62,7 +65,7 @@ struct TransactionView: View {
             }
         }
         .sheet(isPresented: $isEditingTrx) {
-            TransactionEdit(transaction: trx, isEditingTrx: $isEditingTrx, trxData: $data, transactionStore: transactionStore, category: category)
+            TransactionEdit(transaction: trx, isEditingTrx: $isEditingTrx, trxData: $data, transactionStore: transactionStore, category: category, postedTransaction: postedTransaction)
         }
     }
 }
@@ -72,7 +75,7 @@ struct TransactionView_Previews: PreviewProvider {
     static let transactionStore = TransactionStore()
 
     static var previews: some View {
-        TransactionView(trx: SampleData.transactions[0], transactionStore: transactionStore, category: category)
+        TransactionView(trx: SampleData.transactions[0], transactionStore: transactionStore, category: category, postedTransaction: true)
     }
 }
 

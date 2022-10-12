@@ -33,6 +33,50 @@ class TransactionStore: ObservableObject {
         }
     }
 
+    static func loadPending(account: Account, completion: @escaping (Result<[Response.Transaction], Error>)->Void) {
+        try? Http.get(path: "/api/account/\(account.id)/transactions/pending?offset=0&limit=30") { data in
+            guard let data = data else {
+                print ("data is nil")
+                return;
+            }
+            
+            var pendingResponse: [Response.Transaction]
+            do {
+                pendingResponse = try JSONDecoder().decode([Response.Transaction].self, from: data)
+            }
+            catch {
+                print ("Error: \(error)")
+                return
+            }
+
+            DispatchQueue.main.async {
+                completion(.success(pendingResponse))
+            }
+        }
+    }
+
+    static func loadPending(category: SpendCraft.Category, completion: @escaping (Result<[Response.Transaction], Error>)->Void) {
+        try? Http.get(path: "/api/category/\(category.id)/transactions/pending?offset=0&limit=30") { data in
+            guard let data = data else {
+                print ("data is nil")
+                return;
+            }
+            
+            var pendingResponse: [Response.Transaction]
+            do {
+                pendingResponse = try JSONDecoder().decode([Response.Transaction].self, from: data)
+            }
+            catch {
+                print ("Error: \(error)")
+                return
+            }
+
+            DispatchQueue.main.async {
+                completion(.success(pendingResponse))
+            }
+        }
+    }
+
     static func load(account: Account, completion: @escaping (Result<Response.Transactions, Error>)->Void) {
         load(path: "/api/account/\(account.id)/transactions?offset=0&limit=30", completion: completion)
     }
