@@ -35,6 +35,11 @@ public struct Http {
         try Http.sendRequest(method: "PATCH", path: path, data: data, completion)
     }
     
+    // DELETE requests
+    public static func delete(path: String, _ completion: @escaping (Data?) -> Void) throws {
+        try Http.sendRequest(method: "DELETE", path: path, completion)
+    }
+    
     private static func checkResponse(error: Error?, response: URLResponse?) -> Bool {
         if let error = error {
             print("Error: \(error)");

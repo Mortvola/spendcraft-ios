@@ -17,7 +17,16 @@ extension SpendCraft {
             public var type: CategoryType
             public var monthlyExpenses: Bool
         }
-        
+
+        public class CategoryUpdate: Decodable, Identifiable {
+//            public var id: Int
+//            public var groupId: Int
+            public var name: String
+//            public var balance: Double
+//            public var type: CategoryType
+            public var monthlyExpenses: Bool
+        }
+
         public class Group: Decodable, Identifiable {
             public var id: Int
             public var name: String
@@ -42,6 +51,10 @@ extension SpendCraft {
                 
                 self.categories = try container.decodeIfPresent([SpendCraft.Response.Category].self, forKey: .categories) ?? []
             }
+        }
+        
+        public class GroupUpdate: Decodable, Identifiable {
+            public var name: String
         }
         
         public enum CategoryTreeNode: Decodable, Identifiable {

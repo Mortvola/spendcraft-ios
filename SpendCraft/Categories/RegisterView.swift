@@ -87,7 +87,7 @@ struct RegisterView: View {
             }
             else {
                 if (transactionStore.transactions.count == 0) {
-                    Text("There are no transactinos to view.")
+                    Text("There are no transactions to view.")
                     Spacer()
                 }
                 else {

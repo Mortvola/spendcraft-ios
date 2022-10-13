@@ -158,11 +158,11 @@ public enum SpendCraft {
             }
         }
         
-        public init(_ group: Group) {
+        public init(_ group: SpendCraft.Group) {
             self = .group(group)
         }
         
-        public init(_ category: Category) {
+        public init(_ category: SpendCraft.Category) {
             self = .category(category)
         }
         

@@ -65,6 +65,12 @@
 		79C19CD328D517E7003F05F2 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C19CD228D517E7003F05F2 /* Transaction.swift */; };
 		79CF2E4928F6F39000448D65 /* AddCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E4828F6F39000448D65 /* AddCategoryView.swift */; };
 		79CF2E4B28F7250800448D65 /* AddGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E4A28F7250800448D65 /* AddGroupView.swift */; };
+		79CF2E4D28F7861300448D65 /* EditCategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E4C28F7861300448D65 /* EditCategoriesView.swift */; };
+		79CF2E4F28F7972800448D65 /* EditGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E4E28F7972800448D65 /* EditGroupView.swift */; };
+		79CF2E5128F79AAA00448D65 /* EditCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E5028F79AAA00448D65 /* EditCategoryView.swift */; };
+		79CF2E5328F79FE900448D65 /* DeleteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E5228F79FE900448D65 /* DeleteButton.swift */; };
+		79CF2E5528F7B21600448D65 /* CategoryView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E5428F7B21600448D65 /* CategoryView2.swift */; };
+		79CF2E5728F7B57900448D65 /* GroupView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E5628F7B57900448D65 /* GroupView2.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -217,6 +223,12 @@
 		79C19CD228D517E7003F05F2 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		79CF2E4828F6F39000448D65 /* AddCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryView.swift; sourceTree = "<group>"; };
 		79CF2E4A28F7250800448D65 /* AddGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGroupView.swift; sourceTree = "<group>"; };
+		79CF2E4C28F7861300448D65 /* EditCategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCategoriesView.swift; sourceTree = "<group>"; };
+		79CF2E4E28F7972800448D65 /* EditGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGroupView.swift; sourceTree = "<group>"; };
+		79CF2E5028F79AAA00448D65 /* EditCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCategoryView.swift; sourceTree = "<group>"; };
+		79CF2E5228F79FE900448D65 /* DeleteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteButton.swift; sourceTree = "<group>"; };
+		79CF2E5428F7B21600448D65 /* CategoryView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView2.swift; sourceTree = "<group>"; };
+		79CF2E5628F7B57900448D65 /* GroupView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupView2.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -279,8 +291,7 @@
 				7946967E28DA1F0E005B6408 /* CategoryView.swift */,
 				7946967C28DA1AD1005B6408 /* GroupView.swift */,
 				7923783128D7F61E0069DB01 /* TransactionEdit.swift */,
-				79CF2E4828F6F39000448D65 /* AddCategoryView.swift */,
-				79CF2E4A28F7250800448D65 /* AddGroupView.swift */,
+				79CF2E5828F8336400448D65 /* EditCategories */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -439,6 +450,21 @@
 				79B2595728F32A7E000D6763 /* Response.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		79CF2E5828F8336400448D65 /* EditCategories */ = {
+			isa = PBXGroup;
+			children = (
+				79CF2E4C28F7861300448D65 /* EditCategoriesView.swift */,
+				79CF2E5628F7B57900448D65 /* GroupView2.swift */,
+				79CF2E5428F7B21600448D65 /* CategoryView2.swift */,
+				79CF2E4828F6F39000448D65 /* AddCategoryView.swift */,
+				79CF2E4A28F7250800448D65 /* AddGroupView.swift */,
+				79CF2E4E28F7972800448D65 /* EditGroupView.swift */,
+				79CF2E5028F79AAA00448D65 /* EditCategoryView.swift */,
+				79CF2E5228F79FE900448D65 /* DeleteButton.swift */,
+			);
+			path = EditCategories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -712,24 +738,30 @@
 				7946967328D82018005B6408 /* ReportsView.swift in Sources */,
 				7946967D28DA1AD1005B6408 /* GroupView.swift in Sources */,
 				7923783228D7F61E0069DB01 /* TransactionEdit.swift in Sources */,
+				79CF2E4F28F7972800448D65 /* EditGroupView.swift in Sources */,
 				79B2595828F32A7E000D6763 /* Response.swift in Sources */,
 				79A17C0D28F1A3BF006FD368 /* widget.intentdefinition in Sources */,
 				79ADF87528E5D71800227F44 /* AccountsStore.swift in Sources */,
+				79CF2E5128F79AAA00448D65 /* EditCategoryView.swift in Sources */,
 				795382E628E71F3500133EFA /* AccountTransactionView.swift in Sources */,
 				79CF2E4928F6F39000448D65 /* AddCategoryView.swift in Sources */,
 				79C19CCE28D4D80E003F05F2 /* RegisterView.swift in Sources */,
 				7946967128D82006005B6408 /* AccountsView.swift in Sources */,
+				79CF2E4D28F7861300448D65 /* EditCategoriesView.swift in Sources */,
 				79CF2E4B28F7250800448D65 /* AddGroupView.swift in Sources */,
 				7946967F28DA1F0E005B6408 /* CategoryView.swift in Sources */,
+				79CF2E5528F7B21600448D65 /* CategoryView2.swift in Sources */,
 				7946968C28DB50CE005B6408 /* TransactionView.swift in Sources */,
 				7923782C28D77C0A0069DB01 /* TransactionStore.swift in Sources */,
 				797BDEE028F072C400640173 /* NavModel.swift in Sources */,
+				79CF2E5728F7B57900448D65 /* GroupView2.swift in Sources */,
 				795382E828E864B800133EFA /* InactiveView.swift in Sources */,
 				7946966F28D81FF0005B6408 /* PlansView.swift in Sources */,
 				79C19CD328D517E7003F05F2 /* Transaction.swift in Sources */,
 				795382E028E7141100133EFA /* SettingsView.swift in Sources */,
 				7946969528DE1173005B6408 /* SampleData.swift in Sources */,
 				7946967528D8203A005B6408 /* MainView.swift in Sources */,
+				79CF2E5328F79FE900448D65 /* DeleteButton.swift in Sources */,
 				795382E228E7178600133EFA /* AccountRegisterView.swift in Sources */,
 				7946967728D8B99B005B6408 /* CategoriesStore.swift in Sources */,
 				7946968E28DCADFE005B6408 /* CategoryPicker.swift in Sources */,

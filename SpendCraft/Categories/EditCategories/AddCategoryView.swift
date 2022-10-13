@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AddCategoryView: View {
-    @Binding var isAddingCategory: Bool
+    @Binding var isOpen: Bool
     @State var name: String = ""
     @State var groupId: Int = CategoriesStore.shared.noGroupId
     var categoriesStore = CategoriesStore.shared
@@ -32,12 +32,12 @@ struct AddCategoryView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
-                        isAddingCategory = false
+                        isOpen = false
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
-                        isAddingCategory = false;
+                        isOpen = false;
                         categoriesStore.addCategory(name: name, groupId: groupId)
                     }
                     disabled(name.isEmpty)
@@ -49,6 +49,6 @@ struct AddCategoryView: View {
 
 struct AddCategoryView_Previews: PreviewProvider {
     static var previews: some View {
-        AddCategoryView(isAddingCategory: .constant(true))
+        AddCategoryView(isOpen: .constant(true))
     }
 }

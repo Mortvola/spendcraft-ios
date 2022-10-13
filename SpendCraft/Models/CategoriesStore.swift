@@ -178,6 +178,81 @@ final class CategoriesStore: ObservableObject {
         }
     }
     
+    private func addNodeToRoot(node: SpendCraft.TreeNode) {
+        // Add the category to the top level of the tree
+        let index = self.tree.firstIndex { n in
+            n.name > node.name
+        }
+        
+        if let index = index {
+            self.tree.insert(node, at: index)
+        }
+        else {
+            self.tree.append(node)
+        }
+    }
+    
+    private func insertCategory(group: SpendCraft.Group, category: SpendCraft.Category) {
+        let index = group.categories.firstIndex { cat in
+            cat.name > category.name
+        }
+        
+        if let index = index {
+            group.categories.insert(category, at: index)
+        }
+        else {
+            group.categories.append(category)
+        }
+    }
+    
+    private func removeCategoryFromGroup(category: SpendCraft.Category) {
+        if category.groupId == self.noGroupId {
+            // Find and remove the category from the top level of the tree
+            let index = self.tree.firstIndex { node in
+                switch node {
+                case .category(let c):
+                    return c.id == category.id
+                case .group:
+                    return false
+                }
+            }
+            
+            if let index = index {
+                self.tree.remove(at: index)
+            }
+        } else {
+            // Find the group and remove the category from it
+            let group = self.getGroup(groupId: category.groupId)
+            
+            if let group = group {
+                let index = group.categories.firstIndex {
+                    $0.id == category.id
+                }
+                
+                if let index = index {
+                    group.categories.remove(at: index)
+                }
+            }
+        }
+    }
+    
+    private func addCategoryToGroup(category: SpendCraft.Category, groupId: Int) {
+        if groupId == self.noGroupId {
+            // Add the category to the top level of the tree
+            addNodeToRoot(node: SpendCraft.TreeNode(category))
+        }
+        else {
+            // Find the new group and add the category to it
+            let newGroup = self.getGroup(groupId: groupId)
+            
+            if let newGroup = newGroup {
+                self.insertCategory(group: newGroup, category: category)
+            }
+        }
+        
+        category.groupId = groupId
+    }
+    
     public func addCategory(name: String, groupId: Int) {
         struct Data: Encodable {
             var name: String
@@ -202,45 +277,54 @@ final class CategoriesStore: ObservableObject {
             }
     
             DispatchQueue.main.async {
-                if (groupId == self.noGroupId) {
-                    let index = self.tree.firstIndex { node in
-                        node.name > category.name
-                    }
-                    
-                    if let index = index {
-                        self.tree.insert(SpendCraft.TreeNode(category), at: index)
-                    }
-                    else {
-                        self.tree.append(SpendCraft.TreeNode(category))
-                    }
-                }
-                else {
-                    // Find the group to which to add the new category
-                    let group = self.tree.first { node in
-                        switch node {
-                        case .category:
-                            return false
-                        case .group(let g):
-                            return g.id == groupId
-                        }
-                    }
-                    
-                    if let group = group?.getGroup() {
-                        let index = group.categories.firstIndex { cat in
-                            cat.name > category.name
-                        }
-                        
-                        if let index = index {
-                            group.categories.insert(category, at: index)
-                        }
-                        else {
-                            group.categories.append(category)
-                        }
-                    }
-                }
+                self.addCategoryToGroup(category: category, groupId: groupId)
                 
                 // Add the category to the dictionary
                 self.categoryDictionary.updateValue(category, forKey: category.id)
+            }
+        }
+    }
+    
+    public func updateCategory(category: SpendCraft.Category, name: String, groupId: Int) {
+        struct Data: Encodable {
+            var name: String
+            var monthlyExpenses: Bool
+        }
+        
+        let cat = Data(name: name, monthlyExpenses: category.monthlyExpenses)
+    
+        try? Http.patch(path: "/api/groups/\(groupId)/categories/\(category.id)", data: cat) { data in
+            guard let data = data else {
+                return
+            }
+            
+            let response: SpendCraft.Response.CategoryUpdate
+            do {
+                response = try JSONDecoder().decode(SpendCraft.Response.CategoryUpdate.self, from: data)
+            }
+            catch {
+                print ("Error: \(error)")
+                return
+            }
+    
+            DispatchQueue.main.async {
+                category.name = response.name
+                category.monthlyExpenses = response.monthlyExpenses
+                
+                // If the category changed groups...
+                if (category.groupId != groupId) {
+                    self.removeCategoryFromGroup(category: category)
+                    self.addCategoryToGroup(category: category, groupId: groupId)
+                }
+            }
+        }
+    }
+
+    public func deleteCategory(category: SpendCraft.Category) {
+        try? Http.delete(path: "/api/groups/\(category.groupId)/categories/\(category.id)") { _ in
+            DispatchQueue.main.async {
+                self.removeCategoryFromGroup(category: category)
+                self.categoryDictionary.removeValue(forKey: category.id)
             }
         }
     }
@@ -268,22 +352,65 @@ final class CategoriesStore: ObservableObject {
     
             DispatchQueue.main.async {
                 let group = SpendCraft.Group(groupResponse: groupResponse)
-                
-                let index = self.tree.firstIndex { node in
-                    node.name > group.name
-                }
-                
-                if let index = index {
-                    self.tree.insert(SpendCraft.TreeNode(group), at: index)
-                }
-                else {
-                    self.tree.append(SpendCraft.TreeNode(group))
-                }
+
+                self.addNodeToRoot(node: SpendCraft.TreeNode(group))
                 
                 // Add the group to the dictionary
                 self.groupDictionary.updateValue(group, forKey: group.id)
             }
         }
+    }
+
+    public func updateGroup(group: SpendCraft.Group, name: String) {
+        struct Data: Encodable {
+            var name: String
+        }
+        
+        let grp = Data(name: name)
+    
+        try? Http.patch(path: "/api/groups/\(group.id)", data: grp) { data in
+            guard let data = data else {
+                return
+            }
+            
+            let response: SpendCraft.Response.GroupUpdate
+            do {
+                response = try JSONDecoder().decode(SpendCraft.Response.GroupUpdate.self, from: data)
+            }
+            catch {
+                print ("Error: \(error)")
+                return
+            }
+    
+            DispatchQueue.main.async {
+                group.name = response.name
+            }
+        }
+    }
+
+    public func deleteGroup(group: SpendCraft.Group) {
+        try? Http.delete(path: "/api/groups/\(group.id)") { _ in
+            DispatchQueue.main.async {
+                let index = self.tree.firstIndex { node in
+                    switch node {
+                    case .category:
+                        return false
+                    case .group(let g):
+                        return g.id == group.id
+                    }
+                }
+                
+                if let index = index {
+                    // Remove the group from the tree and the dictionary
+                    self.tree.remove(at: index)
+                    self.groupDictionary.removeValue(forKey: group.id)
+                }
+            }
+        }
+    }
+
+    public func getGroup(groupId: Int) -> SpendCraft.Group? {
+        return self.groupDictionary[groupId]
     }
 
     public func getCategory(categoryId: Int) -> SpendCraft.Category? {

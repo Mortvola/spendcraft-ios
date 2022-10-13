@@ -9,22 +9,13 @@ import SwiftUI
 import Framework
 
 struct CategoriesView: View {
-    @ObservedObject var categoriesStore = CategoriesStore.shared
+    @ObservedObject private var categoriesStore = CategoriesStore.shared
     @EnvironmentObject private var navModel: NavModel
-    @StateObject var testCategory = SpendCraft.Category(id: -2, groupId: 0, name: "Unassigned", balance: 100, type: .regular, monthlyExpenses: false)
-    @State var isAddingCategory = false
-    @State var isAddingGroup = false
+    @StateObject private var testCategory = SpendCraft.Category(id: -2, groupId: 0, name: "Unassigned", balance: 100, type: .regular, monthlyExpenses: false)
+    @State private var isEditingCategories = false
     
     var body: some View {
         NavigationSplitView {
-            HStack {
-                Button(action: { isAddingCategory = true }) {
-                    Text("Add Category")
-                }
-                Button(action: { isAddingGroup = true }) {
-                    Text("Add Group")
-                }
-            }
             List(selection: $navModel.selectedCategory) {
                 Section(header: Text("System Categories")) {
                     CategoryView(category: categoriesStore.unassigned)
@@ -52,18 +43,21 @@ struct CategoriesView: View {
             .refreshable {
                 categoriesStore.load()
             }
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Edit") {
+                        isEditingCategories = true
+                    }
+                }
+            }
         } detail: {
             if let category = navModel.selectedCategory {
                 RegisterView(category: category)
             }
         }
-        .sheet(isPresented: $isAddingCategory) {
-            AddCategoryView(isAddingCategory: $isAddingCategory)
-                .presentationDetents([.medium])
-        }
-        .sheet(isPresented: $isAddingGroup) {
-            AddGroupView(isAddingGroup: $isAddingGroup)
-                .presentationDetents([.medium])
+        .sheet(isPresented: $isEditingCategories) {
+            EditCategoriesView(isEditingCategories: $isEditingCategories)
+                .presentationDetents([.large])
         }
         .onAppear {
             if (!categoriesStore.loaded) {

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AddGroupView: View {
-    @Binding var isAddingGroup: Bool
+    @Binding var isOpen: Bool
     @State var name: String = ""
     var categoriesStore = CategoriesStore.shared
 
@@ -25,12 +25,12 @@ struct AddGroupView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
-                        isAddingGroup = false
+                        isOpen = false
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
-                        isAddingGroup = false;
+                        isOpen = false;
                         categoriesStore.addGroup(name: name)
                     }
                     .disabled(name.isEmpty)
@@ -42,6 +42,6 @@ struct AddGroupView: View {
 
 struct AddGroupView_Previews: PreviewProvider {
     static var previews: some View {
-        AddGroupView(isAddingGroup: .constant(true))
+        AddGroupView(isOpen: .constant(true))
     }
 }
