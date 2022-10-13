@@ -13,7 +13,8 @@ struct EditGroupView: View {
     @ObservedObject var group: SpendCraft.Group
     @Binding var isOpen: Bool
     @State var name: String = ""
-    
+    @FocusState private var nameInFocus: Bool
+
     var body: some View {
         NavigationStack {
             Form {
@@ -21,6 +22,7 @@ struct EditGroupView: View {
                     TextField("Name", text: $name)
                         .multilineTextAlignment(.trailing)
                         .lineLimit(1)
+                        .focused($nameInFocus)
                 }
                 ControlGroup {
                     DeleteButton() {
@@ -46,6 +48,8 @@ struct EditGroupView: View {
             }
             .onAppear {
                 name = group.name
+                
+                nameInFocus = true
             }
         }
     }

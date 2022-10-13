@@ -12,6 +12,7 @@ struct AddCategoryView: View {
     @State var name: String = ""
     @State var groupId: Int = CategoriesStore.shared.noGroupId
     var categoriesStore = CategoriesStore.shared
+    @FocusState private var nameInFocus: Bool
 
     var body: some View {
         NavigationStack {
@@ -20,6 +21,7 @@ struct AddCategoryView: View {
                     TextField("Name", text: $name)
                         .multilineTextAlignment(.trailing)
                         .lineLimit(1)
+                        .focused($nameInFocus)
                 }
                 Picker("Group", selection: $groupId) {
                     Text("None").tag(CategoriesStore.shared.noGroupId)
@@ -42,6 +44,9 @@ struct AddCategoryView: View {
                     }
                     disabled(name.isEmpty)
                 }
+            }
+            .onAppear {
+                nameInFocus = true
             }
         }
     }

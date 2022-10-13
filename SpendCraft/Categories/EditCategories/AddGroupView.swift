@@ -11,6 +11,7 @@ struct AddGroupView: View {
     @Binding var isOpen: Bool
     @State var name: String = ""
     var categoriesStore = CategoriesStore.shared
+    @FocusState private var nameInFocus: Bool
 
     var body: some View {
         NavigationStack {
@@ -19,6 +20,7 @@ struct AddGroupView: View {
                     TextField("Name", text: $name)
                         .multilineTextAlignment(.trailing)
                         .lineLimit(1)
+                        .focused($nameInFocus)
                 }
             }
             .navigationTitle("Add Group")
@@ -36,6 +38,9 @@ struct AddGroupView: View {
                     .disabled(name.isEmpty)
                 }
             }
+        }
+        .onAppear {
+            nameInFocus = true
         }
     }
 }

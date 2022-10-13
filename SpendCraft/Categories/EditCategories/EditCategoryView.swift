@@ -14,7 +14,8 @@ struct EditCategoryView: View {
     @Binding var isOpen: Bool
     @State private var name: String = ""
     @State private var groupId: Int = CategoriesStore.shared.noGroupId
-    
+    @FocusState private var nameInFocus: Bool
+
     var body: some View {
         NavigationStack {
             Form {
@@ -22,6 +23,7 @@ struct EditCategoryView: View {
                     TextField("Name", text: $name)
                         .multilineTextAlignment(.trailing)
                         .lineLimit(1)
+                        .focused($nameInFocus)
                 }
                 Picker("Group", selection: $groupId) {
                     Text("None").tag(CategoriesStore.shared.noGroupId)
@@ -54,6 +56,8 @@ struct EditCategoryView: View {
             .onAppear {
                 name = category.name
                 groupId = category.groupId
+                
+                nameInFocus = true
             }
         }
     }
