@@ -36,7 +36,7 @@ struct LoginView: View {
                 SecureField("Password", text: $password)
                 Button(action: {
                     do {
-                        (username, password) = try Authenticator.getCredentials()
+                        (username, password) = try authenticator.getCredentials()
                         authenticate()
                     }
                     catch {

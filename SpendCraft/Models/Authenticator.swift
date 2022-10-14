@@ -11,6 +11,7 @@ import Framework
 
 class Authenticator: ObservableObject {
     @Published var authenticated = false
+    @Published var username = ""
     
     /// Keychain errors we might encounter.
     struct KeychainError: Error {
@@ -31,15 +32,16 @@ class Authenticator: ObservableObject {
         let data = Data(username: username, password: password, remember: "on")
 
         try? Http.post(path: "/login", data: data) { _ in
-            try? Authenticator.addCredentials(username: username, password: password)
+            try? self.addCredentials(username: username, password: password)
 
             DispatchQueue.main.async {
                 self.authenticated = true
+                self.username = username
             }
         }
     }
     
-    static func addCredentials(username: String, password: String) throws {
+    func addCredentials(username: String, password: String) throws {
         // Create an access control instance that dictates how the item can be read later.
         let access = SecAccessControlCreateWithFlags(nil, // Use the default allocator.
                                                      kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly,
@@ -62,7 +64,7 @@ class Authenticator: ObservableObject {
         guard status == errSecSuccess else { throw KeychainError(status: status) }
     }
     
-    static func getCredentials() throws -> (username: String, password: String) {
+    func getCredentials() throws -> (username: String, password: String) {
         let context = LAContext()
         context.localizedReason = "Access your password on the keychain"
         let query: [String: Any] = [kSecClass as String: kSecClassInternetPassword,

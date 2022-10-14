@@ -18,6 +18,7 @@ extension SpendCraft {
         func format(value: Double) -> String {
             let formatter = NumberFormatter()
             formatter.minimumFractionDigits = 2
+            formatter.numberStyle = .decimal
             
             var v = value
             if (v == 0.0 && v.sign == .minus) {

@@ -71,6 +71,8 @@
 		79CF2E5328F79FE900448D65 /* DeleteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E5228F79FE900448D65 /* DeleteButton.swift */; };
 		79CF2E5528F7B21600448D65 /* CategoryView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E5428F7B21600448D65 /* CategoryView2.swift */; };
 		79CF2E5728F7B57900448D65 /* GroupView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E5628F7B57900448D65 /* GroupView2.swift */; };
+		79CF2E5A28F85C3300448D65 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E5928F85C3300448D65 /* AppDelegate.swift */; };
+		79CF2E5C28F8E29300448D65 /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E5B28F8E29300448D65 /* ChangePasswordView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -229,6 +231,8 @@
 		79CF2E5228F79FE900448D65 /* DeleteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteButton.swift; sourceTree = "<group>"; };
 		79CF2E5428F7B21600448D65 /* CategoryView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView2.swift; sourceTree = "<group>"; };
 		79CF2E5628F7B57900448D65 /* GroupView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupView2.swift; sourceTree = "<group>"; };
+		79CF2E5928F85C3300448D65 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		79CF2E5B28F8E29300448D65 /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -393,6 +397,7 @@
 				795382E928E8AAA700133EFA /* Info.plist */,
 				795382DE28E663CB00133EFA /* SpendCraft.entitlements */,
 				79C19CA128D41BC8003F05F2 /* SpendCraftApp.swift */,
+				79CF2E5928F85C3300448D65 /* AppDelegate.swift */,
 				795382E728E864B800133EFA /* InactiveView.swift */,
 				79C19CCB28D4A85E003F05F2 /* LoginView.swift */,
 				79ADF87328E5D49B00227F44 /* Accounts */,
@@ -403,6 +408,7 @@
 				7946967428D8203A005B6408 /* MainView.swift */,
 				79B2595D28F4B4FE000D6763 /* ConfigureWidgetView.swift */,
 				795382DF28E7141100133EFA /* SettingsView.swift */,
+				79CF2E5B28F8E29300448D65 /* ChangePasswordView.swift */,
 				7946968928DAC578005B6408 /* NumericField.swift */,
 				7946968F28DCAE64005B6408 /* CategoryPicker */,
 				79C19CD128D517D1003F05F2 /* Models */,
@@ -734,9 +740,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				79C19CCC28D4A85F003F05F2 /* LoginView.swift in Sources */,
+				79CF2E5C28F8E29300448D65 /* ChangePasswordView.swift in Sources */,
 				79B2595E28F4B4FE000D6763 /* ConfigureWidgetView.swift in Sources */,
 				7946967328D82018005B6408 /* ReportsView.swift in Sources */,
 				7946967D28DA1AD1005B6408 /* GroupView.swift in Sources */,
+				79CF2E5A28F85C3300448D65 /* AppDelegate.swift in Sources */,
 				7923783228D7F61E0069DB01 /* TransactionEdit.swift in Sources */,
 				79CF2E4F28F7972800448D65 /* EditGroupView.swift in Sources */,
 				79B2595828F32A7E000D6763 /* Response.swift in Sources */,

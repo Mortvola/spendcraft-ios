@@ -8,10 +8,17 @@
 import SwiftUI
 import Framework
 
+enum TabSelection {
+    case categories
+    case plans
+    case accounts
+    case settings
+}
+
 struct MainView: View {
     @ObservedObject var authenticator: Authenticator
     @ObservedObject var categoriesStore = CategoriesStore.shared
-    @Binding var selection: String
+    @Binding var selection: TabSelection
     @StateObject private var navModel = NavModel()
     @SceneStorage("navigation") private var navigationData: Data?
     @State var isConfiguringWidget = false
@@ -23,17 +30,17 @@ struct MainView: View {
                 .tabItem {
                     Label("Categories", systemImage: "tray.and.arrow.down.fill")
                 }
-                .tag("categories")
+                .tag(TabSelection.categories)
             PlansView()
                 .tabItem {
                     Label("Plans", systemImage: "map")
                 }
-                .tag("plans")
+                .tag(TabSelection.plans)
             AccountsView()
                 .tabItem {
                     Label("Accounts", systemImage: "building.columns")
                 }
-                .tag("accounts")
+                .tag(TabSelection.accounts)
             ReportsView()
                 .tabItem {
                     Label("Reports", systemImage: "doc.on.doc")
@@ -43,7 +50,7 @@ struct MainView: View {
                 .tabItem {
                     Label("Account", systemImage: "person.crop.circle")
                 }
-                .tag("settings")
+                .tag(TabSelection.settings)
         }
         .sheet(isPresented: $isConfiguringWidget) {
             ConfigureWidgetView(isConfiguringWidget: $isConfiguringWidget, categories: categories)
@@ -74,7 +81,7 @@ struct MainView: View {
 
 struct Main_Previews: PreviewProvider {
     static let authenticator = Authenticator()
-    static let selection: String = "categories"
+    static let selection: TabSelection = .categories
     
     static var previews: some View {
         MainView(authenticator: authenticator, selection: .constant(selection))

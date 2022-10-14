@@ -9,12 +9,36 @@ import SwiftUI
 
 struct SettingsView: View {
     @ObservedObject var authenticator: Authenticator
+    let version = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String
 
     var body: some View {
-        Button(action: {
-            authenticator.authenticated = false
-        }) {
-            Text("Sign Out")
+        Form {
+            LabeledContent("Version") {
+                if let version = version {
+                    Text(version)
+                } else {
+                    Text("Unknown")
+                }
+            }
+            ControlGroup {
+                LabeledContent("Username") {
+                    Text(authenticator.username)
+                }
+                NavigationLink(destination: ChangePasswordView()) {
+                    Text("Reset Password")
+                }
+            }
+            ControlGroup {
+                Button(action: {
+                    authenticator.authenticated = false
+                }) {
+                    HStack {
+                        Spacer()
+                        Text("Sign Out")
+                        Spacer()
+                    }
+                }
+            }
         }
     }
 }
