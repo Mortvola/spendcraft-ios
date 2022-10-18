@@ -18,8 +18,12 @@ struct CategoryItem: View {
             selection = category.id
             self.presentationMode.wrappedValue.dismiss()
         } ) {
-            Text(category.name)
-                .tag(category.id)
+            HStack {
+                Text(category.name)
+                    .tag(category.id)
+                Spacer()
+                SpendCraft.AmountView(amount: category.balance)
+            }
         }
     }
 }

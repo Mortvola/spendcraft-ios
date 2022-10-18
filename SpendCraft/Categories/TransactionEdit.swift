@@ -131,7 +131,7 @@ struct TransactionEdit: View {
                     }
                 }
             }
-            .navigationTitle("Edit Transaction")
+            .navigationTitle(postedTransaction ? "Edit Transaction" : "Pending Transaction")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
