@@ -8,6 +8,21 @@
 import SwiftUI
 
 extension SpendCraft {
+    public static func Amount(amount: Double) -> String {
+        let formatter = NumberFormatter()
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        formatter.numberStyle = .decimal
+        
+        var v = amount
+        if (v == 0.0 && v.sign == .minus) {
+            v = 0.0
+        }
+
+        let number = NSNumber(value: v)
+        return formatter.string(from: number) ?? ""
+    }
+    
     public struct AmountView: View {
         public var amount: Double
         
@@ -15,22 +30,8 @@ extension SpendCraft {
             self.amount = amount
         }
         
-        func format(value: Double) -> String {
-            let formatter = NumberFormatter()
-            formatter.minimumFractionDigits = 2
-            formatter.numberStyle = .decimal
-            
-            var v = value
-            if (v == 0.0 && v.sign == .minus) {
-                v = 0.0
-            }
-
-            let number = NSNumber(value: v)
-            return formatter.string(from: number) ?? ""
-        }
-        
         public var body: some View {
-            Text(format(value: amount))
+            Text(Amount(amount: amount))
                 .foregroundColor(amount < 0 ? Color(.red) : nil)
                 .monospacedDigit()
         }

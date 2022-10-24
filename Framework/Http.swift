@@ -24,7 +24,12 @@ public struct Http {
     public static func post(path: String, _ completion: @escaping (Data?) -> Void) throws {
         try Http.sendRequest(method: "POST", path: path, completion)
     }
-    
+
+    // PUT requests
+    public static func put(path: String, data: Encodable, _ completion: @escaping (Data?) -> Void) throws {
+        try Http.sendRequest(method: "PUT", path: path, data: data, completion)
+    }
+
     // GET requests
     public static func get(path: String, _ completion: @escaping (Data?) -> Void) throws {
         try Http.sendRequest(method: "GET", path: path, completion)
@@ -151,6 +156,7 @@ public struct Http {
             configuration.timeoutIntervalForRequest = 60
 
             session = URLSession(configuration: configuration)
+            session?.sessionDescription = "spendcraft shared"
         }
         
         guard let session = session else {

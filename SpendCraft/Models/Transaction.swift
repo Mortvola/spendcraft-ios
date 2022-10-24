@@ -118,7 +118,7 @@ class Transaction: ObservableObject, Identifiable, Codable {
             return self.amount
         }
 
-        return categories.reduce(0.0, { result, trxCategory in
+        return categories.reduce(0.0) { result, trxCategory in
             if (trxCategory.categoryId == category.id) {
                 if let amount = trxCategory.amount {
                     return result + amount
@@ -126,7 +126,7 @@ class Transaction: ObservableObject, Identifiable, Codable {
             }
             
             return result
-        })
+        }
     }
 
     func save(completion: @escaping (Result<Response.UpdateTransaction, Error>)->Void) {
