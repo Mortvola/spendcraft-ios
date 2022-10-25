@@ -43,13 +43,13 @@ struct PlanItemEdit: View {
                     }
                     
                     ControlGroup {
-                        Picker("Month", selection: $data.goalMonth) {
+                        Picker("Month", selection: $data.goal.month) {
                             ForEach(0..<12) { m in
                                 Text(months[m]).tag(m + 1)
                             }
                         }
                         
-                        Picker("Year", selection: $data.goalYear) {
+                        Picker("Year", selection: $data.goal.year) {
                             ForEach(0..<30) { y in
                                 Text("\(2022 + y)").tag(2022 + y)
                             }
