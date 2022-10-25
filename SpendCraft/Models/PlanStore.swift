@@ -27,6 +27,86 @@ class Plan: ObservableObject {
     }
 }
 
+struct MonthYearDate: Encodable {
+    var month: Int
+    var year: Int
+    private var calendar: Calendar
+    
+    init(date: Date) {
+        self.calendar = Calendar.current
+        self.calendar.timeZone = TimeZone(abbreviation: "UTC")!
+        
+        let components = self.calendar.dateComponents([.month, .year], from: date)
+        
+        self.month = components.month!
+        self.year = components.year!
+    }
+    
+    func date() throws -> Date {
+        try MonthYearDate.monthDate(month: self.month, year: self.year)
+    }
+    
+    static private func monthDate(month: Int, year: Int) throws -> Date {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = TimeZone(abbreviation: "UTC")
+        
+        let date = formatter.date(from: "\(year)-\(month)-01")
+        
+        guard let date = date else {
+            throw MyError.runtimeError("date is invalid")
+        }
+        
+        return date
+    }
+    
+    static func now() throws -> Date {
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone(abbreviation: "UTC")!
+        
+        let components = calendar.dateComponents([.month, .year], from: Date.now)
+        
+        guard let month = components.month, let year = components.year else {
+            throw MyError.runtimeError("Invalid date")
+        }
+        
+        return try MonthYearDate.monthDate(month: month, year: year)
+    }
+    
+    private func getComponents(date: Date) throws -> (Int, Int) {
+        let components = self.calendar.dateComponents([.month, .year], from: date)
+        
+        guard let month = components.month, let year = components.year else {
+            throw MyError.runtimeError("Invalid date")
+        }
+        
+        return (month, year)
+    }
+    
+    func nextDate(recurrence: Int) throws -> MonthYearDate {
+        let now = try MonthYearDate.now()
+        
+        // Get the number of months in the past
+        let months = self.calendar.dateComponents([.month], from: try self.date(), to: now).month ?? 0
+        
+        // Determine how many months to add to the current month to get the future month
+        let monthsInFuture = recurrence - months % recurrence
+        
+        let future = self.calendar.date(byAdding: .month, value: monthsInFuture, to: now)
+        
+        guard let future = future else {
+            throw MyError.runtimeError("future is invalid")
+        }
+        
+        return MonthYearDate(date: future)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode("\(self.year)-\(self.month)-01")
+    }
+}
+
 class PlanCategory: ObservableObject {
     var id: Int
     var categoryId: Int
@@ -48,81 +128,6 @@ class PlanCategory: ObservableObject {
         self.useGoal = response.useGoal
     }
     
-    struct MonthYearDate {
-        var month: Int
-        var year: Int
-        private var calendar: Calendar
-
-        init(date: Date) {
-            self.calendar = Calendar.current
-            self.calendar.timeZone = TimeZone(abbreviation: "UTC")!
-
-            let components = self.calendar.dateComponents([.month, .year], from: date)
-            
-            self.month = components.month!
-            self.year = components.year!
-        }
-        
-        func date() throws -> Date {
-            try MonthYearDate.monthDate(month: self.month, year: self.year)
-        }
-        
-        static private func monthDate(month: Int, year: Int) throws -> Date {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd"
-            formatter.timeZone = TimeZone(abbreviation: "UTC")
-            
-            let date = formatter.date(from: "\(year)-\(month)-01")
-            
-            guard let date = date else {
-                throw MyError.runtimeError("date is invalid")
-            }
-
-            return date
-        }
-        
-        static func now() throws -> Date {
-            var calendar = Calendar.current
-            calendar.timeZone = TimeZone(abbreviation: "UTC")!
-
-            let components = calendar.dateComponents([.month, .year], from: Date.now)
-            
-            guard let month = components.month, let year = components.year else {
-                throw MyError.runtimeError("Invalid date")
-            }
-
-            return try MonthYearDate.monthDate(month: month, year: year)
-        }
-        
-        private func getComponents(date: Date) throws -> (Int, Int) {
-            let components = self.calendar.dateComponents([.month, .year], from: date)
-            
-            guard let month = components.month, let year = components.year else {
-                throw MyError.runtimeError("Invalid date")
-            }
-            
-            return (month, year)
-        }
-
-        func nextDate(recurrence: Int) throws -> MonthYearDate {
-            let now = try MonthYearDate.now()
-
-            // Get the number of months in the past
-            let months = self.calendar.dateComponents([.month], from: try self.date(), to: now).month ?? 0
-            
-            // Determine how many months to add to the current month to get the future month
-            let monthsInFuture = recurrence - months % recurrence
-            
-            let future = self.calendar.date(byAdding: .month, value: monthsInFuture, to: now)
-            
-            guard let future = future else {
-                throw MyError.runtimeError("future is invalid")
-            }
-
-            return MonthYearDate(date: future)
-        }
-    }
-
     struct Data {
         var amount: Double?
         var recurrence: Int = 1
@@ -169,34 +174,24 @@ class PlanCategory: ObservableObject {
         struct RequestData: Encodable {
             let amount: Double
             let useGoal: Bool
-            let goalDate: Date?
+            let goalDate: MonthYearDate?
             let recurrence: Int
-
-            enum CodingKeys: String, CodingKey {
-                case amount
-                case useGoal
-                case goalDate
-                case recurrence
-            }
-
-            func encode(to encoder: Encoder) throws {
-                var container = encoder.container(keyedBy: CodingKeys.self)
-                try container.encode(self.amount, forKey: .amount)
-                try container.encode(self.useGoal, forKey: .useGoal)
-                try container.encode(self.recurrence, forKey: .recurrence)
-
-                if let goalDate = goalDate {
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "yyyy-MM-dd"
-                    formatter.timeZone = TimeZone(abbreviation: "UTC")!
-                    
-                    let dateString = formatter.string(from: goalDate)
-                    try container.encode(dateString, forKey: .goalDate)
+            
+            init(amount: Double, useGoal: Bool, goalDate: MonthYearDate?, recurrence: Int) {
+                self.amount = amount
+                self.useGoal = useGoal
+                self.recurrence = recurrence
+                
+                if (recurrence > 1) {
+                    self.goalDate = goalDate
+                }
+                else {
+                    self.goalDate = nil
                 }
             }
         }
         
-        let requestData = RequestData(amount: data.amount ?? 0, useGoal: false, goalDate: try data.goal.date(), recurrence: data.recurrence)
+        let requestData = RequestData(amount: data.amount ?? 0, useGoal: false, goalDate: data.goal, recurrence: data.recurrence)
         
         try? Http.put(path: "/api/funding-plans/10/item/\(self.categoryId)", data: requestData) { _ in
             DispatchQueue.main.async {
