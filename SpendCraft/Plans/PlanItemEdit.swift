@@ -68,17 +68,21 @@ struct PlanItemEdit: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
-                        planCategory.save(data: data)
-
-                        planStore.plan?.total += (data.amount ?? 0) / Double(data.recurrence) - (planCategory.amount / Double(planCategory.recurrence))
-                        
-                        isEditing = false;
+                        do {
+                            try planCategory.save(data: data)
+                            
+                            planStore.plan?.total += (data.amount ?? 0) / Double(data.recurrence) - (planCategory.amount / Double(planCategory.recurrence))
+                            
+                            isEditing = false;
+                        }
+                        catch {
+                        }
                     }
     //                .disabled(!trxData.isValid || !postedTransaction)
                 }
             }
             .onAppear {
-                data = planCategory.data()
+                data = try! planCategory.data()
             }
         }
     }
@@ -86,7 +90,7 @@ struct PlanItemEdit: View {
 
 struct PlanItemEdit_Previews: PreviewProvider {
     static let planCategory = PlanCategory(response: Response.PlanCategory(id: 0, categoryId: 0, amount: 100.0, recurrence: 12, useGoal: false))
-    static let data = PlanCategory.Data(amount: 100.0, recurrence: 2, goalDate: nil)
+    static let data = try! PlanCategory.Data(amount: 100.0, recurrence: 2, goalDate: nil)
     static let category = SpendCraft.Category(id: 0, groupId: 0, name: "Test", balance: 10.0, type: .regular, monthlyExpenses: false)
     static var previews: some View {
         PlanItemEdit(category: category, planCategory: planCategory, data: data, isEditing: .constant(false))
