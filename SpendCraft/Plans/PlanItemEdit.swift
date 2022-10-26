@@ -8,18 +8,23 @@
 import SwiftUI
 import Framework
 
-let months: [String] = [
-    "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
-]
-
 struct PlanItemEdit: View {
     var category: SpendCraft.Category
     var planCategory: PlanCategory
     var planStore = PlanStore.shared
-    @State var data: PlanCategory.Data = PlanCategory.Data()
+    @State var data = PlanCategory.Data()
     @State var starting: Int = 0
     @Binding var isEditing: Bool
+    @State var selectDate = false
     
+    func dateLabel() -> String {
+        if let date = data.goal {
+            return "\(months[date.month - 1]) \(date.year)"
+        }
+        
+        return "No Date"
+    }
+
     var body: some View {
         NavigationStack {
             Form {
@@ -43,16 +48,14 @@ struct PlanItemEdit: View {
                     }
                     
                     ControlGroup {
-                        Picker("Month", selection: $data.goal.month) {
-                            ForEach(0..<12) { m in
-                                Text(months[m]).tag(m + 1)
+                        HStack {
+                            Spacer()
+                            Button(action: { selectDate = true }) {
+                                Spacer()
+                                Text(dateLabel())
+                                Spacer()
                             }
-                        }
-                        
-                        Picker("Year", selection: $data.goal.year) {
-                            ForEach(0..<30) { y in
-                                Text("\(2022 + y)").tag(2022 + y)
-                            }
+                            Spacer()
                         }
                     } label: {
                         Text("Next Expense Date")
@@ -84,15 +87,17 @@ struct PlanItemEdit: View {
             .onAppear {
                 data = try! planCategory.data()
             }
+            .sheet(isPresented: $selectDate) {
+                MonthYearPicker(date: $data.goal, isOpen: $selectDate)
+            }
         }
     }
 }
 
 struct PlanItemEdit_Previews: PreviewProvider {
-    static let planCategory = PlanCategory(response: Response.PlanCategory(id: 0, categoryId: 0, amount: 100.0, recurrence: 12, useGoal: false))
-    static let data = try! PlanCategory.Data(amount: 100.0, recurrence: 2, goalDate: nil)
+    static let planCategory = PlanCategory(response: Response.PlanCategory(id: 0, categoryId: 0, amount: 100.0, recurrence: 12, useGoal: false, goalDate: Date.now))
     static let category = SpendCraft.Category(id: 0, groupId: 0, name: "Test", balance: 10.0, type: .regular, monthlyExpenses: false)
     static var previews: some View {
-        PlanItemEdit(category: category, planCategory: planCategory, data: data, isEditing: .constant(false))
+        PlanItemEdit(category: category, planCategory: planCategory, isEditing: .constant(false))
     }
 }

@@ -78,6 +78,8 @@
 		79CF2E6329002F8900448D65 /* PlanItemEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E6229002F8900448D65 /* PlanItemEdit.swift */; };
 		79CF2E6529031F7300448D65 /* PlanItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E6429031F7300448D65 /* PlanItemView.swift */; };
 		79CF2E672904276300448D65 /* PlanStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E662904276300448D65 /* PlanStore.swift */; };
+		79CF2E692908BA7600448D65 /* CalendarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E682908BA7600448D65 /* CalendarButton.swift */; };
+		79CF2E6B2908BFD200448D65 /* MonthYearPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E6A2908BFD200448D65 /* MonthYearPicker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -243,6 +245,8 @@
 		79CF2E6229002F8900448D65 /* PlanItemEdit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanItemEdit.swift; sourceTree = "<group>"; };
 		79CF2E6429031F7300448D65 /* PlanItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanItemView.swift; sourceTree = "<group>"; };
 		79CF2E662904276300448D65 /* PlanStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanStore.swift; sourceTree = "<group>"; };
+		79CF2E682908BA7600448D65 /* CalendarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarButton.swift; sourceTree = "<group>"; };
+		79CF2E6A2908BFD200448D65 /* MonthYearPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthYearPicker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -490,6 +494,8 @@
 				7946966E28D81FF0005B6408 /* PlansView.swift */,
 				79CF2E6429031F7300448D65 /* PlanItemView.swift */,
 				79CF2E6229002F8900448D65 /* PlanItemEdit.swift */,
+				79CF2E6A2908BFD200448D65 /* MonthYearPicker.swift */,
+				79CF2E682908BA7600448D65 /* CalendarButton.swift */,
 				79CF2E6028FEC46000448D65 /* PlanGroupView.swift */,
 				79CF2E5E28FEC43400448D65 /* PlanCategoryView.swift */,
 			);
@@ -763,6 +769,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				79C19CCC28D4A85F003F05F2 /* LoginView.swift in Sources */,
+				79CF2E6B2908BFD200448D65 /* MonthYearPicker.swift in Sources */,
 				79CF2E5C28F8E29300448D65 /* ChangePasswordView.swift in Sources */,
 				79B2595E28F4B4FE000D6763 /* ConfigureWidgetView.swift in Sources */,
 				7946967328D82018005B6408 /* ReportsView.swift in Sources */,
@@ -783,6 +790,7 @@
 				79CF2E4D28F7861300448D65 /* EditCategoriesView.swift in Sources */,
 				79CF2E4B28F7250800448D65 /* AddGroupView.swift in Sources */,
 				7946967F28DA1F0E005B6408 /* CategoryView.swift in Sources */,
+				79CF2E692908BA7600448D65 /* CalendarButton.swift in Sources */,
 				79CF2E5528F7B21600448D65 /* CategoryView2.swift in Sources */,
 				7946968C28DB50CE005B6408 /* TransactionView.swift in Sources */,
 				7923782C28D77C0A0069DB01 /* TransactionStore.swift in Sources */,

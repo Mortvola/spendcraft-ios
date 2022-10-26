@@ -35,7 +35,7 @@ struct PlanCategoryView: View {
 struct PlanCategoryView_Previews: PreviewProvider {
     static let category = SpendCraft.Category(id: 0, groupId: 0, name: "Test Category", balance: 100, type: .regular, monthlyExpenses: true)
 //    static let plan = Response.Plan(id: 0, name: "test", categories: [Response.PlanCategory(id: 0, categoryId: 0, amount: 100.0, recurrence: 1)])
-    static let planCategory = PlanCategory(response: Response.PlanCategory(id: 0, categoryId: 0, amount: 100.0, recurrence: 12, useGoal: false))
+    static let planCategory = PlanCategory(response: Response.PlanCategory(id: 0, categoryId: 0, amount: 100.0, recurrence: 12, useGoal: false, goalDate: Date.now))
 
     static var previews: some View {
         PlanCategoryView(category: category, planCategory: planCategory)

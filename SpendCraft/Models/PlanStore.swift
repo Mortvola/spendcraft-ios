@@ -42,6 +42,14 @@ struct MonthYearDate: Encodable {
         self.year = components.year!
     }
     
+    init(month: Int, year: Int) {
+        self.calendar = Calendar.current
+        self.calendar.timeZone = TimeZone(abbreviation: "UTC")!
+
+        self.month = month
+        self.year = year
+    }
+    
     func date() throws -> Date {
         try MonthYearDate.monthDate(month: self.month, year: self.year)
     }
@@ -131,15 +139,13 @@ class PlanCategory: ObservableObject {
     struct Data {
         var amount: Double?
         var recurrence: Int = 1
-        var goal: MonthYearDate
+        var goal: MonthYearDate? = nil
         
         private var calendar: Calendar
         
         init() {
             self.calendar = Calendar.current
             self.calendar.timeZone = TimeZone(abbreviation: "UTC")!
-            
-            self.goal = MonthYearDate(date: Date.now)
         }
 
         init(amount: Double?, recurrence: Int, goalDate: MonthYearDate?) throws {
@@ -148,20 +154,17 @@ class PlanCategory: ObservableObject {
 
             self.amount = amount
             self.recurrence = recurrence
-            
+
+            self.goal = goalDate
+
             if let goalDate = goalDate {
-                self.goal = goalDate
-                
-                let date = try self.goal.date()
+                let date = try goalDate.date()
                 let now = try MonthYearDate.now()
                 
                 // If the date is in the past then adjust it so that it is in the future
                 if now > date {
-                    self.goal = try self.goal.nextDate(recurrence: self.recurrence)
+                    self.goal = try goalDate.nextDate(recurrence: self.recurrence)
                 }
-            }
-            else {
-                self.goal = MonthYearDate(date: Date.now)
             }
         }
     }
@@ -250,6 +253,6 @@ class PlanStore: ObservableObject {
             return planCat
         }
         
-        return PlanCategory(response: Response.PlanCategory(id: PlanStore.nextId(), categoryId: category.id, amount: 0.0, recurrence: 1, useGoal: false))
+        return PlanCategory(response: Response.PlanCategory(id: PlanStore.nextId(), categoryId: category.id, amount: 0.0, recurrence: 1, useGoal: false, goalDate: Date.now))
     }
 }

@@ -171,12 +171,13 @@ enum Response {
             case useGoal
         }
 
-        public init(id: Int, categoryId: Int, amount: Double, recurrence: Int, useGoal: Bool) {
+        public init(id: Int, categoryId: Int, amount: Double, recurrence: Int, useGoal: Bool, goalDate: Date?) {
             self.id = id
             self.categoryId = categoryId
             self.amount = amount
             self.recurrence = recurrence
             self.useGoal = useGoal
+            self.goalDate = goalDate
         }
         
         public init(from decoder: Decoder) throws {
