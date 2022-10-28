@@ -42,6 +42,14 @@ class Transaction: ObservableObject, Identifiable, Codable {
             self.amount = trxCategory.amount
             self.comment = trxCategory.comment ?? ""
         }
+
+        static private var next = 0
+        
+        static func nextId() -> Int {
+            next -= 1
+            
+            return next
+        }
     }
     
     var id: Int
@@ -62,7 +70,6 @@ class Transaction: ObservableObject, Identifiable, Codable {
         
         self.id = id
         self.date = dateFormatter.date(from: date)
-        self.name = name
         self.name = Transaction.convertName(name: name, type: type)
         self.amount = amount
         self.institution = institution
@@ -70,6 +77,23 @@ class Transaction: ObservableObject, Identifiable, Codable {
         self.accountOwner = ""
         self.comment = comment
         self.categories = transactionCategories
+        self.type = type
+    }
+    
+    init(type: TransactionType) {
+        let dateFormatter = DateFormatter();
+        dateFormatter.dateFormat = "y-M-d"
+        
+        self.id = -1
+        self.date = Date.now
+        self.name = ""
+        self.name = Transaction.convertName(name: name, type: type)
+        self.amount = 0
+        self.institution = ""
+        self.account = ""
+        self.accountOwner = ""
+        self.comment = ""
+        self.categories = []
         self.type = type
     }
     
@@ -129,7 +153,7 @@ class Transaction: ObservableObject, Identifiable, Codable {
         }
     }
 
-    func save(completion: @escaping (Result<Response.UpdateTransaction, Error>)->Void) {
+    func save(category: SpendCraft.Category?, transactionStore: TransactionStore, removed: @escaping ()->Void) {
         struct TrxData: Encodable {
             struct Category: Encodable {
                 var id: Int?
@@ -175,7 +199,39 @@ class Transaction: ObservableObject, Identifiable, Codable {
             }
 
             DispatchQueue.main.async {
-                completion(.success(updateTrxResponse))
+                let trx = Transaction(trx: updateTrxResponse.transaction)
+
+                // If the transaction has no categories assigned and the
+                // current category is not the unassigned category
+                // OR if the transation has categories and none of them
+                // match the current category then remove the transaction
+                // from the transactions array
+                if let category = category {
+                    if ((trx.categories.count == 0 && category.type != .unassigned) || (trx.categories.count != 0 && !trx.hasCategory(categoryId: category.id))) {
+                        
+                        // Find the index of the transaction in the transactions array
+                        let index = transactionStore.transactions.firstIndex(where: {
+                            $0.id == trx.id
+                        })
+                        
+                        // If the index was found then remove the transation from
+                        // the transactions array
+                        if let index = index {
+                            transactionStore.transactions.remove(at: index)
+                            removed()
+                        }
+                    }
+                }
+                
+                if (updateTrxResponse.categories.count > 0) {
+                    let categoriesStore = CategoriesStore.shared
+
+                    updateTrxResponse.categories.forEach { cat in
+                        categoriesStore.updateBalance(categoryId: cat.id, balance: cat.balance)
+                    }
+                    
+                    categoriesStore.write()
+                }
             }
         }
     }
@@ -190,7 +246,13 @@ extension Transaction {
         var account: String = ""
         var comment: String?
         var categories: [Category] = []
+        var allowedToSpend: [AllowedToSpend] = []
 
+        struct AllowedToSpend {
+            var categoryId: Int
+            var amount: Double?
+        }
+        
         var isValid: Bool {
             categories.allSatisfy {
                 $0.categoryId != nil && $0.amount != nil
@@ -199,21 +261,110 @@ extension Transaction {
         }
 
         var remaining: Double {
-            let sum = self.categories.reduce(0.0, { x, y in
+            let sum = self.categories.reduce(0.0) { x, y in
                 if let amount = y.amount {
                     return x + amount
                 }
                 
                 return x
-            })
+            }
             
             return ((self.amount - sum) * 100.0).rounded() / 100.0
         }
+        
+        var allowedTotal: Double {
+            return self.allowedToSpend.reduce(0.0) { x, y in
+                if let amount = y.amount {
+                    return x + amount
+                }
+                
+                return x
+            }
+        }
 
+        var fundingTotal: Double {
+            let categoriesStore = CategoriesStore.shared
+            return self.categories.reduce(0.0) { x, y in
+                if y.categoryId != categoriesStore.fundingPool.id, let amount = y.amount {
+                    return x + amount
+                }
+                
+                return x
+            }
+        }
+
+        func loadPlan(completion: @escaping (Response.Plan) -> Void) {
+            try? Http.get(path: "/api/funding-plans/10/details") { data in
+                guard let data = data else {
+                    print ("data is nil")
+                    return;
+                }
+                
+                var planResponse: Response.Plan
+                do {
+                    planResponse = try JSONDecoder().decode(Response.Plan.self, from: data)
+                }
+                catch {
+                    print ("Error: \(error)")
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    completion(planResponse)
+                }
+            }
+        }
     }
     
-    var data: Data {
-        Data(date: date, name: name, amount: amount, institution: institution, account: account, comment: comment, categories: categories)
+    func data(completion: @escaping (Data) -> Void) {
+        var data = Data(date: date, name: name, amount: amount, institution: institution, account: account, comment: comment, categories: categories)
+        
+        data.categories = []
+        
+        // Popuulate the category array with the categories not currently in the array
+        if type == .funding {
+            let categoriesStore = CategoriesStore.shared
+            categoriesStore.categoryDictionary.forEach { entry in
+                if data.categories.first(where: { dataCat in
+                    dataCat.id == entry.value.id
+                }) == nil {
+                    let newCat = Transaction.Category(id: Category.nextId(), categoryId: entry.value.id, amount: 0.0, comment: nil)
+                    data.categories.append(newCat)
+                }
+                
+                data.allowedToSpend.append(Data.AllowedToSpend(categoryId: entry.value.id, amount: 0.0))
+            }
+            
+            data.loadPlan() { planResponse in
+                planResponse.categories.forEach { planCat in
+                    let i = data.categories.firstIndex {
+                        $0.categoryId == planCat.categoryId
+                    }
+                    
+                    if let i = i {
+                        data.categories[i].amount = planCat.amount / Double(planCat.recurrence)
+
+                        if planCat.goalDate == nil {
+                            let j = data.allowedToSpend.firstIndex {
+                                $0.categoryId == planCat.categoryId
+                            }
+                            
+                            if let j = j {
+                                if let c = categoriesStore.categoryDictionary[data.allowedToSpend[j].categoryId] {
+                                    let balance = c.balance + (planCat.amount / Double(planCat.recurrence))
+                                    data.allowedToSpend[j].amount = balance > 0 ? balance : 0
+                                }
+                            }
+                        }
+                    }
+                }
+
+                completion(data)
+            }
+        }
+        else {
+            completion(data)
+        }
     }
     
     func update(from data: Data) {

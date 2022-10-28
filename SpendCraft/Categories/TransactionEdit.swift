@@ -15,61 +15,15 @@ struct TransactionEdit: View {
     @Binding var trxData: Transaction.Data
     @ObservedObject var transactionStore: TransactionStore
     let category: SpendCraft.Category?
-    var categoriesStore = CategoriesStore.shared
-    static var next: Int = 0
     @State var newSelection: Int? = nil
     var postedTransaction: Bool
 
-    static func nextId() -> Int {
+    static var next: Int = 0
+
+    static func nextCategoryId() -> Int {
         next -= 1
         
         return next
-    }
-
-    func saveTransaction() {
-        transaction.save() { result in
-            switch result {
-            case .failure(let error):
-                fatalError(error.localizedDescription)
-            case .success(let updateTrxResponse):
-                let trx = Transaction(trx: updateTrxResponse.transaction)
-
-                // If the transaction has no categories assigned and the
-                // current category is not the unassigned category
-                // OR if the transation has categories and non of them
-                // match the current category then remove the transaction
-                // from the transactions array
-                if let category = category {
-                    if ((trx.categories.count == 0 && category.type != .unassigned) || (trx.categories.count != 0 && !trx.hasCategory(categoryId: category.id))) {
-                        
-                        // Find the index of the transaction in the transactions array
-                        let index = transactionStore.transactions.firstIndex(where: {
-                            $0.id == trx.id
-                        })
-                        
-                        // If the index was found then remove the transation from
-                        // the transactions array
-                        if let index = index {
-                            transactionStore.transactions.remove(at: index)
-                            
-                            // If this is the unassigned category then
-                            // set the badge to the new number of transactions
-                            if (category.type == .unassigned) {
-                                UIApplication.shared.applicationIconBadgeNumber = transactionStore.transactions.count
-                            }
-                        }
-                    }
-                }
-                
-                if (updateTrxResponse.categories.count > 0) {
-                    updateTrxResponse.categories.forEach { cat in
-                        categoriesStore.updateBalance(categoryId: cat.id, balance: cat.balance)
-                    }
-                    
-                    categoriesStore.write()
-                }
-            }
-        }
     }
     
     var body: some View {
@@ -120,7 +74,7 @@ struct TransactionEdit: View {
                                 .onChange(of: newSelection) { id in
                                     if let id = id {
                                         var category = Transaction.Category();
-                                        category.id = TransactionEdit.nextId()
+                                        category.id = TransactionEdit.nextCategoryId()
                                         category.categoryId = id
                                         category.amount = trxData.remaining
                                         trxData.categories.append(category)
@@ -142,7 +96,13 @@ struct TransactionEdit: View {
                     Button("Done") {
                         isEditingTrx = false;
                         transaction.update(from: trxData)
-                        saveTransaction()
+                        transaction.save(category: category, transactionStore: transactionStore) {
+                            // If this is the unassigned category then
+                            // set the badge to the new number of transactions
+                            if let category = category, category.type == .unassigned {
+                                UIApplication.shared.applicationIconBadgeNumber = transactionStore.transactions.count
+                            }
+                        }
                     }
                     .disabled(!trxData.isValid || !postedTransaction)
                 }
@@ -151,14 +111,14 @@ struct TransactionEdit: View {
     }
 }
 
-struct TransactionEdit_Previews: PreviewProvider {
-    static let isEditingTrx = true
-    static let category = SpendCraft.Category(id: 0, groupId: 0, name: "Test", balance: 0, type: .regular, monthlyExpenses: false)
-    static let transactionStore = TransactionStore();
-    static let postedTransaction = true
-
-    static var previews: some View {
-        TransactionEdit(transaction: SampleData.transactions[0], isEditingTrx: .constant(isEditingTrx), trxData: .constant(SampleData.transactions[0].data), transactionStore: transactionStore, category: category, postedTransaction: postedTransaction)
-            .previewInterfaceOrientation(.portraitUpsideDown)
-    }
-}
+//struct TransactionEdit_Previews: PreviewProvider {
+//    static let isEditingTrx = true
+//    static let category = SpendCraft.Category(id: 0, groupId: 0, name: "Test", balance: 0, type: .regular, monthlyExpenses: false)
+//    static let transactionStore = TransactionStore();
+//    static let postedTransaction = true
+//
+//    static var previews: some View {
+//        TransactionEdit(transaction: SampleData.transactions[0], isEditingTrx: .constant(isEditingTrx), trxData: .constant(SampleData.transactions[0].data), transactionStore: transactionStore, category: category, postedTransaction: postedTransaction)
+//            .previewInterfaceOrientation(.portraitUpsideDown)
+//    }
+//}

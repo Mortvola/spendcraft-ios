@@ -83,8 +83,7 @@ enum Response {
             self.id = try container.decode(Int.self, forKey: .id)
             
             let dateString = try container.decode(String.self, forKey: .date)
-            let formatter = DateFormatter.yyyyMMdd
-            if let date = formatter.date(from: dateString) {
+            if let date = DateFormatter.yyyyMMdd.date(from: dateString) {
                 self.date = date;
             }
             else {

@@ -13,7 +13,10 @@ struct CategoriesView: View {
     @EnvironmentObject private var navModel: NavModel
     @StateObject private var testCategory = SpendCraft.Category(id: -2, groupId: 0, name: "Unassigned", balance: 100, type: .regular, monthlyExpenses: false)
     @State private var isEditingCategories = false
-    
+    @State private var isFundingCategories = false
+    @State private var newTransaction = Transaction(type: .regular)
+    @State var trxData = Transaction.Data()
+
     var body: some View {
         NavigationSplitView {
             List(selection: $navModel.selectedCategory) {
@@ -22,7 +25,7 @@ struct CategoriesView: View {
                     CategoryView(category: categoriesStore.fundingPool)
                     CategoryView(category: categoriesStore.accountTransfer)
                     NavigationLink(destination: RegisterView(category: testCategory)) {
-                        Text("Rebalances")
+                        Text("Category Transfers")
                     }
                 }
                 
@@ -44,6 +47,15 @@ struct CategoriesView: View {
                 categoriesStore.load()
             }
             .toolbar {
+                ToolbarItem(placement: .automatic) {
+                    Button("Fund") {
+                        newTransaction = Transaction(type: .funding)
+                        newTransaction.data() { d in
+                            trxData = d
+                            isFundingCategories = true
+                        }
+                    }
+                }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Edit") {
                         isEditingCategories = true
@@ -58,6 +70,9 @@ struct CategoriesView: View {
         .sheet(isPresented: $isEditingCategories) {
             EditCategoriesView(isEditingCategories: $isEditingCategories)
                 .presentationDetents([.large])
+        }
+        .sheet(isPresented: $isFundingCategories) {
+            FundingEdit(transaction: newTransaction, isOpen: $isFundingCategories, trxData: $trxData)
         }
         .onAppear {
             if (!categoriesStore.loaded) {

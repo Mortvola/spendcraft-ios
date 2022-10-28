@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		790B4EF42909699500149DCC /* FundingGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790B4EF32909699500149DCC /* FundingGroupView.swift */; };
+		790B4EF629096A5000149DCC /* FundingCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790B4EF529096A5000149DCC /* FundingCategoryView.swift */; };
+		790B4EF8290C376200149DCC /* TopBorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790B4EF7290C376200149DCC /* TopBorder.swift */; };
 		7923782A28D76BD60069DB01 /* Authenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782928D76BD60069DB01 /* Authenticator.swift */; };
 		7923782C28D77C0A0069DB01 /* TransactionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782B28D77C0A0069DB01 /* TransactionStore.swift */; };
 		7923783228D7F61E0069DB01 /* TransactionEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923783128D7F61E0069DB01 /* TransactionEdit.swift */; };
@@ -80,6 +83,7 @@
 		79CF2E672904276300448D65 /* PlanStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E662904276300448D65 /* PlanStore.swift */; };
 		79CF2E692908BA7600448D65 /* CalendarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E682908BA7600448D65 /* CalendarButton.swift */; };
 		79CF2E6B2908BFD200448D65 /* MonthYearPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E6A2908BFD200448D65 /* MonthYearPicker.swift */; };
+		79CF2E6E2909653A00448D65 /* FundingEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E6D2909653A00448D65 /* FundingEdit.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -171,6 +175,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		790B4EF32909699500149DCC /* FundingGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FundingGroupView.swift; sourceTree = "<group>"; };
+		790B4EF529096A5000149DCC /* FundingCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FundingCategoryView.swift; sourceTree = "<group>"; };
+		790B4EF7290C376200149DCC /* TopBorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBorder.swift; sourceTree = "<group>"; };
 		7923782728D7678C0069DB01 /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		7923782928D76BD60069DB01 /* Authenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authenticator.swift; sourceTree = "<group>"; };
 		7923782B28D77C0A0069DB01 /* TransactionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionStore.swift; sourceTree = "<group>"; };
@@ -247,6 +254,7 @@
 		79CF2E662904276300448D65 /* PlanStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanStore.swift; sourceTree = "<group>"; };
 		79CF2E682908BA7600448D65 /* CalendarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarButton.swift; sourceTree = "<group>"; };
 		79CF2E6A2908BFD200448D65 /* MonthYearPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthYearPicker.swift; sourceTree = "<group>"; };
+		79CF2E6D2909653A00448D65 /* FundingEdit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FundingEdit.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -417,6 +425,7 @@
 				79ADF87328E5D49B00227F44 /* Accounts */,
 				7946968228DA2732005B6408 /* Categories */,
 				79CF2E5D28FEC40C00448D65 /* Plans */,
+				79CF2E6C2909650500448D65 /* Funding */,
 				7946967228D82018005B6408 /* ReportsView.swift */,
 				792681B428F6201C0005114F /* TransactionTypePicker.swift */,
 				7946967428D8203A005B6408 /* MainView.swift */,
@@ -424,6 +433,7 @@
 				795382DF28E7141100133EFA /* SettingsView.swift */,
 				79CF2E5B28F8E29300448D65 /* ChangePasswordView.swift */,
 				7946968928DAC578005B6408 /* NumericField.swift */,
+				790B4EF7290C376200149DCC /* TopBorder.swift */,
 				7946968F28DCAE64005B6408 /* CategoryPicker */,
 				79C19CD128D517D1003F05F2 /* Models */,
 				79C19CA528D41BCA003F05F2 /* Assets.xcassets */,
@@ -500,6 +510,16 @@
 				79CF2E5E28FEC43400448D65 /* PlanCategoryView.swift */,
 			);
 			path = Plans;
+			sourceTree = "<group>";
+		};
+		79CF2E6C2909650500448D65 /* Funding */ = {
+			isa = PBXGroup;
+			children = (
+				79CF2E6D2909653A00448D65 /* FundingEdit.swift */,
+				790B4EF32909699500149DCC /* FundingGroupView.swift */,
+				790B4EF529096A5000149DCC /* FundingCategoryView.swift */,
+			);
+			path = Funding;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -772,6 +792,7 @@
 				79CF2E6B2908BFD200448D65 /* MonthYearPicker.swift in Sources */,
 				79CF2E5C28F8E29300448D65 /* ChangePasswordView.swift in Sources */,
 				79B2595E28F4B4FE000D6763 /* ConfigureWidgetView.swift in Sources */,
+				79CF2E6E2909653A00448D65 /* FundingEdit.swift in Sources */,
 				7946967328D82018005B6408 /* ReportsView.swift in Sources */,
 				7946967D28DA1AD1005B6408 /* GroupView.swift in Sources */,
 				79CF2E5A28F85C3300448D65 /* AppDelegate.swift in Sources */,
@@ -787,6 +808,7 @@
 				79CF2E4928F6F39000448D65 /* AddCategoryView.swift in Sources */,
 				79C19CCE28D4D80E003F05F2 /* RegisterView.swift in Sources */,
 				7946967128D82006005B6408 /* AccountsView.swift in Sources */,
+				790B4EF629096A5000149DCC /* FundingCategoryView.swift in Sources */,
 				79CF2E4D28F7861300448D65 /* EditCategoriesView.swift in Sources */,
 				79CF2E4B28F7250800448D65 /* AddGroupView.swift in Sources */,
 				7946967F28DA1F0E005B6408 /* CategoryView.swift in Sources */,
@@ -798,9 +820,11 @@
 				79CF2E5728F7B57900448D65 /* GroupView2.swift in Sources */,
 				795382E828E864B800133EFA /* InactiveView.swift in Sources */,
 				7946966F28D81FF0005B6408 /* PlansView.swift in Sources */,
+				790B4EF8290C376200149DCC /* TopBorder.swift in Sources */,
 				79C19CD328D517E7003F05F2 /* Transaction.swift in Sources */,
 				795382E028E7141100133EFA /* SettingsView.swift in Sources */,
 				7946969528DE1173005B6408 /* SampleData.swift in Sources */,
+				790B4EF42909699500149DCC /* FundingGroupView.swift in Sources */,
 				7946967528D8203A005B6408 /* MainView.swift in Sources */,
 				79CF2E5328F79FE900448D65 /* DeleteButton.swift in Sources */,
 				795382E228E7178600133EFA /* AccountRegisterView.swift in Sources */,

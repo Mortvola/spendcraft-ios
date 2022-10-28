@@ -73,6 +73,7 @@ struct NumericField: View {
             .multilineTextAlignment(.trailing)
             .keyboardType(.numbersAndPunctuation)
             .foregroundColor((value ?? 0) < 0 ? Color(.red) : nil)
+            .monospacedDigit()
     }
 }
 

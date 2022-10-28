@@ -31,7 +31,9 @@ struct TransactionView: View {
     var body: some View {
         Button(action: {
             isEditingTrx = true
-            data = trx.data
+            trx.data() { d in
+                data = d
+            }
         }) {
             VStack(spacing: 10) {
                 HStack() {
@@ -65,7 +67,12 @@ struct TransactionView: View {
             }
         }
         .sheet(isPresented: $isEditingTrx) {
-            TransactionEdit(transaction: trx, isEditingTrx: $isEditingTrx, trxData: $data, transactionStore: transactionStore, category: category, postedTransaction: postedTransaction)
+            if trx.type == .funding {
+                FundingEdit(transaction: trx, isOpen: $isEditingTrx, trxData: $data)
+            }
+            else {
+                TransactionEdit(transaction: trx, isEditingTrx: $isEditingTrx, trxData: $data, transactionStore: transactionStore, category: category, postedTransaction: postedTransaction)
+            }
         }
     }
 }

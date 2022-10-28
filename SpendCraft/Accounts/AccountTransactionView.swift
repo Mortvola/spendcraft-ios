@@ -17,8 +17,10 @@ struct AccountTransactionView: View {
 
     var body: some View {
         Button(action: {
-            isEditingTrx = true
-            data = trx.data
+            trx.data () { d in
+                isEditingTrx = true
+                data = d
+            }
         }) {
             VStack(spacing: 10) {
                 HStack() {

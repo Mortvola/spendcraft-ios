@@ -16,7 +16,7 @@ struct PlansView: View {
     
     var body: some View {
         NavigationSplitView {
-            VStack {
+            VStack(spacing: 0) {
                 if planStore.loaded {
                     List(selection: $selection) {
                         Section(header: Text("My Categories")) {
@@ -42,7 +42,8 @@ struct PlansView: View {
                     Spacer()
                     SpendCraft.AmountView(amount: planStore.plan?.total ?? 0.0)
                 }
-                .padding([.leading, .trailing, .bottom])
+                .padding()
+                .border(edge: .top)
             }
             .navigationTitle("Plans")
             .refreshable {

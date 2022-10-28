@@ -28,7 +28,7 @@ final class CategoriesStore: ObservableObject {
     var loaded = false
     
     private var groupDictionary: Dictionary<Int, SpendCraft.Group>
-    private var categoryDictionary: Dictionary<Int, SpendCraft.Category>
+    public var categoryDictionary: Dictionary<Int, SpendCraft.Category>
     
     static let shared: CategoriesStore = CategoriesStore()
     
@@ -38,7 +38,7 @@ final class CategoriesStore: ObservableObject {
         
         self.unassigned = SpendCraft.Category(id: -2, groupId: 0, name: "Unassigned", balance: 0, type: .unassigned, monthlyExpenses: false)
         self.fundingPool = SpendCraft.Category(id: -3, groupId: 0, name: "Funding Pool", balance: 0, type: .fundingPool, monthlyExpenses: false)
-        self.accountTransfer = SpendCraft.Category(id: -4, groupId: 0, name: "Account Transfer", balance: 0, type: .accountTransfer, monthlyExpenses: false)
+        self.accountTransfer = SpendCraft.Category(id: -4, groupId: 0, name: "Account Transfers", balance: 0, type: .accountTransfer, monthlyExpenses: false)
         
         self.noGroupId = -1
     }
@@ -169,6 +169,8 @@ final class CategoriesStore: ObservableObject {
                 
                 if let accountTransfer = accountTransfer {
                     self.accountTransfer = accountTransfer
+                    // todo: Change this name in the database instead of here.
+                    self.accountTransfer.name = "Account Transfers"
                 }
                 
                 //                self.tree.removeAll {
