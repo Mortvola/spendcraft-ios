@@ -16,48 +16,13 @@ struct AccountRegisterView: View {
     }
     @State var syncing: Bool = false
     @State var transactionType: Int = 0
-    @State var loading = false
 
-    func loadTransactions() {
-        loading = true
-        
+    func loadTransactions() async {
         if transactionType == 0 {
-            TransactionStore.load(account: account) { result in
-                switch result {
-                case .failure(let error):
-                    fatalError(error.localizedDescription)
-                case .success(let transactionsResponse):
-                    var runningBalance = transactionsResponse.balance;
-                    
-                    let transactions: [Transaction] = transactionsResponse.transactions.map {
-                        let trx = Transaction(trx: $0)
-                        trx.runningBalance = runningBalance
-                        runningBalance -= trx.amount
-                        
-                        return trx
-                    }
-                    
-                    self.transactionStore.transactions = transactions
-                }
-
-                loading = false
-            }
+            await transactionStore.load(account: account)
         }
         else {
-            TransactionStore.loadPending(account: account) { result in
-                switch result {
-                case .failure(let error):
-                    fatalError(error.localizedDescription)
-                case .success(let pendingTrx):
-                    let transactions: [Transaction] = pendingTrx.map {
-                        Transaction(trx: $0)
-                    }
-                    
-                    self.transactionStore.transactions = transactions
-                }
-
-                loading = false
-            }
+            await self.transactionStore.loadPending(account: account)
         }
     }
 
@@ -65,11 +30,13 @@ struct AccountRegisterView: View {
         VStack {
             TransactionTypePicker(transactionType: $transactionType)
                 .onChange(of: transactionType) { _ in
-                    loading = true
-                    loadTransactions()
+                    transactionStore.loading = true
+                    Task {
+                        await loadTransactions()
+                    }
                 }
             
-            if (loading) {
+            if (transactionStore.loading) {
                 ProgressView()
                 Spacer()
             } else {
@@ -84,7 +51,7 @@ struct AccountRegisterView: View {
                     .listStyle(.plain)
                     .navigationTitle(account.name)
                     .refreshable {
-                        loadTransactions()
+                        await loadTransactions()
                     }
                     .toolbar {
                         ToolbarItem(placement: .confirmationAction) {
@@ -111,8 +78,8 @@ struct AccountRegisterView: View {
                 }
             }
         }
-        .onAppear {
-            loadTransactions()
+        .task {
+            await loadTransactions()
         }
     }
 }

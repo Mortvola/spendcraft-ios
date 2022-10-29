@@ -44,14 +44,14 @@ struct CategoriesView: View {
             }
             .navigationTitle("Categories")
             .refreshable {
-                categoriesStore.load()
+                await categoriesStore.load()
             }
             .toolbar {
                 ToolbarItem(placement: .automatic) {
                     Button("Fund") {
                         newTransaction = Transaction(type: .funding)
-                        newTransaction.data() { d in
-                            trxData = d
+                        Task {
+                            trxData = await newTransaction.data()
                             isFundingCategories = true
                         }
                     }
@@ -74,9 +74,9 @@ struct CategoriesView: View {
         .sheet(isPresented: $isFundingCategories) {
             FundingEdit(transaction: newTransaction, isOpen: $isFundingCategories, trxData: $trxData)
         }
-        .onAppear {
+        .task {
             if (!categoriesStore.loaded) {
-                categoriesStore.load()
+                await categoriesStore.load()
             }
         }
     }

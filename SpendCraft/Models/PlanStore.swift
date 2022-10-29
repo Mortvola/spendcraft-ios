@@ -213,27 +213,14 @@ class PlanStore: ObservableObject {
 
     static let shared: PlanStore = PlanStore()
     
-    func load() {
+    @MainActor
+    func load() async {
         self.loaded = false
-        try? Http.get(path: "/api/funding-plans/10/details") { data in
-            guard let data = data else {
-                return
-            }
-            
-            let response: Response.Plan
-            do {
-                response = try JSONDecoder().decode(Response.Plan.self, from: data)
-            }
-            catch {
-                print ("Error: \(error)")
-                return
-            }
-            
-            DispatchQueue.main.async {
-                self.plan = Plan(response: response)
-                self.loaded = true
-            }
+        if let response: Response.Plan = try? await Http.get(path: "/api/funding-plans/10/details") {
+            self.plan = Plan(response: response)
         }
+
+        self.loaded = true
     }
     
     static private var next = 0

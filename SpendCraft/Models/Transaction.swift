@@ -292,31 +292,9 @@ extension Transaction {
                 return x
             }
         }
-
-        func loadPlan(completion: @escaping (Response.Plan) -> Void) {
-            try? Http.get(path: "/api/funding-plans/10/details") { data in
-                guard let data = data else {
-                    print ("data is nil")
-                    return;
-                }
-                
-                var planResponse: Response.Plan
-                do {
-                    planResponse = try JSONDecoder().decode(Response.Plan.self, from: data)
-                }
-                catch {
-                    print ("Error: \(error)")
-                    return
-                }
-                
-                DispatchQueue.main.async {
-                    completion(planResponse)
-                }
-            }
-        }
     }
     
-    func data(completion: @escaping (Data) -> Void) {
+    func data() async -> Data {
         var data = Data(date: date, name: name, amount: amount, institution: institution, account: account, comment: comment, categories: categories)
         
         data.categories = []
@@ -335,7 +313,7 @@ extension Transaction {
                 data.allowedToSpend.append(Data.AllowedToSpend(categoryId: entry.value.id, amount: 0.0))
             }
             
-            data.loadPlan() { planResponse in
+            if let planResponse: Response.Plan = try? await Http.get(path: "/api/funding-plans/10/details") {
                 planResponse.categories.forEach { planCat in
                     let i = data.categories.firstIndex {
                         $0.categoryId == planCat.categoryId
@@ -343,7 +321,7 @@ extension Transaction {
                     
                     if let i = i {
                         data.categories[i].amount = planCat.amount / Double(planCat.recurrence)
-
+                        
                         if planCat.goalDate == nil {
                             let j = data.allowedToSpend.firstIndex {
                                 $0.categoryId == planCat.categoryId
@@ -358,13 +336,10 @@ extension Transaction {
                         }
                     }
                 }
-
-                completion(data)
             }
         }
-        else {
-            completion(data)
-        }
+
+        return data
     }
     
     func update(from data: Data) {

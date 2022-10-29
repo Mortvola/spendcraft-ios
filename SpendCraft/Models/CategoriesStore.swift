@@ -42,29 +42,15 @@ final class CategoriesStore: ObservableObject {
         
         self.noGroupId = -1
     }
-    
-    func load() {
-        try? Http.get(path: "/api/groups") { data in
-            guard let data = data else {
-                print ("data is nil")
-                return;
-            }
-            
-            var categoriesResponse: [SpendCraft.Response.CategoryTreeNode]
-            do {
-                categoriesResponse = try JSONDecoder().decode([SpendCraft.Response.CategoryTreeNode].self, from: data)
-            }
-            catch {
-                print ("Error: \(error)")
-                return
-            }
-            
-            DispatchQueue.main.async {
-                self.makeTree(tree: categoriesResponse)
-                self.write()
-                self.loaded = true
-            }
+
+    @MainActor
+    func load() async {
+        if let categoriesResponse: [SpendCraft.Response.CategoryTreeNode] = try? await Http.get(path: "/api/groups") {
+            self.makeTree(tree: categoriesResponse)
+            self.write()
         }
+        
+        self.loaded = true
     }
     
     func makeTree(tree: [SpendCraft.Response.CategoryTreeNode]) {

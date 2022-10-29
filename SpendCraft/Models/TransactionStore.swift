@@ -10,79 +10,69 @@ import Framework
 
 class TransactionStore: ObservableObject {
     @Published var transactions: [Transaction] = []
+    @Published var loading = false
 
-    static private func load(path: String, completion: @escaping (Result<Response.Transactions, Error>)->Void) {
-        try? Http.get(path: path) { data in
-            guard let data = data else {
-                print ("data is nil")
-                return;
+    @MainActor
+    private func load(path: String, categoryId: Int? = nil) async {
+        loading = true
+        
+        if let transactionsResponse: Response.Transactions = try? await Http.get(path: path) {
+            var runningBalance = transactionsResponse.balance;
+            
+            let transactions: [Transaction] = transactionsResponse.transactions.map {
+                let trx = Transaction(trx: $0)
+                trx.runningBalance = runningBalance
+                runningBalance -= trx.amount
+                
+                return trx
             }
             
-            var transactionsResponse: Response.Transactions
-            do {
-                transactionsResponse = try JSONDecoder().decode(Response.Transactions.self, from: data)
-            }
-            catch {
-                print ("Error: \(error)")
-                return
-            }
-
-            DispatchQueue.main.async {
-                completion(.success(transactionsResponse))
+            self.transactions = transactions
+            
+            if let categoryId = categoryId {
+                CategoriesStore.shared.updateBalance(categoryId: categoryId, balance: transactionsResponse.balance)
             }
         }
+
+        loading = false
     }
 
-    static func loadPending(account: Account, completion: @escaping (Result<[Response.Transaction], Error>)->Void) {
-        try? Http.get(path: "/api/account/\(account.id)/transactions/pending?offset=0&limit=30") { data in
-            guard let data = data else {
-                print ("data is nil")
-                return;
+    @MainActor
+    func loadPending(account: Account) async {
+        self.loading = true
+        
+        if let pendingResponse: [Response.Transaction] = try? await Http.get(path: "/api/account/\(account.id)/transactions/pending?offset=0&limit=30") {
+            let transactions: [Transaction] = pendingResponse.map {
+                Transaction(trx: $0)
             }
             
-            var pendingResponse: [Response.Transaction]
-            do {
-                pendingResponse = try JSONDecoder().decode([Response.Transaction].self, from: data)
-            }
-            catch {
-                print ("Error: \(error)")
-                return
-            }
-
-            DispatchQueue.main.async {
-                completion(.success(pendingResponse))
-            }
+            self.transactions = transactions
         }
+
+        self.loading = false
     }
 
-    static func loadPending(category: SpendCraft.Category, completion: @escaping (Result<[Response.Transaction], Error>)->Void) {
-        try? Http.get(path: "/api/category/\(category.id)/transactions/pending?offset=0&limit=30") { data in
-            guard let data = data else {
-                print ("data is nil")
-                return;
+    @MainActor
+    func loadPending(category: SpendCraft.Category) async {
+        self.loading = true
+        
+        if let pendingResponse: [Response.Transaction] = try? await Http.get(path: "/api/category/\(category.id)/transactions/pending?offset=0&limit=30") {
+            let transactions = pendingResponse.map {
+                Transaction(trx: $0)
             }
             
-            var pendingResponse: [Response.Transaction]
-            do {
-                pendingResponse = try JSONDecoder().decode([Response.Transaction].self, from: data)
-            }
-            catch {
-                print ("Error: \(error)")
-                return
-            }
-
-            DispatchQueue.main.async {
-                completion(.success(pendingResponse))
-            }
+            self.transactions = transactions
         }
+        
+        self.loading = false
     }
 
-    static func load(account: Account, completion: @escaping (Result<Response.Transactions, Error>)->Void) {
-        load(path: "/api/account/\(account.id)/transactions?offset=0&limit=30", completion: completion)
+    func load(account: Account) async {
+        await load(path: "/api/account/\(account.id)/transactions?offset=0&limit=30")
     }
 
-    static func load(category: SpendCraft.Category, completion: @escaping (Result<Response.Transactions, Error>)->Void) {
-        load(path: "/api/category/\(category.id)/transactions?offset=0&limit=30", completion: completion)
+    func load(category: SpendCraft.Category) async {
+        await load(path: "/api/category/\(category.id)/transactions?offset=0&limit=30", categoryId: category.id)
     }
     
     static func sync(account: Account, completion: @escaping (Result<Response.AccountSync, Error>)->Void) {

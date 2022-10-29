@@ -19,16 +19,16 @@ struct AccountsView: View {
             .listStyle(.sidebar)
             .navigationTitle("Accounts")
             .refreshable {
-                accountsStore.load()
+                await accountsStore.load()
             }
         } detail: {
             if let account = navModel.selectedAccount {
                 AccountRegisterView(account: account)
             }
         }
-        .onAppear {
+        .task {
             if (!accountsStore.loaded) {
-                accountsStore.load()
+                await accountsStore.load()
             }
         }
     }

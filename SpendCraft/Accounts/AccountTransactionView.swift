@@ -16,12 +16,12 @@ struct AccountTransactionView: View {
     var postedTransaction: Bool
 
     var body: some View {
-        Button(action: {
-            trx.data () { d in
+        Button {
+            Task {
+                data = await trx.data ()
                 isEditingTrx = true
-                data = d
             }
-        }) {
+        } label: {
             VStack(spacing: 10) {
                 HStack() {
                     HStack {

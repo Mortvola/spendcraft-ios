@@ -47,11 +47,11 @@ struct PlansView: View {
             }
             .navigationTitle("Plans")
             .refreshable {
-                planStore.load()
+                await planStore.load()
             }
-            .onAppear {
+            .task {
                 if !planStore.loaded {
-                    planStore.load()
+                    await planStore.load()
                 }
             }
         } detail: {

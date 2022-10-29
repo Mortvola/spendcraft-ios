@@ -77,22 +77,9 @@ class AccountsStore: ObservableObject {
 
     static let shared: AccountsStore = AccountsStore()
     
-    func load() {
-        try? Http.get(path: "/api/connected-accounts") { data in
-            guard let data = data else {
-                print ("data is nil")
-                return;
-            }
-            
-            var accountsResponse: [Response.Institution]
-            do {
-                accountsResponse = try JSONDecoder().decode([Response.Institution].self, from: data)
-            }
-            catch {
-                print ("Error: \(error)")
-                return
-            }
-
+    @MainActor
+    func load() async {
+        if let accountsResponse: [Response.Institution] = try? await Http.get(path: "/api/connected-accounts") {
             var accounts: [Institution] = accountsResponse.map{
                 Institution(institution: $0)
             };
@@ -101,21 +88,19 @@ class AccountsStore: ObservableObject {
                 $0.name < $1.name
             }
         
-            DispatchQueue.main.async {
-                self.accounts = accounts
+            self.accounts = accounts
 
-                // Build a dictionary of the accounts for faster lookup
-                self.accountDictionary = Dictionary()
+            // Build a dictionary of the accounts for faster lookup
+            self.accountDictionary = Dictionary()
 
-                self.accounts.forEach { institution in
-                    institution.accounts.forEach { account in
-                        self.accountDictionary.updateValue(account, forKey: account.id)
-                    }
+            self.accounts.forEach { institution in
+                institution.accounts.forEach { account in
+                    self.accountDictionary.updateValue(account, forKey: account.id)
                 }
-                
-                self.loaded = true
             }
         }
+        
+        self.loaded = true
     }
     
     func getAccount(accountId: Int) -> Account? {

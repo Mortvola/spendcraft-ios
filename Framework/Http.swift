@@ -30,9 +30,27 @@ public struct Http {
         try Http.sendRequest(method: "PUT", path: path, data: data, completion)
     }
 
+    public static func put(path: String, data: Encodable) async throws -> Data? {
+        await withCheckedContinuation { continuation in
+            try? Http.sendRequest(method: "PUT", path: path, data: data) { data in
+                continuation.resume(returning: data)
+            }
+        }
+    }
+
     // GET requests
-    public static func get(path: String, _ completion: @escaping (Data?) -> Void) throws {
-        try Http.sendRequest(method: "GET", path: path, completion)
+    public static func get<T: Decodable>(path: String) async throws -> T {
+        let data = await withCheckedContinuation { continuation in
+            try? Http.sendRequest(method: "GET", path: path) { data in
+                continuation.resume(returning: data)
+            }
+        }
+
+        guard let data = data else {
+            throw MyError.runtimeError("Data is nil")
+        }
+
+        return try JSONDecoder().decode(T.self, from: data)
     }
 
     // PATCH requests

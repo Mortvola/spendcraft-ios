@@ -10,65 +10,19 @@ import Framework
 
 struct RegisterView: View {
     @ObservedObject var category: SpendCraft.Category
-    var categoriesStore = CategoriesStore.shared
     @StateObject private var transactionStore = TransactionStore();
-    @State var loading = false
     @State var transactionType: Int = 0
 
-    func loadTransactions() {
-        loading = true
-
+    func loadTransactions() async {
         if transactionType == 0 {
-            TransactionStore.load(category: category) { result in
-                switch result {
-                case .failure(let error):
-                    fatalError(error.localizedDescription)
-                case .success(let transactionsResponse):
-                    var runningBalance = transactionsResponse.balance;
-                    
-                    var transactions: [Transaction] = []
-                    
-                    if (category.type == .unassigned) {
-                        // Don't store a running balance for the unassigned
-                        // transactions
-                        transactions = transactionsResponse.transactions.map {
-                            Transaction(trx: $0)
-                        }
-                    } else {
-                        transactions = transactionsResponse.transactions.map {
-                            let trx = Transaction(trx: $0)
-                            trx.runningBalance = runningBalance
-                            runningBalance -= trx.categoryAmount(category: category)
-                            return trx;
-                        }
-                    }
-                    
-                    self.transactionStore.transactions = transactions
-                    categoriesStore.updateBalance(categoryId: category.id, balance: transactionsResponse.balance)
-                    
-                    // Update the badge if the current category is the unassigned category.
-                    if (category.type == .unassigned) {
-                        UIApplication.shared.applicationIconBadgeNumber = transactions.count
-                    }
-                }
-                
-                loading = false
+            await transactionStore.load(category: category)
+
+            // Update the badge if the current category is the unassigned category.
+            if (category.type == .unassigned) {
+                UIApplication.shared.applicationIconBadgeNumber = transactionStore.transactions.count
             }
         } else {
-            TransactionStore.loadPending(category: category) { result in
-                switch result {
-                case .failure(let error):
-                    fatalError(error.localizedDescription)
-                case .success(let pendingTrx):
-                    let transactions = pendingTrx.map {
-                        Transaction(trx: $0)
-                    }
-                    
-                    self.transactionStore.transactions = transactions
-                }
-                
-                loading = false
-            }
+            await transactionStore.loadPending(category: category)
         }
     }
 
@@ -77,11 +31,13 @@ struct RegisterView: View {
             if category.type == .unassigned {
                 TransactionTypePicker(transactionType: $transactionType)
                     .onChange(of: transactionType) { _ in
-                        loadTransactions()
+                        Task {
+                            await loadTransactions()
+                        }
                     }
             }
             
-            if (loading) {
+            if (transactionStore.loading) {
                 ProgressView()
                 Spacer()
             }
@@ -96,18 +52,15 @@ struct RegisterView: View {
                     }
                     .listStyle(.plain)
                     .refreshable {
-                        loadTransactions()
+                        await loadTransactions()
                     }
                 }
             }
         }
         .navigationTitle(category.name)
-        .onAppear {
-            loadTransactions()
+        .task {
+            await loadTransactions()
         }
-//        .refreshable {
-//            loadTransactions()
-//        }
     }
 }
 

@@ -29,12 +29,12 @@ struct TransactionView: View {
     }
 
     var body: some View {
-        Button(action: {
-            isEditingTrx = true
-            trx.data() { d in
-                data = d
+        Button {
+            Task {
+                data = await trx.data()
+                isEditingTrx = true
             }
-        }) {
+        } label: {
             VStack(spacing: 10) {
                 HStack() {
                     HStack {
