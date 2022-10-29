@@ -98,44 +98,36 @@ public struct Http {
         return true
     }
     
-    private static func dataTask(urlRequest: URLRequest, _ completion: @escaping (Data?) -> Void) throws {
+    private static func dataTask(urlRequest: URLRequest) async throws -> Data? {
         let session = try getSession()
         
-        let task = session.dataTask(with: urlRequest) { data, response, error in
-            if !checkResponse(error: error, response: response) {
-                return
+        return await withCheckedContinuation { continuation in
+            let task = session.dataTask(with: urlRequest) { data, response, error in
+                if !checkResponse(error: error, response: response) {
+                    return
+                }
+                
+                continuation.resume(returning: data)
             }
             
-            completion(data)
+            task.resume()
         }
-        
-        task.resume()
     }
     
-    private static func uploadTask(urlRequest: URLRequest, uploadData: Data?, _ completion: @escaping (Data?) -> Void) throws {
+    private static func uploadTask(urlRequest: URLRequest, uploadData: Data?) async throws -> Data? {
         let session = try getSession()
         
-        let task = session.uploadTask(with: urlRequest, from: uploadData) { data, response, error in
-            if !checkResponse(error: error, response: response) {
-                return
+        return await withCheckedContinuation { continuation in
+            let task = session.uploadTask(with: urlRequest, from: uploadData) { data, response, error in
+                if !checkResponse(error: error, response: response) {
+                    return
+                }
+                
+                continuation.resume(returning: data)
             }
             
-            completion(data)
+            task.resume()
         }
-        
-        task.resume()
-    }
-
-    private static func uploadTask(urlRequest: URLRequest, uploadData: Data?) throws {
-        let session = try getSession()
-        
-        let task = session.uploadTask(with: urlRequest, from: uploadData) { _, response, error in
-            if !checkResponse(error: error, response: response) {
-                return
-            }
-        }
-        
-        task.resume()
     }
 
     @discardableResult
@@ -148,11 +140,7 @@ public struct Http {
         urlRequest.httpMethod = method
         urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
         
-        return await withCheckedContinuation { continuation in
-            try? dataTask(urlRequest: urlRequest) { data in
-                continuation.resume(returning: data)
-            }
-        }
+        return try await dataTask(urlRequest: urlRequest)
     }
     
     @discardableResult
@@ -168,11 +156,7 @@ public struct Http {
 
         let uploadData = try JSONEncoder().encode(data)
         
-        return await withCheckedContinuation { continuation in
-            try? uploadTask(urlRequest: urlRequest, uploadData: uploadData) { data in
-                continuation.resume(returning: data)
-            }
-        }
+        return try await uploadTask(urlRequest: urlRequest, uploadData: uploadData)
     }
     
     private static func getSession() throws -> URLSession {

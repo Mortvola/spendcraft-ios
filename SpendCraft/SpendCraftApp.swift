@@ -71,7 +71,7 @@ struct SpendCraftApp: App {
             case .background:
                 self.isActive = false
             @unknown default:
-                print("scenePhse unexpected state")
+                print("scenePhase unexpected state")
             }
         }
         .onChange(of: authenticator.authenticated) { authenticated in
