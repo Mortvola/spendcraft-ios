@@ -241,7 +241,8 @@ final class CategoriesStore: ObservableObject {
         category.groupId = groupId
     }
     
-    public func addCategory(name: String, groupId: Int) {
+    @MainActor
+    public func addCategory(name: String, groupId: Int) async {
         struct Data: Encodable {
             var name: String
             var groupId: Int
@@ -250,26 +251,11 @@ final class CategoriesStore: ObservableObject {
         
         let cat = Data(name: name, groupId: groupId)
     
-        try? Http.post(path: "/api/groups/\(groupId)/categories", data: cat) { data in
-            guard let data = data else {
-                return
-            }
+        if let category: SpendCraft.Category = try? await Http.post(path: "/api/groups/\(groupId)/categories", data: cat) {
+            self.addCategoryToGroup(category: category, groupId: groupId)
             
-            let category: SpendCraft.Category
-            do {
-                category = try JSONDecoder().decode(SpendCraft.Category.self, from: data)
-            }
-            catch {
-                print ("Error: \(error)")
-                return
-            }
-    
-            DispatchQueue.main.async {
-                self.addCategoryToGroup(category: category, groupId: groupId)
-                
-                // Add the category to the dictionary
-                self.categoryDictionary.updateValue(category, forKey: category.id)
-            }
+            // Add the category to the dictionary
+            self.categoryDictionary.updateValue(category, forKey: category.id)
         }
     }
     
@@ -304,35 +290,21 @@ final class CategoriesStore: ObservableObject {
         }
     }
 
-    public func addGroup(name: String) {
+    @MainActor
+    public func addGroup(name: String) async {
         struct Data: Encodable {
             var name: String
         }
         
         let group = Data(name: name)
     
-        try? Http.post(path: "/api/groups", data: group) { data in
-            guard let data = data else {
-                return
-            }
-            
-            let groupResponse: SpendCraft.Response.Group
-            do {
-                groupResponse = try JSONDecoder().decode(SpendCraft.Response.Group.self, from: data)
-            }
-            catch {
-                print ("Error: \(error)")
-                return
-            }
-    
-            DispatchQueue.main.async {
-                let group = SpendCraft.Group(groupResponse: groupResponse)
+        if let groupResponse: SpendCraft.Response.Group = try? await Http.post(path: "/api/groups", data: group) {
+            let group = SpendCraft.Group(groupResponse: groupResponse)
 
-                self.addNodeToRoot(node: SpendCraft.TreeNode(group))
-                
-                // Add the group to the dictionary
-                self.groupDictionary.updateValue(group, forKey: group.id)
-            }
+            self.addNodeToRoot(node: SpendCraft.TreeNode(group))
+            
+            // Add the group to the dictionary
+            self.groupDictionary.updateValue(group, forKey: group.id)
         }
     }
 

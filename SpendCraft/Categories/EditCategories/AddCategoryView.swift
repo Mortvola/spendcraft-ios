@@ -39,8 +39,10 @@ struct AddCategoryView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
-                        isOpen = false;
-                        categoriesStore.addCategory(name: name, groupId: groupId)
+                        Task {
+                            await categoriesStore.addCategory(name: name, groupId: groupId)
+                            isOpen = false;
+                        }
                     }
                     disabled(name.isEmpty)
                 }

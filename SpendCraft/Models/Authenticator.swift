@@ -22,7 +22,8 @@ class Authenticator: ObservableObject {
         }
     }
     
-    func signIn(username: String, password: String) {
+    @MainActor
+    func signIn(username: String, password: String) async {
         struct Data: Encodable {
             var username: String
             var password: String
@@ -31,14 +32,11 @@ class Authenticator: ObservableObject {
         
         let data = Data(username: username, password: password, remember: "on")
 
-        try? Http.post(path: "/login", data: data) { _ in
-            try? self.addCredentials(username: username, password: password)
+        try? await Http.post(path: "/login", data: data)
+        try? self.addCredentials(username: username, password: password)
 
-            DispatchQueue.main.async {
-                self.authenticated = true
-                self.username = username
-            }
-        }
+        self.authenticated = true
+        self.username = username
     }
     
     func addCredentials(username: String, password: String) throws {

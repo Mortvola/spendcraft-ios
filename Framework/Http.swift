@@ -13,8 +13,18 @@ public struct Http {
     private static var session: URLSession?
 
     // POST requests
-    public static func post(path: String, data: Encodable, _ completion: @escaping (Data?) -> Void) throws {
-        try Http.sendRequest(method: "POST", path: path, data: data, completion)
+    public static func post<T: Decodable>(path: String, data: Encodable) async throws -> T {
+        let data = await withCheckedContinuation { continuation in
+            try? Http.sendRequest(method: "POST", path: path, data: data) { data in
+                continuation.resume(returning: data)
+            }
+        }
+
+        guard let data = data else {
+            throw MyError.runtimeError("Data is nil")
+        }
+
+        return try JSONDecoder().decode(T.self, from: data)
     }
 
     public static func post(path: String, data: Encodable) async throws {
@@ -25,8 +35,18 @@ public struct Http {
         }
     }
 
-    public static func post(path: String, _ completion: @escaping (Data?) -> Void) throws {
-        try Http.sendRequest(method: "POST", path: path, completion)
+    public static func post<T: Decodable>(path: String) async throws -> T {
+        let data = await withCheckedContinuation { continuation in
+            try? Http.sendRequest(method: "POST", path: path) { data in
+                continuation.resume(returning: data)
+            }
+        }
+
+        guard let data = data else {
+            throw MyError.runtimeError("Data is nil")
+        }
+
+        return try JSONDecoder().decode(T.self, from: data)
     }
 
     // PUT requests

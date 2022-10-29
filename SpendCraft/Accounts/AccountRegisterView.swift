@@ -55,20 +55,13 @@ struct AccountRegisterView: View {
                     }
                     .toolbar {
                         ToolbarItem(placement: .confirmationAction) {
-                            Button(action: {
+                            Button {
                                 syncing = true
-                                TransactionStore.sync(account: account) { result in
-                                    switch result {
-                                    case .failure(let error):
-                                        fatalError(error.localizedDescription)
-                                    case .success(let syncResponse):
-                                        account.balance = syncResponse.accounts[0].balance
-                                        account.syncDate = syncResponse.accounts[0].syncDate
-                                    }
-                                    
+                                Task {
+                                    await TransactionStore.sync(account: account)
                                     syncing = false
                                 }
-                            }) {
+                            } label: {
                                 Image(systemName: "arrow.triangle.2.circlepath")
                                     .rotationEffect(.degrees(syncing ? 360.0 : 0.0))
                                     .animation(syncing ? animation : .default, value: syncing)

@@ -60,8 +60,10 @@ struct SpendCraftApp: App {
                     // Transitioning from background to active state, attempt signIn
                     do {
                         let (username, password) = try authenticator.getCredentials()
-                        authenticator.signIn(username: username, password: password)
-                        tabSelection = .categories
+                        Task {
+                            await authenticator.signIn(username: username, password: password)
+                            tabSelection = .categories
+                        }
                     }
                     catch {
                     }

@@ -13,8 +13,8 @@ struct LoginView: View {
     @State var username = ""
     @State var password = ""
     
-    func authenticate() {
-        authenticator.signIn(username: username, password: password)
+    func authenticate() async {
+        await authenticator.signIn(username: username, password: password)
     }
 
     var body: some View {
@@ -37,7 +37,9 @@ struct LoginView: View {
                 Button(action: {
                     do {
                         (username, password) = try authenticator.getCredentials()
-                        authenticate()
+                        Task {
+                            await authenticate()
+                        }
                     }
                     catch {
                     }
@@ -45,9 +47,11 @@ struct LoginView: View {
                     Image(systemName: "faceid")
                 }
             }
-            Button(action: {
-                authenticate()
-            }) {
+            Button {
+                Task {
+                    await authenticate()
+                }
+            } label: {
                 Text("Sign In")
             }
             .disabled(username.isEmpty || password.isEmpty)

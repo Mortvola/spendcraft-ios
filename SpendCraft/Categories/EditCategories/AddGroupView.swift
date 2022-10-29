@@ -32,8 +32,10 @@ struct AddGroupView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
-                        isOpen = false;
-                        categoriesStore.addGroup(name: name)
+                        Task {
+                            await categoriesStore.addGroup(name: name)
+                            isOpen = false;
+                        }
                     }
                     .disabled(name.isEmpty)
                 }
