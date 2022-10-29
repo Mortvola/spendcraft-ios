@@ -14,11 +14,7 @@ public struct Http {
 
     // POST requests
     public static func post<T: Decodable>(path: String, data: Encodable) async throws -> T {
-        let data = await withCheckedContinuation { continuation in
-            try? Http.sendRequest(method: "POST", path: path, data: data) { data in
-                continuation.resume(returning: data)
-            }
-        }
+        let data = try await Http.sendRequest(method: "POST", path: path, data: data)
 
         guard let data = data else {
             throw MyError.runtimeError("Data is nil")
@@ -28,19 +24,11 @@ public struct Http {
     }
 
     public static func post(path: String, data: Encodable) async throws {
-        await withCheckedContinuation { continuation in
-            try? Http.sendRequest(method: "POST", path: path, data: data) { _ in
-                continuation.resume()
-            }
-        }
+        try await Http.sendRequest(method: "POST", path: path, data: data)
     }
 
     public static func post<T: Decodable>(path: String) async throws -> T {
-        let data = await withCheckedContinuation { continuation in
-            try? Http.sendRequest(method: "POST", path: path) { data in
-                continuation.resume(returning: data)
-            }
-        }
+        let data = try await Http.sendRequest(method: "POST", path: path)
 
         guard let data = data else {
             throw MyError.runtimeError("Data is nil")
@@ -51,19 +39,11 @@ public struct Http {
 
     // PUT requests
     public static func put(path: String, data: Encodable) async throws {
-        await withCheckedContinuation { continuation in
-            try? Http.sendRequest(method: "PUT", path: path, data: data) { _ in
-                continuation.resume()
-            }
-        }
+        try await Http.sendRequest(method: "PUT", path: path, data: data)
     }
 
     public static func put<T: Decodable>(path: String, data: Encodable) async throws -> T {
-        let data = await withCheckedContinuation { continuation in
-            try? Http.sendRequest(method: "PUT", path: path, data: data) { data in
-                continuation.resume(returning: data)
-            }
-        }
+        let data = try await Http.sendRequest(method: "PUT", path: path, data: data)
 
         guard let data = data else {
             throw MyError.runtimeError("Data is nil")
@@ -74,11 +54,7 @@ public struct Http {
 
     // GET requests
     public static func get<T: Decodable>(path: String) async throws -> T {
-        let data = await withCheckedContinuation { continuation in
-            try? Http.sendRequest(method: "GET", path: path) { data in
-                continuation.resume(returning: data)
-            }
-        }
+        let data = try await Http.sendRequest(method: "GET", path: path)
 
         guard let data = data else {
             throw MyError.runtimeError("Data is nil")
@@ -89,11 +65,7 @@ public struct Http {
 
     // PATCH requests
     public static func patch<T: Decodable>(path: String, data: Encodable) async throws -> T {
-        let data = await withCheckedContinuation { continuation in
-            try? Http.sendRequest(method: "PATCH", path: path, data: data) { data in
-                continuation.resume(returning: data)
-            }
-        }
+        let data = try await Http.sendRequest(method: "PATCH", path: path, data: data)
 
         guard let data = data else {
             throw MyError.runtimeError("Data is nil")
@@ -104,11 +76,7 @@ public struct Http {
     
     // DELETE requests
     public static func delete(path: String) async throws {
-        await withCheckedContinuation { continuation in
-            try? Http.sendRequest(method: "DELETE", path: path) { _ in
-                continuation.resume()
-            }
-        }
+        try await Http.sendRequest(method: "DELETE", path: path)
     }
     
     private static func checkResponse(error: Error?, response: URLResponse?) -> Bool {
@@ -170,7 +138,8 @@ public struct Http {
         task.resume()
     }
 
-    private static func sendRequest(method: String, path: String, _ completion: @escaping (Data?) -> Void) throws {
+    @discardableResult
+    private static func sendRequest(method: String, path: String) async throws -> Data? {
         guard let url = getUrl(path: path) else {
             throw MyError.runtimeError("failed to get URL")
         }
@@ -179,10 +148,15 @@ public struct Http {
         urlRequest.httpMethod = method
         urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
         
-        try dataTask(urlRequest: urlRequest, completion)
+        return await withCheckedContinuation { continuation in
+            try? dataTask(urlRequest: urlRequest) { data in
+                continuation.resume(returning: data)
+            }
+        }
     }
     
-    private static func sendRequest(method: String, path: String, data: Encodable, _ completion: @escaping (Data?) -> Void) throws {
+    @discardableResult
+    private static func sendRequest(method: String, path: String, data: Encodable) async throws -> Data? {
         guard let url = getUrl(path: path) else {
             throw MyError.runtimeError("failed to get URL")
         }
@@ -192,28 +166,13 @@ public struct Http {
         urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        guard let uploadData = try? JSONEncoder().encode(data) else {
-            return
-        }
+        let uploadData = try JSONEncoder().encode(data)
         
-        try uploadTask(urlRequest: urlRequest, uploadData: uploadData, completion)
-    }
-
-    private static func sendRequest(method: String, path: String, data: Encodable) throws -> Void {
-        guard let url = getUrl(path: path) else {
-            throw MyError.runtimeError("failed to get URL")
+        return await withCheckedContinuation { continuation in
+            try? uploadTask(urlRequest: urlRequest, uploadData: uploadData) { data in
+                continuation.resume(returning: data)
+            }
         }
-
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = method
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        guard let uploadData = try? JSONEncoder().encode(data) else {
-            return
-        }
-        
-        try uploadTask(urlRequest: urlRequest, uploadData: uploadData)
     }
     
     private static func getSession() throws -> URLSession {
