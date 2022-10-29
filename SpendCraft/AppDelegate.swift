@@ -35,17 +35,19 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
         let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
         let token = tokenParts.joined()
         print("Device Token: \(token)")
-        uploadToken(token: token);
+        Task {
+            await uploadToken(token: token);
+        }
     }
     
-    func uploadToken(token: String) {
+    func uploadToken(token: String) async {
         struct Data: Encodable {
             var token: String
         }
         
         let data = Data(token: token)
 
-        try? Http.post(path: "/api/user/apns-token", data: data)
+        try? await Http.post(path: "/api/user/apns-token", data: data)
     }
 
     func application(

@@ -40,8 +40,10 @@ struct EditGroupView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
-                        isOpen = false
-                        categoriesStore.updateGroup(group: group, name: name)
+                        Task {
+                            await categoriesStore.updateGroup(group: group, name: name)
+                            isOpen = false
+                        }
                     }
                     .disabled(name.isEmpty)
                 }

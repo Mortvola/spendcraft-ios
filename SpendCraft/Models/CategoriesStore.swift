@@ -273,7 +273,8 @@ final class CategoriesStore: ObservableObject {
         }
     }
     
-    public func updateCategory(category: SpendCraft.Category, name: String, groupId: Int) {
+    @MainActor
+    public func updateCategory(category: SpendCraft.Category, name: String, groupId: Int) async {
         struct Data: Encodable {
             var name: String
             var monthlyExpenses: Bool
@@ -281,29 +282,15 @@ final class CategoriesStore: ObservableObject {
         
         let cat = Data(name: name, monthlyExpenses: category.monthlyExpenses)
     
-        try? Http.patch(path: "/api/groups/\(groupId)/categories/\(category.id)", data: cat) { data in
-            guard let data = data else {
-                return
-            }
+        if let response: SpendCraft.Response.CategoryUpdate = try? await Http.patch(path: "/api/groups/\(groupId)/categories/\(category.id)", data: cat) {
+
+            category.name = response.name
+            category.monthlyExpenses = response.monthlyExpenses
             
-            let response: SpendCraft.Response.CategoryUpdate
-            do {
-                response = try JSONDecoder().decode(SpendCraft.Response.CategoryUpdate.self, from: data)
-            }
-            catch {
-                print ("Error: \(error)")
-                return
-            }
-    
-            DispatchQueue.main.async {
-                category.name = response.name
-                category.monthlyExpenses = response.monthlyExpenses
-                
-                // If the category changed groups...
-                if (category.groupId != groupId) {
-                    self.removeCategoryFromGroup(category: category)
-                    self.addCategoryToGroup(category: category, groupId: groupId)
-                }
+            // If the category changed groups...
+            if (category.groupId != groupId) {
+                self.removeCategoryFromGroup(category: category)
+                self.addCategoryToGroup(category: category, groupId: groupId)
             }
         }
     }
@@ -349,30 +336,16 @@ final class CategoriesStore: ObservableObject {
         }
     }
 
-    public func updateGroup(group: SpendCraft.Group, name: String) {
+    @MainActor
+    public func updateGroup(group: SpendCraft.Group, name: String) async {
         struct Data: Encodable {
             var name: String
         }
         
         let grp = Data(name: name)
     
-        try? Http.patch(path: "/api/groups/\(group.id)", data: grp) { data in
-            guard let data = data else {
-                return
-            }
-            
-            let response: SpendCraft.Response.GroupUpdate
-            do {
-                response = try JSONDecoder().decode(SpendCraft.Response.GroupUpdate.self, from: data)
-            }
-            catch {
-                print ("Error: \(error)")
-                return
-            }
-    
-            DispatchQueue.main.async {
-                group.name = response.name
-            }
+        if let response: SpendCraft.Response.GroupUpdate = try? await Http.patch(path: "/api/groups/\(group.id)", data: grp) {
+            group.name = response.name
         }
     }
 

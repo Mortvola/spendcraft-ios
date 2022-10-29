@@ -17,8 +17,12 @@ public struct Http {
         try Http.sendRequest(method: "POST", path: path, data: data, completion)
     }
 
-    public static func post(path: String, data: Encodable) throws {
-        try Http.sendRequest(method: "POST", path: path, data: data)
+    public static func post(path: String, data: Encodable) async throws {
+        await withCheckedContinuation { continuation in
+            try? Http.sendRequest(method: "POST", path: path, data: data) { _ in
+                continuation.resume()
+            }
+        }
     }
 
     public static func post(path: String, _ completion: @escaping (Data?) -> Void) throws {
@@ -54,8 +58,18 @@ public struct Http {
     }
 
     // PATCH requests
-    public static func patch(path: String, data: Encodable, _ completion: @escaping (Data?) -> Void) throws {
-        try Http.sendRequest(method: "PATCH", path: path, data: data, completion)
+    public static func patch<T: Decodable>(path: String, data: Encodable) async throws -> T {
+        let data = await withCheckedContinuation { continuation in
+            try? Http.sendRequest(method: "PATCH", path: path, data: data) { data in
+                continuation.resume(returning: data)
+            }
+        }
+
+        guard let data = data else {
+            throw MyError.runtimeError("Data is nil")
+        }
+        
+        return try JSONDecoder().decode(T.self, from: data)
     }
     
     // DELETE requests

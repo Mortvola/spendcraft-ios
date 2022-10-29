@@ -94,14 +94,16 @@ struct TransactionEdit: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
-                        isEditingTrx = false;
-                        transaction.update(from: trxData)
-                        transaction.save(category: category, transactionStore: transactionStore) {
-                            // If this is the unassigned category then
-                            // set the badge to the new number of transactions
-                            if let category = category, category.type == .unassigned {
-                                UIApplication.shared.applicationIconBadgeNumber = transactionStore.transactions.count
+                        Task {
+                            transaction.update(from: trxData)
+                            await transaction.save(category: category, transactionStore: transactionStore) {
+                                // If this is the unassigned category then
+                                // set the badge to the new number of transactions
+                                if let category = category, category.type == .unassigned {
+                                    UIApplication.shared.applicationIconBadgeNumber = transactionStore.transactions.count
+                                }
                             }
+                            isEditingTrx = false;
                         }
                     }
                     .disabled(!trxData.isValid || !postedTransaction)

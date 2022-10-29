@@ -47,8 +47,10 @@ struct EditCategoryView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
-                        isOpen = false
-                        categoriesStore.updateCategory(category: category, name: name, groupId: groupId)
+                        Task {
+                            await categoriesStore.updateCategory(category: category, name: name, groupId: groupId)
+                            isOpen = false
+                        }
                     }
                     .disabled(name.isEmpty)
                 }
