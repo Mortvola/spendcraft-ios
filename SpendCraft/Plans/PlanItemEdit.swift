@@ -71,14 +71,12 @@ struct PlanItemEdit: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
-                        do {
-                            try planCategory.save(data: data)
+                        Task {
+                            try await planCategory.save(data: data)
                             
                             planStore.plan?.total += (data.amount ?? 0) / Double(data.recurrence) - (planCategory.amount / Double(planCategory.recurrence))
                             
                             isEditing = false;
-                        }
-                        catch {
                         }
                     }
     //                .disabled(!trxData.isValid || !postedTransaction)

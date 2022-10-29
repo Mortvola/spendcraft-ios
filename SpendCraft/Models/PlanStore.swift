@@ -173,7 +173,8 @@ class PlanCategory: ObservableObject {
         try PlanCategory.Data(amount: self.amount, recurrence: self.recurrence, goalDate: self.goalDate)
     }
 
-    func save(data: Data) throws {
+    @MainActor
+    func save(data: Data) async throws {
         struct RequestData: Encodable {
             let amount: Double
             let useGoal: Bool
@@ -196,13 +197,11 @@ class PlanCategory: ObservableObject {
         
         let requestData = RequestData(amount: data.amount ?? 0, useGoal: false, goalDate: data.goal, recurrence: data.recurrence)
         
-        try? Http.put(path: "/api/funding-plans/10/item/\(self.categoryId)", data: requestData) { _ in
-            DispatchQueue.main.async {
-                self.amount = data.amount ?? 0
-                self.recurrence = data.recurrence
-                self.goalDate = data.goal
-            }
-        }
+        try await Http.put(path: "/api/funding-plans/10/item/\(self.categoryId)", data: requestData)
+
+        self.amount = data.amount ?? 0
+        self.recurrence = data.recurrence
+        self.goalDate = data.goal
     }
 }
 

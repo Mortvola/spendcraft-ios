@@ -26,8 +26,10 @@ struct EditGroupView: View {
                 }
                 ControlGroup {
                     DeleteButton() {
-                        isOpen = false
-                        categoriesStore.deleteGroup(group: group)
+                        Task {
+                            await categoriesStore.deleteGroup(group: group)
+                            isOpen = false
+                        }
                     }
                 }
             }

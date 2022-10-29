@@ -50,16 +50,26 @@ public struct Http {
     }
 
     // PUT requests
-    public static func put(path: String, data: Encodable, _ completion: @escaping (Data?) -> Void) throws {
-        try Http.sendRequest(method: "PUT", path: path, data: data, completion)
+    public static func put(path: String, data: Encodable) async throws {
+        await withCheckedContinuation { continuation in
+            try? Http.sendRequest(method: "PUT", path: path, data: data) { _ in
+                continuation.resume()
+            }
+        }
     }
 
-    public static func put(path: String, data: Encodable) async throws -> Data? {
-        await withCheckedContinuation { continuation in
+    public static func put<T: Decodable>(path: String, data: Encodable) async throws -> T {
+        let data = await withCheckedContinuation { continuation in
             try? Http.sendRequest(method: "PUT", path: path, data: data) { data in
                 continuation.resume(returning: data)
             }
         }
+
+        guard let data = data else {
+            throw MyError.runtimeError("Data is nil")
+        }
+
+        return try JSONDecoder().decode(T.self, from: data)
     }
 
     // GET requests
@@ -93,8 +103,12 @@ public struct Http {
     }
     
     // DELETE requests
-    public static func delete(path: String, _ completion: @escaping (Data?) -> Void) throws {
-        try Http.sendRequest(method: "DELETE", path: path, completion)
+    public static func delete(path: String) async throws {
+        await withCheckedContinuation { continuation in
+            try? Http.sendRequest(method: "DELETE", path: path) { _ in
+                continuation.resume()
+            }
+        }
     }
     
     private static func checkResponse(error: Error?, response: URLResponse?) -> Bool {

@@ -33,8 +33,10 @@ struct EditCategoryView: View {
                 }
                 ControlGroup {
                     DeleteButton()  {
-                        isOpen = false
-                        categoriesStore.deleteCategory(category: category)
+                        Task {
+                            await categoriesStore.deleteCategory(category: category)
+                            isOpen = false
+                        }
                     }
                 }
             }

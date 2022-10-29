@@ -281,13 +281,12 @@ final class CategoriesStore: ObservableObject {
         }
     }
 
-    public func deleteCategory(category: SpendCraft.Category) {
-        try? Http.delete(path: "/api/groups/\(category.groupId)/categories/\(category.id)") { _ in
-            DispatchQueue.main.async {
-                self.removeCategoryFromGroup(category: category)
-                self.categoryDictionary.removeValue(forKey: category.id)
-            }
-        }
+    @MainActor
+    public func deleteCategory(category: SpendCraft.Category) async {
+        try? await Http.delete(path: "/api/groups/\(category.groupId)/categories/\(category.id)")
+        
+        self.removeCategoryFromGroup(category: category)
+        self.categoryDictionary.removeValue(forKey: category.id)
     }
 
     @MainActor
@@ -321,24 +320,23 @@ final class CategoriesStore: ObservableObject {
         }
     }
 
-    public func deleteGroup(group: SpendCraft.Group) {
-        try? Http.delete(path: "/api/groups/\(group.id)") { _ in
-            DispatchQueue.main.async {
-                let index = self.tree.firstIndex { node in
-                    switch node {
-                    case .category:
-                        return false
-                    case .group(let g):
-                        return g.id == group.id
-                    }
-                }
-                
-                if let index = index {
-                    // Remove the group from the tree and the dictionary
-                    self.tree.remove(at: index)
-                    self.groupDictionary.removeValue(forKey: group.id)
-                }
+    @MainActor
+    public func deleteGroup(group: SpendCraft.Group) async {
+        try? await Http.delete(path: "/api/groups/\(group.id)")
+        
+        let index = self.tree.firstIndex { node in
+            switch node {
+            case .category:
+                return false
+            case .group(let g):
+                return g.id == group.id
             }
+        }
+        
+        if let index = index {
+            // Remove the group from the tree and the dictionary
+            self.tree.remove(at: index)
+            self.groupDictionary.removeValue(forKey: group.id)
         }
     }
 
