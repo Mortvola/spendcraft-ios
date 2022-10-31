@@ -23,7 +23,7 @@ struct CategoryView: View {
 }
 
 struct CategoryView_Previews: PreviewProvider {
-    static let category = SpendCraft.Category(id: 0, groupId: 0, name: "Test Category", balance: 100, type: .regular, monthlyExpenses: true)
+    static let category = SpendCraft.Category(id: 0, groupId: 0, name: "Test Category", balance: 100, type: .regular, monthlyExpenses: true, hidden: false)
 
     static var previews: some View {
         CategoryView(category: category)

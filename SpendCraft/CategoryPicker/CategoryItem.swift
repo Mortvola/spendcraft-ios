@@ -30,7 +30,7 @@ struct CategoryItem: View {
 
 struct CategoryItem_Previews: PreviewProvider {
     static var previews: some View {
-        let category = SpendCraft.Category(id: 0, groupId: 0, name: "Test", balance: 100.0, type: .regular, monthlyExpenses: true)
+        let category = SpendCraft.Category(id: 0, groupId: 0, name: "Test", balance: 100.0, type: .regular, monthlyExpenses: true, hidden: false)
     
         CategoryItem(selection: .constant(nil), category: category)
     }

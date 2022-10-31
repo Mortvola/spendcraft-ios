@@ -15,12 +15,18 @@ struct CategoryList: View {
         List(categoriesStore.tree) { node in
             switch (node) {
             case .category(let category):
-                CategoryItem(selection: $selection, category: category)
-            case .group(let group):
-                Text(group.name)
-                ForEach(group.categories) { category in
+                if !category.hidden {
                     CategoryItem(selection: $selection, category: category)
-                        .padding(.leading)
+                }
+            case .group(let group):
+                if !group.hidden {
+                    Text(group.name)
+                    ForEach(group.categories) { category in
+                        if !category.hidden {
+                            CategoryItem(selection: $selection, category: category)
+                                .padding(.leading)
+                        }
+                    }
                 }
             }
         }

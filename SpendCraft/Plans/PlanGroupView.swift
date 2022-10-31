@@ -16,14 +16,16 @@ struct PlanGroupView: View {
     var body: some View {
         DisclosureGroup(group.name, isExpanded: $isExpanded) {
             ForEach($group.categories) { $category in
-                PlanCategoryView(category: category, planCategory: planStore.planCategory(category))
+                if !category.hidden {
+                    PlanCategoryView(category: category, planCategory: planStore.planCategory(category))
+                }
             }
         }
     }
 }
 
 struct PlanGroupView_Previews: PreviewProvider {
-    static let group = SpendCraft.Group(id: 0, name: "Test Group", type: .regular, categories: [])
+    static let group = SpendCraft.Group(id: 0, name: "Test Group", type: .regular, hidden: false, categories: [])
     static let categoryDictionary = Dictionary<Int, Category>()
     static let plan = Response.Plan(id: 0, name: "test", categories: [Response.PlanCategory(id: 0, categoryId: 0, amount: 100.0, recurrence: 1, useGoal: false, goalDate: Date.now, expectedToSpend: nil)])
 

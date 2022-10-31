@@ -11,7 +11,7 @@ import Framework
 struct CategoriesView: View {
     @ObservedObject private var categoriesStore = CategoriesStore.shared
     @EnvironmentObject private var navModel: NavModel
-    @StateObject private var testCategory = SpendCraft.Category(id: -2, groupId: 0, name: "Unassigned", balance: 100, type: .regular, monthlyExpenses: false)
+    @StateObject private var testCategory = SpendCraft.Category(id: -2, groupId: 0, name: "Unassigned", balance: 100, type: .regular, monthlyExpenses: false, hidden: false)
     @State private var isEditingCategories = false
     @State private var isFundingCategories = false
     @State private var newTransaction = Transaction(type: .regular)
@@ -33,9 +33,11 @@ struct CategoriesView: View {
                     ForEach(categoriesStore.tree) { node in
                         switch node {
                         case .category(let category):
-                            CategoryView(category: category)
+                            if !category.hidden {
+                                CategoryView(category: category)
+                            }
                         case .group(let group):
-                            if (group.type != GroupType.system) {
+                            if (!group.hidden && group.type != GroupType.system) {
                                 GroupView(group: group)
                             }
                         }

@@ -32,6 +32,7 @@ public enum SpendCraft {
         public var type: CategoryType
         public var monthlyExpenses: Bool
         public var group: Group?
+        public var hidden: Bool
         
         public static func == (lhs: Category, rhs: Category) -> Bool {
             lhs === rhs
@@ -41,13 +42,14 @@ public enum SpendCraft {
             hasher.combine(id)
         }
         
-        public init(id: Int, groupId: Int, name: String, balance: Double, type: CategoryType, monthlyExpenses: Bool) {
+        public init(id: Int, groupId: Int, name: String, balance: Double, type: CategoryType, monthlyExpenses: Bool, hidden: Bool) {
             self.id = id
             self.groupId = groupId
             self.name = name
             self.balance = balance
             self.type = type
             self.monthlyExpenses = monthlyExpenses
+            self.hidden = hidden
         }
         
         public init(categoryResponse: SpendCraft.Response.Category) {
@@ -57,6 +59,7 @@ public enum SpendCraft {
             self.balance = categoryResponse.balance
             self.type = categoryResponse.type
             self.monthlyExpenses = categoryResponse.monthlyExpenses
+            self.hidden = categoryResponse.hidden
         }
         
         enum CodingKeys: String, CodingKey {
@@ -66,6 +69,7 @@ public enum SpendCraft {
             case balance
             case type
             case monthlyExpenses
+            case hidden
         }
         
         public required init(from decoder: Decoder) throws {
@@ -77,6 +81,7 @@ public enum SpendCraft {
             balance = try container.decode(Double.self, forKey: .balance)
             type = try container.decode(CategoryType.self, forKey: .type)
             monthlyExpenses = try container.decode(Bool.self, forKey: .monthlyExpenses)
+            hidden = try container.decode(Bool.self, forKey: .hidden)
         }
         
         public func encode(to encoder: Encoder) throws {
@@ -93,20 +98,23 @@ public enum SpendCraft {
     public class Group: ObservableObject, Identifiable, Codable {
         public var id: Int
         @Published public var name: String
+        @Published public var hidden: Bool
         public var type: GroupType
         @Published public var categories: [SpendCraft.Category]
         
-        public init(id: Int, name: String, type: GroupType, categories: [SpendCraft.Category]) {
+        public init(id: Int, name: String, type: GroupType, hidden: Bool, categories: [SpendCraft.Category]) {
             self.id = id
             self.name = name
             self.type = type
             self.categories = categories
+            self.hidden = hidden
         }
        
         enum CodingKeys: String, CodingKey {
             case id
             case name
             case type
+            case hidden
             case categories
         }
        
@@ -114,6 +122,7 @@ public enum SpendCraft {
             self.id = groupResponse.id
             self.name = groupResponse.name
             self.type = groupResponse.type
+            self.hidden = groupResponse.hidden
             self.categories = groupResponse.categories.map {
                 SpendCraft.Category(categoryResponse: $0)
             }
@@ -125,6 +134,8 @@ public enum SpendCraft {
             id = try container.decode(Int.self, forKey: .id)
             name = try container.decode(String.self, forKey: .name)
             type = try container.decode(GroupType.self, forKey: .type)
+            hidden = try container.decode(Bool.self, forKey: .hidden)
+            
             categories = try container.decode([SpendCraft.Category].self, forKey: .categories)
             
             categories.forEach { category in
@@ -149,12 +160,12 @@ public enum SpendCraft {
         public init(node: SpendCraft.Response.CategoryTreeNode) {
             switch(node) {
             case .category(let category):
-                self = .category(SpendCraft.Category(id: category.id, groupId: category.groupId, name: category.name, balance: category.balance, type: category.type, monthlyExpenses: category.monthlyExpenses))
+                self = .category(SpendCraft.Category(id: category.id, groupId: category.groupId, name: category.name, balance: category.balance, type: category.type, monthlyExpenses: category.monthlyExpenses, hidden: category.hidden))
             case .group(let group):
                 let cats = group.categories.map {
-                    SpendCraft.Category(id: $0.id, groupId: $0.groupId, name: $0.name, balance: $0.balance, type: $0.type, monthlyExpenses: $0.monthlyExpenses)
+                    SpendCraft.Category(id: $0.id, groupId: $0.groupId, name: $0.name, balance: $0.balance, type: $0.type, monthlyExpenses: $0.monthlyExpenses, hidden: $0.hidden)
                 }
-                self = .group(SpendCraft.Group(id: group.id, name: group.name, type: group.type, categories: cats))
+                self = .group(SpendCraft.Group(id: group.id, name: group.name, type: group.type, hidden: group.hidden, categories: cats))
             }
         }
         

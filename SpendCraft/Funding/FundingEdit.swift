@@ -24,9 +24,11 @@ struct FundingEdit: View {
                     ForEach(categoriesStore.tree) { node in
                         switch node {
                         case .category(let category):
-                            FundingCategoryView(category: category, trxData: $trxData)
+                            if !category.hidden {
+                                FundingCategoryView(category: category, trxData: $trxData)
+                            }
                         case .group(let group):
-                            if (group.type != GroupType.system) {
+                            if (!group.hidden && group.type != GroupType.system) {
                                 FundingGroupView(group: group, trxData: $trxData)
                             }
                         }

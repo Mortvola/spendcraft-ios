@@ -13,6 +13,7 @@ struct EditGroupView: View {
     @ObservedObject var group: SpendCraft.Group
     @Binding var isOpen: Bool
     @State var name: String = ""
+    @State var hidden: Bool = false
     @FocusState private var nameInFocus: Bool
 
     var body: some View {
@@ -24,6 +25,7 @@ struct EditGroupView: View {
                         .lineLimit(1)
                         .focused($nameInFocus)
                 }
+                Toggle("Hidden", isOn: $hidden)
                 ControlGroup {
                     DeleteButton() {
                         Task {
@@ -43,7 +45,7 @@ struct EditGroupView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
                         Task {
-                            await categoriesStore.updateGroup(group: group, name: name)
+                            await categoriesStore.updateGroup(group: group, name: name, hidden: hidden)
                             isOpen = false
                         }
                     }
@@ -52,6 +54,7 @@ struct EditGroupView: View {
             }
             .onAppear {
                 name = group.name
+                hidden = group.hidden
                 
                 nameInFocus = true
             }
@@ -60,7 +63,7 @@ struct EditGroupView: View {
 }
 
 struct EditGroupView_Previews: PreviewProvider {
-    static let group = SpendCraft.Group(id: 0, name: "Test", type: .regular, categories: [])
+    static let group = SpendCraft.Group(id: 0, name: "Test", type: .regular, hidden: false, categories: [])
 
     static var previews: some View {
         EditGroupView(group: group, isOpen: .constant(true))

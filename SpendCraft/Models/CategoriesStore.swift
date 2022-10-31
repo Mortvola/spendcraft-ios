@@ -36,9 +36,9 @@ final class CategoriesStore: ObservableObject {
         self.groupDictionary = Dictionary()
         self.categoryDictionary = Dictionary()
         
-        self.unassigned = SpendCraft.Category(id: -2, groupId: 0, name: "Unassigned", balance: 0, type: .unassigned, monthlyExpenses: false)
-        self.fundingPool = SpendCraft.Category(id: -3, groupId: 0, name: "Funding Pool", balance: 0, type: .fundingPool, monthlyExpenses: false)
-        self.accountTransfer = SpendCraft.Category(id: -4, groupId: 0, name: "Account Transfers", balance: 0, type: .accountTransfer, monthlyExpenses: false)
+        self.unassigned = SpendCraft.Category(id: -2, groupId: 0, name: "Unassigned", balance: 0, type: .unassigned, monthlyExpenses: false, hidden: false)
+        self.fundingPool = SpendCraft.Category(id: -3, groupId: 0, name: "Funding Pool", balance: 0, type: .fundingPool, monthlyExpenses: false, hidden: false)
+        self.accountTransfer = SpendCraft.Category(id: -4, groupId: 0, name: "Account Transfers", balance: 0, type: .accountTransfer, monthlyExpenses: false, hidden: false)
         
         self.noGroupId = -1
     }
@@ -260,18 +260,20 @@ final class CategoriesStore: ObservableObject {
     }
     
     @MainActor
-    public func updateCategory(category: SpendCraft.Category, name: String, groupId: Int) async {
+    public func updateCategory(category: SpendCraft.Category, name: String, groupId: Int, hidden: Bool) async {
         struct Data: Encodable {
             var name: String
             var monthlyExpenses: Bool
+            var hidden: Bool
         }
         
-        let cat = Data(name: name, monthlyExpenses: category.monthlyExpenses)
+        let cat = Data(name: name, monthlyExpenses: category.monthlyExpenses, hidden: hidden)
     
         if let response: SpendCraft.Response.CategoryUpdate = try? await Http.patch(path: "/api/groups/\(groupId)/categories/\(category.id)", data: cat) {
 
             category.name = response.name
             category.monthlyExpenses = response.monthlyExpenses
+            category.hidden = response.hidden
             
             // If the category changed groups...
             if (category.groupId != groupId) {
@@ -308,15 +310,17 @@ final class CategoriesStore: ObservableObject {
     }
 
     @MainActor
-    public func updateGroup(group: SpendCraft.Group, name: String) async {
+    public func updateGroup(group: SpendCraft.Group, name: String, hidden: Bool) async {
         struct Data: Encodable {
             var name: String
+            var hidden: Bool
         }
         
-        let grp = Data(name: name)
+        let grp = Data(name: name, hidden: hidden)
     
         if let response: SpendCraft.Response.GroupUpdate = try? await Http.patch(path: "/api/groups/\(group.id)", data: grp) {
             group.name = response.name
+            group.hidden = response.hidden
         }
     }
 

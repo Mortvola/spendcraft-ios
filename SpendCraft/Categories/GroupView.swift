@@ -15,14 +15,16 @@ struct GroupView: View {
     var body: some View {
         DisclosureGroup(group.name, isExpanded: $isExpanded) {
             ForEach($group.categories) { $category in
-                CategoryView(category: category)
+                if !category.hidden {
+                    CategoryView(category: category)
+                }
             }
         }
     }
 }
 
 struct GroupView_Previews: PreviewProvider {
-    static let group = SpendCraft.Group(id: 0, name: "Test Group", type: .regular, categories: [])
+    static let group = SpendCraft.Group(id: 0, name: "Test Group", type: .regular, hidden: false, categories: [])
     static let categoryDictionary = Dictionary<Int, Category>()
 
     static var previews: some View {

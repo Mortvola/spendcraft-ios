@@ -23,9 +23,11 @@ struct PlansView: View {
                             ForEach(categoriesStore.tree) { node in
                                 switch node {
                                 case .category(let category):
-                                    PlanCategoryView(category: category, planCategory: planStore.planCategory(category))
+                                    if !category.hidden {
+                                        PlanCategoryView(category: category, planCategory: planStore.planCategory(category))
+                                    }
                                 case .group(let group):
-                                    if (group.type != GroupType.system) {
+                                    if (!group.hidden && group.type != GroupType.system) {
                                         PlanGroupView(group: group)
                                     }
                                 }

@@ -16,6 +16,7 @@ extension SpendCraft {
             public var balance: Double
             public var type: CategoryType
             public var monthlyExpenses: Bool
+            public var hidden: Bool
         }
 
         public class CategoryUpdate: Decodable, Identifiable {
@@ -25,18 +26,21 @@ extension SpendCraft {
 //            public var balance: Double
 //            public var type: CategoryType
             public var monthlyExpenses: Bool
+            public var hidden: Bool
         }
 
         public class Group: Decodable, Identifiable {
             public var id: Int
             public var name: String
             public var type: GroupType
+            public var hidden: Bool
             public var categories: [Category]
 
             enum CodingKeys: String, CodingKey {
                 case id
                 case name
                 case type
+                case hidden
                 case categories
             }
 
@@ -49,12 +53,15 @@ extension SpendCraft {
                 let groupType = try container.decode(String.self, forKey: .type)
                 self.type = GroupType(rawValue: groupType) ?? .unknown
                 
+                self.hidden = try container.decode(Bool.self, forKey: .hidden)
+                
                 self.categories = try container.decodeIfPresent([SpendCraft.Response.Category].self, forKey: .categories) ?? []
             }
         }
         
         public class GroupUpdate: Decodable, Identifiable {
             public var name: String
+            public var hidden: Bool
         }
         
         public enum CategoryTreeNode: Decodable, Identifiable {

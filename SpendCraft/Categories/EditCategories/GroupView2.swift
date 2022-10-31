@@ -32,7 +32,7 @@ struct GroupView2: View {
 }
 
 struct GroupView2_Previews: PreviewProvider {
-    static let group = SpendCraft.Group(id: 0, name: "Test", type: .regular, categories: [])
+    static let group = SpendCraft.Group(id: 0, name: "Test", type: .regular, hidden: false, categories: [])
     
     static var previews: some View {
         GroupView2(group: group)

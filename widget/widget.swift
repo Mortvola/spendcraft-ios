@@ -17,14 +17,14 @@ extension Data {
 }
 
 let sampleTree = SpendCraft.CategoryTree([
-    SpendCraft.TreeNode(SpendCraft.Group(id: 0, name: "Allowance", type: .regular, categories: [
-            SpendCraft.Category(id: 4, groupId: 0, name: "Richard", balance: 100.0, type: .regular, monthlyExpenses: true)
+    SpendCraft.TreeNode(SpendCraft.Group(id: 0, name: "Allowance", type: .regular, hidden: false, categories: [
+        SpendCraft.Category(id: 4, groupId: 0, name: "Richard", balance: 100.0, type: .regular, monthlyExpenses: true, hidden: false)
         ])),
-    SpendCraft.TreeNode(SpendCraft.Group(id: 1, name: "Food", type: .regular, categories: [
-            SpendCraft.Category(id: 7, groupId: 1, name: "Groceries", balance: 385.34, type: .regular, monthlyExpenses: true)
+    SpendCraft.TreeNode(SpendCraft.Group(id: 1, name: "Food", type: .regular, hidden: false, categories: [
+            SpendCraft.Category(id: 7, groupId: 1, name: "Groceries", balance: 385.34, type: .regular, monthlyExpenses: true, hidden: false)
         ])),
-    SpendCraft.TreeNode(SpendCraft.Category(id: 11, groupId: -1, name: "Miscellaneous", balance: 787.30, type: .regular, monthlyExpenses: true)),
-    SpendCraft.TreeNode(SpendCraft.Category(id: 40, groupId: -1, name: "Leisure", balance: 126.32, type: .regular, monthlyExpenses: true))
+    SpendCraft.TreeNode(SpendCraft.Category(id: 11, groupId: -1, name: "Miscellaneous", balance: 787.30, type: .regular, monthlyExpenses: true, hidden: false)),
+    SpendCraft.TreeNode(SpendCraft.Category(id: 40, groupId: -1, name: "Leisure", balance: 126.32, type: .regular, monthlyExpenses: true, hidden: false))
 ])
 
 let sampleCatIds = [4, 7, 11, 40]
