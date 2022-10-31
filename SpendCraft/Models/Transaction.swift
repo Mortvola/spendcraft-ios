@@ -284,12 +284,16 @@ extension Transaction {
         
         // Popuulate the category array with the categories not currently in the array
         if type == .funding {
-            data.categories = []
+//            data.categories = [] // todo: is this needed?
             
+            let fundingMonth = MonthYearDate(month: 11, year: 2022)
+
             let categoriesStore = CategoriesStore.shared
+
+            // Add categories from the category store that are not present in the transaction.
             categoriesStore.categoryDictionary.forEach { entry in
                 if data.categories.first(where: { dataCat in
-                    dataCat.id == entry.value.id
+                    dataCat.categoryId == entry.value.id
                 }) == nil {
                     let newCat = Transaction.Category(id: Category.nextId(), categoryId: entry.value.id, amount: 0.0, comment: nil)
                     data.categories.append(newCat)
@@ -298,25 +302,68 @@ extension Transaction {
                 data.allowedToSpend.append(Data.AllowedToSpend(categoryId: entry.value.id, amount: 0.0))
             }
             
+            // Get the plan and adjust amounts in each of the categories
             if let planResponse: Response.Plan = try? await Http.get(path: "/api/funding-plans/10/details") {
                 planResponse.categories.forEach { planCat in
-                    if let i = data.categories.firstIndex(where: {
+                    // Get the transaction category index
+                    guard let i = data.categories.firstIndex(where: {
                         $0.categoryId == planCat.categoryId
-                    }) {
-                        data.categories[i].amount = planCat.amount / Double(planCat.recurrence)
+                    }) else {
+                        return
+                    }
+                    
+                    // Get the category
+                    guard let category = categoriesStore.categoryDictionary[planCat.categoryId] else {
+                        return
+                    }
+                
+                    // Get the allowed to spend index
+                    guard let allowedToSpendIndex = data.allowedToSpend.firstIndex(where: {
+                        $0.categoryId == planCat.categoryId
+                    }) else {
+                        return
+                    }
+
+                    if let goalDate = planCat.goalDate {
+                        let monthDiff = MonthYearDate(date: goalDate).diff(other: fundingMonth)
                         
-                        if planCat.goalDate == nil {
-                            if let j = data.allowedToSpend.firstIndex(where: {
-                                $0.categoryId == planCat.categoryId
-                            }) {
-                                if planCat.expectedToSpend != nil {
-                                    data.allowedToSpend[j].amount = planCat.expectedToSpend
-                                }
-                                else if let c = categoriesStore.categoryDictionary[data.allowedToSpend[j].categoryId] {
-                                    let balance = c.balance + (planCat.amount / Double(planCat.recurrence))
-                                    data.allowedToSpend[j].amount = balance > 0 ? balance : 0
-                                }
-                            }
+                        var monthlyAmount = 0.0
+                    
+                        let goalDiff = planCat.amount - category.balance
+                        
+                        if goalDiff > 0 {
+                            monthlyAmount = goalDiff / Double(monthDiff + 1)
+                        }
+                        
+                        data.categories[i].amount = monthlyAmount
+                        
+                        if monthDiff == 0 {
+                            data.allowedToSpend[allowedToSpendIndex].amount = planCat.amount
+                        }
+                        
+                        let plannedAmount = planCat.amount / Double(planCat.recurrence)
+                        if monthlyAmount != plannedAmount {
+                            print("Adjusted \(category.name): \(plannedAmount) to \(monthlyAmount)")
+                        }
+                    } else {
+                        let plannedAmount = planCat.amount / Double(planCat.recurrence)
+                        var monthlyAmount = plannedAmount
+                        
+                        // Adjust the monthly amount if this is a required amount (a bill)
+                        // so that there is enough of a balance to meet its requirement
+                        if category.balance < 0 {
+                            monthlyAmount = plannedAmount - category.balance
+                            print("Adjusted \(category.name): \(plannedAmount) to \(monthlyAmount)")
+                        }
+                        
+                        data.categories[i].amount = monthlyAmount
+                        
+                        if planCat.expectedToSpend != nil {
+                            data.allowedToSpend[allowedToSpendIndex].amount = planCat.expectedToSpend
+                        }
+                        else {
+                            let balance = category.balance + monthlyAmount
+                            data.allowedToSpend[allowedToSpendIndex].amount = balance > 0 ? balance : 0
                         }
                     }
                 }

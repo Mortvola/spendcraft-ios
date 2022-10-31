@@ -229,6 +229,8 @@ extension KeyedDecodingContainer {
 
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withFullDate, .withDashSeparatorInDate]
+        formatter.timeZone = TimeZone(identifier: "UTC")
+
         guard let date = formatter.date(from: dateString) else {
             throw MyError.runtimeError("Invalid date format")
         }

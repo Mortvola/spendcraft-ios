@@ -134,6 +134,7 @@ public struct Http {
         return await withCheckedContinuation { continuation in
             let task = session.dataTask(with: urlRequest) { data, response, error in
                 if !checkResponse(error: error, response: response) {
+                    continuation.resume(returning: nil)
                     return
                 }
                 
@@ -150,6 +151,7 @@ public struct Http {
         return await withCheckedContinuation { continuation in
             let task = session.uploadTask(with: urlRequest, from: uploadData) { data, response, error in
                 if !checkResponse(error: error, response: response) {
+                    continuation.resume(returning: nil)
                     return
                 }
                 
