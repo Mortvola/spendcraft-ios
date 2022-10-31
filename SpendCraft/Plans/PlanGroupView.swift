@@ -25,7 +25,7 @@ struct PlanGroupView: View {
 struct PlanGroupView_Previews: PreviewProvider {
     static let group = SpendCraft.Group(id: 0, name: "Test Group", type: .regular, categories: [])
     static let categoryDictionary = Dictionary<Int, Category>()
-    static let plan = Response.Plan(id: 0, name: "test", categories: [Response.PlanCategory(id: 0, categoryId: 0, amount: 100.0, recurrence: 1, useGoal: false, goalDate: Date.now)])
+    static let plan = Response.Plan(id: 0, name: "test", categories: [Response.PlanCategory(id: 0, categoryId: 0, amount: 100.0, recurrence: 1, useGoal: false, goalDate: Date.now, expectedToSpend: nil)])
 
     static var previews: some View {
         PlanGroupView(group: group)

@@ -300,20 +300,19 @@ extension Transaction {
             
             if let planResponse: Response.Plan = try? await Http.get(path: "/api/funding-plans/10/details") {
                 planResponse.categories.forEach { planCat in
-                    let i = data.categories.firstIndex {
+                    if let i = data.categories.firstIndex(where: {
                         $0.categoryId == planCat.categoryId
-                    }
-                    
-                    if let i = i {
+                    }) {
                         data.categories[i].amount = planCat.amount / Double(planCat.recurrence)
                         
                         if planCat.goalDate == nil {
-                            let j = data.allowedToSpend.firstIndex {
+                            if let j = data.allowedToSpend.firstIndex(where: {
                                 $0.categoryId == planCat.categoryId
-                            }
-                            
-                            if let j = j {
-                                if let c = categoriesStore.categoryDictionary[data.allowedToSpend[j].categoryId] {
+                            }) {
+                                if planCat.expectedToSpend != nil {
+                                    data.allowedToSpend[j].amount = planCat.expectedToSpend
+                                }
+                                else if let c = categoriesStore.categoryDictionary[data.allowedToSpend[j].categoryId] {
                                     let balance = c.balance + (planCat.amount / Double(planCat.recurrence))
                                     data.allowedToSpend[j].amount = balance > 0 ? balance : 0
                                 }

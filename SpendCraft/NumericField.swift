@@ -42,6 +42,7 @@ struct NumericField: View {
     init(value: Binding<Double?>) {
         formatter.numberStyle = .decimal
         formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
         
         _value = value
         if let value = value.wrappedValue, let string = formatter.string(from: NSNumber(value: value)) {

@@ -122,6 +122,7 @@ class PlanCategory: ObservableObject {
     @Published var recurrence: Int
     var goalDate: MonthYearDate?
     var useGoal: Bool
+    var expectedToSpend: Double?
     
     init(response: Response.PlanCategory) {
         self.id = response.id
@@ -134,12 +135,14 @@ class PlanCategory: ObservableObject {
         }
         
         self.useGoal = response.useGoal
+        self.expectedToSpend = response.expectedToSpend
     }
     
     struct Data {
         var amount: Double?
         var recurrence: Int = 1
         var goal: MonthYearDate? = nil
+        var expectedToSpend: Double? = nil
         
         private var calendar: Calendar
         
@@ -148,7 +151,7 @@ class PlanCategory: ObservableObject {
             self.calendar.timeZone = TimeZone(abbreviation: "UTC")!
         }
 
-        init(amount: Double?, recurrence: Int, goalDate: MonthYearDate?) throws {
+        init(amount: Double?, recurrence: Int, goalDate: MonthYearDate?, expectedToSpend: Double?) throws {
             self.calendar = Calendar.current
             self.calendar.timeZone = TimeZone(abbreviation: "UTC")!
 
@@ -166,11 +169,13 @@ class PlanCategory: ObservableObject {
                     self.goal = try goalDate.nextDate(recurrence: self.recurrence)
                 }
             }
+            
+            self.expectedToSpend = expectedToSpend
         }
     }
     
     func data() throws -> Data {
-        try PlanCategory.Data(amount: self.amount, recurrence: self.recurrence, goalDate: self.goalDate)
+        try PlanCategory.Data(amount: self.amount, recurrence: self.recurrence, goalDate: self.goalDate, expectedToSpend: self.expectedToSpend)
     }
 
     @MainActor
@@ -180,8 +185,9 @@ class PlanCategory: ObservableObject {
             let useGoal: Bool
             let goalDate: MonthYearDate?
             let recurrence: Int
+            let expectedToSpend: Double?
             
-            init(amount: Double, useGoal: Bool, goalDate: MonthYearDate?, recurrence: Int) {
+            init(amount: Double, useGoal: Bool, goalDate: MonthYearDate?, recurrence: Int, expectedToSpend: Double?) {
                 self.amount = amount
                 self.useGoal = useGoal
                 self.recurrence = recurrence
@@ -192,10 +198,12 @@ class PlanCategory: ObservableObject {
                 else {
                     self.goalDate = nil
                 }
+                
+                self.expectedToSpend = expectedToSpend
             }
         }
         
-        let requestData = RequestData(amount: data.amount ?? 0, useGoal: false, goalDate: data.goal, recurrence: data.recurrence)
+        let requestData = RequestData(amount: data.amount ?? 0, useGoal: false, goalDate: data.goal, recurrence: data.recurrence, expectedToSpend: data.expectedToSpend)
         
         try await Http.put(path: "/api/funding-plans/10/item/\(self.categoryId)", data: requestData)
 
@@ -239,6 +247,6 @@ class PlanStore: ObservableObject {
             return planCat
         }
         
-        return PlanCategory(response: Response.PlanCategory(id: PlanStore.nextId(), categoryId: category.id, amount: 0.0, recurrence: 1, useGoal: false, goalDate: Date.now))
+        return PlanCategory(response: Response.PlanCategory(id: PlanStore.nextId(), categoryId: category.id, amount: 0.0, recurrence: 1, useGoal: false, goalDate: Date.now, expectedToSpend: nil))
     }
 }

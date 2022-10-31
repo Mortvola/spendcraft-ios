@@ -20,7 +20,13 @@ public struct Http {
             throw MyError.runtimeError("Data is nil")
         }
 
-        return try JSONDecoder().decode(T.self, from: data)
+        do {
+            return try JSONDecoder().decode(T.self, from: data)
+        }
+        catch {
+            print("\(error.localizedDescription)")
+            throw error
+        }
     }
 
     public static func post(path: String, data: Encodable) async throws {
@@ -34,7 +40,13 @@ public struct Http {
             throw MyError.runtimeError("Data is nil")
         }
 
-        return try JSONDecoder().decode(T.self, from: data)
+        do {
+            return try JSONDecoder().decode(T.self, from: data)
+        }
+        catch {
+            print("\(error.localizedDescription)")
+            throw error
+        }
     }
 
     // PUT requests
@@ -49,7 +61,13 @@ public struct Http {
             throw MyError.runtimeError("Data is nil")
         }
 
-        return try JSONDecoder().decode(T.self, from: data)
+        do {
+            return try JSONDecoder().decode(T.self, from: data)
+        }
+        catch {
+            print("\(error.localizedDescription)")
+            throw error
+        }
     }
 
     // GET requests
@@ -60,7 +78,13 @@ public struct Http {
             throw MyError.runtimeError("Data is nil")
         }
 
-        return try JSONDecoder().decode(T.self, from: data)
+        do {
+            return try JSONDecoder().decode(T.self, from: data)
+        }
+        catch {
+            print("\(error.localizedDescription)")
+            throw error
+        }
     }
 
     // PATCH requests
@@ -71,7 +95,13 @@ public struct Http {
             throw MyError.runtimeError("Data is nil")
         }
         
-        return try JSONDecoder().decode(T.self, from: data)
+        do {
+            return try JSONDecoder().decode(T.self, from: data)
+        }
+        catch {
+            print("\(error.localizedDescription)")
+            throw error
+        }
     }
     
     // DELETE requests

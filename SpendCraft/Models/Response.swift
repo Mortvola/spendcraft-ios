@@ -160,6 +160,7 @@ enum Response {
         var recurrence: Int
         var goalDate: Date?
         var useGoal: Bool
+        var expectedToSpend: Double?
 
         enum CodingKeys: String, CodingKey {
             case id
@@ -168,15 +169,17 @@ enum Response {
             case recurrence
             case goalDate
             case useGoal
+            case expectedToSpend
         }
 
-        public init(id: Int, categoryId: Int, amount: Double, recurrence: Int, useGoal: Bool, goalDate: Date?) {
+        public init(id: Int, categoryId: Int, amount: Double, recurrence: Int, useGoal: Bool, goalDate: Date?, expectedToSpend: Double?) {
             self.id = id
             self.categoryId = categoryId
             self.amount = amount
             self.recurrence = recurrence
             self.useGoal = useGoal
             self.goalDate = goalDate
+            self.expectedToSpend = expectedToSpend
         }
         
         public init(from decoder: Decoder) throws {
@@ -188,6 +191,7 @@ enum Response {
             self.recurrence = try container.decodeIfPresent(Int.self, forKey: .recurrence) ?? 1
             self.goalDate = try container.decodeDateIfPresent(forKey: .goalDate)
             self.useGoal = try container.decode(Bool.self, forKey: .useGoal)
+            self.expectedToSpend = try container.decodeIfPresent(Double.self, forKey: .expectedToSpend)
         }
     }
 }

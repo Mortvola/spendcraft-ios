@@ -29,9 +29,9 @@ struct PlanItemEdit: View {
         NavigationStack {
             Form {
                 HStack {
-                    Text("Amount:")
-                    NumericField(value: $data.amount)
-                    Spacer()
+                    LabeledContent("Amount:") {
+                        NumericField(value: $data.amount)
+                    }
                 }
                 
                 Stepper(value: $data.recurrence, in: 1...360, step:  1) {
@@ -42,23 +42,25 @@ struct PlanItemEdit: View {
                 
                 if (data.recurrence > 1) {
                     HStack {
-                        Text("Monthly amount of")
-                        SpendCraft.AmountView(amount: (data.amount ?? 0) / Double(data.recurrence))
-                        Spacer()
+                        LabeledContent("Monthly amount of") {
+                            SpendCraft.AmountView(amount: (data.amount ?? 0) / Double(data.recurrence))
+                        }
                     }
                     
                     ControlGroup {
-                        HStack {
-                            Spacer()
+                        LabeledContent("Next Expense Date") {
                             Button(action: { selectDate = true }) {
                                 Spacer()
                                 Text(dateLabel())
                                 Spacer()
                             }
-                            Spacer()
                         }
-                    } label: {
-                        Text("Next Expense Date")
+                    }
+                }
+                
+                ControlGroup {
+                    LabeledContent("Expected to Spend") {
+                        NumericField(value: $data.expectedToSpend)
                     }
                 }
             }
@@ -93,7 +95,7 @@ struct PlanItemEdit: View {
 }
 
 struct PlanItemEdit_Previews: PreviewProvider {
-    static let planCategory = PlanCategory(response: Response.PlanCategory(id: 0, categoryId: 0, amount: 100.0, recurrence: 12, useGoal: false, goalDate: Date.now))
+    static let planCategory = PlanCategory(response: Response.PlanCategory(id: 0, categoryId: 0, amount: 100.0, recurrence: 12, useGoal: false, goalDate: Date.now, expectedToSpend: nil))
     static let category = SpendCraft.Category(id: 0, groupId: 0, name: "Test", balance: 10.0, type: .regular, monthlyExpenses: false)
     static var previews: some View {
         PlanItemEdit(category: category, planCategory: planCategory, isEditing: .constant(false))
