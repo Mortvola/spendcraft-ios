@@ -24,6 +24,8 @@ class Transaction: ObservableObject, Identifiable, Codable {
         var categoryId: Int?
         var amount: Double?
         var comment: String
+        var adjusted: Bool = false
+        var adjustedText: String = ""
         
         init() {
             self.comment = ""
@@ -284,8 +286,6 @@ extension Transaction {
         
         // Popuulate the category array with the categories not currently in the array
         if type == .funding {
-//            data.categories = [] // todo: is this needed?
-            
             let fundingMonth = MonthYearDate(month: 11, year: 2022)
 
             let categoriesStore = CategoriesStore.shared
@@ -324,8 +324,9 @@ extension Transaction {
                         return
                     }
 
-                    if let goalDate = planCat.goalDate {
-                        let monthDiff = MonthYearDate(date: goalDate).diff(other: fundingMonth)
+                    if let gd = planCat.goalDate {
+                        let goalDate = MonthYearDate(date: gd)
+                        let monthDiff = goalDate.diff(other: fundingMonth)
                         
                         var monthlyAmount = 0.0
                     
@@ -343,6 +344,8 @@ extension Transaction {
                         
                         let plannedAmount = planCat.amount / Double(planCat.recurrence)
                         if monthlyAmount != plannedAmount {
+                            data.categories[i].adjusted = true
+                            data.categories[i].adjustedText = "The funding amount was adjusted from a planned amount of \(SpendCraft.Amount(amount: plannedAmount)) to \(SpendCraft.Amount(amount: monthlyAmount)) for the goal of \(planCat.amount) due \(goalDate.year)-\(goalDate.month)."
                             print("Adjusted \(category.name): \(plannedAmount) to \(monthlyAmount)")
                         }
                     } else {
@@ -354,6 +357,8 @@ extension Transaction {
                         if category.balance < 0 {
                             monthlyAmount = plannedAmount - category.balance
                             print("Adjusted \(category.name): \(plannedAmount) to \(monthlyAmount)")
+                            data.categories[i].adjusted = true
+                            data.categories[i].adjustedText = "The funding amount was adjusted from a planned amount of \(SpendCraft.Amount(amount: plannedAmount)) to \(SpendCraft.Amount(amount: monthlyAmount))."
                         }
                         
                         data.categories[i].amount = monthlyAmount

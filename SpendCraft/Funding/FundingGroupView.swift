@@ -12,12 +12,13 @@ struct FundingGroupView: View {
     @ObservedObject var group: SpendCraft.Group
     @State var isExpanded = true
     @Binding var trxData: Transaction.Data
+    @Binding var showPopover: Int?
     
     var body: some View {
         DisclosureGroup(group.name, isExpanded: $isExpanded) {
             ForEach($group.categories) { $category in
                 if !category.hidden {
-                    FundingCategoryView(category: category, trxData: $trxData)
+                    FundingCategoryView(category: category, trxData: $trxData, showPopover: $showPopover)
                 }
             }
         }
@@ -25,10 +26,10 @@ struct FundingGroupView: View {
 }
 
 //struct FundingGroupView_Previews: PreviewProvider {
-//    static let group = SpendCraft.Group(id: 0, name: "Test Group", type: .regular, categories: [])
+//    static let group = SpendCraft.Group(id: 0, name: "Test Group", type: .regular, hidden: false, categories: [])
 //    static let categoryDictionary = Dictionary<Int, Category>()
 //
 //    static var previews: some View {
-//        FundingGroupView(group: group, trxData: .constant(SampleData.transactions[0].data))
+//        FundingGroupView(group: group, trxData: .constant(SampleData.transactions[0].data()))
 //    }
 //}

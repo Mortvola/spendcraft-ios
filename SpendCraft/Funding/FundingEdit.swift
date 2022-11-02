@@ -13,7 +13,8 @@ struct FundingEdit: View {
     @Binding var isOpen: Bool
     @Binding var trxData: Transaction.Data
     var categoriesStore = CategoriesStore.shared
-
+    @State var showPopover: Int? = nil
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -25,11 +26,11 @@ struct FundingEdit: View {
                         switch node {
                         case .category(let category):
                             if !category.hidden {
-                                FundingCategoryView(category: category, trxData: $trxData)
+                                FundingCategoryView(category: category, trxData: $trxData, showPopover: $showPopover)
                             }
                         case .group(let group):
                             if (!group.hidden && group.type != GroupType.system) {
-                                FundingGroupView(group: group, trxData: $trxData)
+                                FundingGroupView(group: group, trxData: $trxData, showPopover: $showPopover)
                             }
                         }
                     }
@@ -65,6 +66,13 @@ struct FundingEdit: View {
                     }
                 }
             }
+            .simultaneousGesture(
+                TapGesture()
+                    .onEnded {
+                        print("Parent tapped")
+                        showPopover = nil
+                    }
+            )
         }
     }
 }
