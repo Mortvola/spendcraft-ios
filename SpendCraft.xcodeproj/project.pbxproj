@@ -11,6 +11,7 @@
 		790B4EF629096A5000149DCC /* FundingCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790B4EF529096A5000149DCC /* FundingCategoryView.swift */; };
 		790B4EF8290C376200149DCC /* Border.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790B4EF7290C376200149DCC /* Border.swift */; };
 		790B4EFA290F522D00149DCC /* MonthYearDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790B4EF9290F522D00149DCC /* MonthYearDate.swift */; };
+		790B4EFC2912E16F00149DCC /* FundingNew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790B4EFB2912E16F00149DCC /* FundingNew.swift */; };
 		7923782A28D76BD60069DB01 /* Authenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782928D76BD60069DB01 /* Authenticator.swift */; };
 		7923782C28D77C0A0069DB01 /* TransactionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923782B28D77C0A0069DB01 /* TransactionStore.swift */; };
 		7923783228D7F61E0069DB01 /* TransactionEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923783128D7F61E0069DB01 /* TransactionEdit.swift */; };
@@ -180,6 +181,7 @@
 		790B4EF529096A5000149DCC /* FundingCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FundingCategoryView.swift; sourceTree = "<group>"; };
 		790B4EF7290C376200149DCC /* Border.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Border.swift; sourceTree = "<group>"; };
 		790B4EF9290F522D00149DCC /* MonthYearDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthYearDate.swift; sourceTree = "<group>"; };
+		790B4EFB2912E16F00149DCC /* FundingNew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FundingNew.swift; sourceTree = "<group>"; };
 		7923782728D7678C0069DB01 /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		7923782928D76BD60069DB01 /* Authenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authenticator.swift; sourceTree = "<group>"; };
 		7923782B28D77C0A0069DB01 /* TransactionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionStore.swift; sourceTree = "<group>"; };
@@ -519,6 +521,7 @@
 			isa = PBXGroup;
 			children = (
 				79CF2E6D2909653A00448D65 /* FundingEdit.swift */,
+				790B4EFB2912E16F00149DCC /* FundingNew.swift */,
 				790B4EF32909699500149DCC /* FundingGroupView.swift */,
 				790B4EF529096A5000149DCC /* FundingCategoryView.swift */,
 			);
@@ -844,6 +847,7 @@
 				7946968A28DAC578005B6408 /* NumericField.swift in Sources */,
 				79CF2E6329002F8900448D65 /* PlanItemEdit.swift in Sources */,
 				792681B328F5F98C0005114F /* CategoryItem.swift in Sources */,
+				790B4EFC2912E16F00149DCC /* FundingNew.swift in Sources */,
 				7923782A28D76BD60069DB01 /* Authenticator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

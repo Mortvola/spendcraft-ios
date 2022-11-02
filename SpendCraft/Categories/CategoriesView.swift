@@ -14,7 +14,6 @@ struct CategoriesView: View {
     @StateObject private var testCategory = SpendCraft.Category(id: -2, groupId: 0, name: "Unassigned", balance: 100, type: .regular, monthlyExpenses: false, hidden: false)
     @State private var isEditingCategories = false
     @State private var isFundingCategories = false
-    @ObservedObject private var newTransaction = Transaction(type: .regular)
 
     var body: some View {
         NavigationSplitView {
@@ -51,8 +50,6 @@ struct CategoriesView: View {
                 ToolbarItem(placement: .automatic) {
                     Button("Fund") {
                         Task {
-                            newTransaction.type = .funding
-                            newTransaction.categories = []
                             isFundingCategories = true
                         }
                     }
@@ -73,7 +70,7 @@ struct CategoriesView: View {
                 .presentationDetents([.large])
         }
         .sheet(isPresented: $isFundingCategories) {
-            FundingEdit(transaction: newTransaction, isOpen: $isFundingCategories)
+            FundingNew(isOpen: $isFundingCategories)
         }
         .task {
             if (!categoriesStore.loaded) {
