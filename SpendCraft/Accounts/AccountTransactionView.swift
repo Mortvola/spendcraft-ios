@@ -11,14 +11,12 @@ import Framework
 struct AccountTransactionView: View {
     @ObservedObject var trx: Transaction
     @ObservedObject var transactionStore: TransactionStore
-    @State var data = Transaction.Data()
     @State var isEditingTrx = false
     var postedTransaction: Bool
 
     var body: some View {
         Button {
             Task {
-                data = await trx.data ()
                 isEditingTrx = true
             }
         } label: {
@@ -44,7 +42,7 @@ struct AccountTransactionView: View {
             }
         }
         .sheet(isPresented: $isEditingTrx) {
-            TransactionEdit(transaction: trx, isEditingTrx: $isEditingTrx, trxData: $data, transactionStore: transactionStore, category: nil, postedTransaction: postedTransaction)
+            TransactionEdit(transaction: trx, isEditingTrx: $isEditingTrx, transactionStore: transactionStore, category: nil, postedTransaction: postedTransaction)
         }
     }
 }

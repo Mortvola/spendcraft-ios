@@ -109,7 +109,7 @@ public struct Http {
         try await Http.sendRequest(method: "DELETE", path: path)
     }
     
-    private static func checkResponse(error: Error?, response: URLResponse?) -> Bool {
+    private static func checkResponse(error: Error?, data: Data?, response: URLResponse?) -> Bool {
         if let error = error {
             print("Error: \(error)");
             return false
@@ -122,6 +122,10 @@ public struct Http {
         
         guard (200...299).contains(response.statusCode) else {
             print ("Server error: \(response.statusCode)")
+            if let data = data {
+                let text = String(decoding: data, as: UTF8.self)
+                print(text)
+            }
             return false
         }
         
@@ -133,7 +137,7 @@ public struct Http {
         
         return await withCheckedContinuation { continuation in
             let task = session.dataTask(with: urlRequest) { data, response, error in
-                if !checkResponse(error: error, response: response) {
+                if !checkResponse(error: error, data: data, response: response) {
                     continuation.resume(returning: nil)
                     return
                 }
@@ -150,7 +154,7 @@ public struct Http {
         
         return await withCheckedContinuation { continuation in
             let task = session.uploadTask(with: urlRequest, from: uploadData) { data, response, error in
-                if !checkResponse(error: error, response: response) {
+                if !checkResponse(error: error, data: data, response: response) {
                     continuation.resume(returning: nil)
                     return
                 }

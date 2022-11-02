@@ -12,7 +12,6 @@ struct TransactionView: View {
     @ObservedObject var trx: Transaction
     @ObservedObject var transactionStore: TransactionStore
     @ObservedObject var category: SpendCraft.Category
-    @State var data = Transaction.Data()
     @State var isEditingTrx = false
     var postedTransaction: Bool
     
@@ -31,7 +30,6 @@ struct TransactionView: View {
     var body: some View {
         Button {
             Task {
-                data = await trx.data()
                 isEditingTrx = true
             }
         } label: {
@@ -68,10 +66,10 @@ struct TransactionView: View {
         }
         .sheet(isPresented: $isEditingTrx) {
             if trx.type == .funding {
-                FundingEdit(transaction: trx, isOpen: $isEditingTrx, trxData: $data)
+                FundingEdit(transaction: trx, isOpen: $isEditingTrx)
             }
             else {
-                TransactionEdit(transaction: trx, isEditingTrx: $isEditingTrx, trxData: $data, transactionStore: transactionStore, category: category, postedTransaction: postedTransaction)
+                TransactionEdit(transaction: trx, isEditingTrx: $isEditingTrx, transactionStore: transactionStore, category: category, postedTransaction: postedTransaction)
             }
         }
     }

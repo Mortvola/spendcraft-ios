@@ -11,7 +11,7 @@ import Framework
 struct FundingEdit: View {
     @ObservedObject var transaction: Transaction
     @Binding var isOpen: Bool
-    @Binding var trxData: Transaction.Data
+    @State var trxData = Transaction.Data()
     var categoriesStore = CategoriesStore.shared
     @State var showPopover: Int? = nil
     
@@ -62,9 +62,16 @@ struct FundingEdit: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
-                        isOpen = false;
+                        Task {
+                            transaction.update(from: trxData)
+                            await transaction.saveCategoryTransfer()
+                            isOpen = false;
+                        }
                     }
                 }
+            }
+            .task {
+                trxData = await transaction.data()
             }
             .simultaneousGesture(
                 TapGesture()

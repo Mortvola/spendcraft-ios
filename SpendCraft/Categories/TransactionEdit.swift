@@ -12,7 +12,7 @@ import Framework
 struct TransactionEdit: View {
     @ObservedObject var transaction: Transaction
     @Binding var isEditingTrx: Bool
-    @Binding var trxData: Transaction.Data
+    @State var trxData = Transaction.Data()
     @ObservedObject var transactionStore: TransactionStore
     let category: SpendCraft.Category?
     @State var newSelection: Int? = nil
@@ -108,6 +108,9 @@ struct TransactionEdit: View {
                     }
                     .disabled(!trxData.isValid || !postedTransaction)
                 }
+            }
+            .task() {
+                trxData = await transaction.data()
             }
         }
     }

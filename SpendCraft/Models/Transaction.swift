@@ -156,7 +156,59 @@ class Transaction: ObservableObject, Identifiable, Codable {
     }
 
     @MainActor
-    func save(category: SpendCraft.Category?, transactionStore: TransactionStore, removed: @escaping ()->Void) async {
+    func saveCategoryTransfer() async {
+        struct RequestData: Encodable {
+            struct Category: Encodable {
+                var categoryId: Int?
+                var amount: Double?
+            }
+
+            var date: String
+            var categories: [Category]
+            var type: TransactionType
+        }
+
+        guard let date = self.date else {
+            return
+        }
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = TimeZone(abbreviation: "UTC")
+        let dateString = formatter.string(from: date)
+
+        var requestData = RequestData(
+            date: dateString,
+            categories: self.categories.filter {
+                ($0.amount ?? 0) != 0
+            }.map {
+                RequestData.Category(categoryId: $0.categoryId, amount: $0.amount)
+            },
+            type: .funding
+        )
+        
+        let sum = requestData.categories.reduce(0.0) { accum, value in
+            accum + (value.amount ?? 0)
+        }
+        
+        print("sum = \(sum)")
+        
+        let categoriesStore = CategoriesStore.shared
+        requestData.categories.append(RequestData.Category(categoryId: categoriesStore.fundingPool.id, amount: -sum))
+
+        if self.id < 0 {
+            if self.type == .funding {
+                if let updateTrxResponse: Response.UpdateTransaction = try? await Http.post(path: "/api/category-transfer", data: requestData) {
+                }
+            }
+        }
+        else {
+            
+        }
+    }
+
+    @MainActor
+    func save(category: SpendCraft.Category?, transactionStore: TransactionStore?, removed: @escaping ()->Void) async {
         struct TrxData: Encodable {
             struct Category: Encodable {
                 var id: Int?
@@ -182,43 +234,55 @@ class Transaction: ObservableObject, Identifiable, Codable {
         formatter.timeZone = TimeZone(abbreviation: "UTC")
         let dateString = formatter.string(from: date)
 
-        let trxData = TrxData(name: self.name, date: dateString, amount: self.amount, principle: 0, comment: self.comment, splits: self.categories.map {
-            TrxData.Category(id: $0.id, categoryId: $0.categoryId, amount: $0.amount, comment: $0.comment)
-        })
+        let trxData = TrxData(
+            name: self.name,
+            date: dateString,
+            amount: self.amount,
+            principle: 0,
+            comment: self.comment,
+            splits: self.categories.map {
+                TrxData.Category(id: $0.id, categoryId: $0.categoryId, amount: $0.amount, comment: $0.comment)
+            }
+        )
 
-        if let updateTrxResponse: Response.UpdateTransaction = try? await Http.patch(path: "/api/transaction/\(self.id)", data: trxData) {
-            let trx = Transaction(trx: updateTrxResponse.transaction)
+        if self.id < 0 {
+            // todo: add code to post new transaction
+        }
+        else {
+            if let updateTrxResponse: Response.UpdateTransaction = try? await Http.patch(path: "/api/transaction/\(self.id)", data: trxData) {
+                let trx = Transaction(trx: updateTrxResponse.transaction)
 
-            // If the transaction has no categories assigned and the
-            // current category is not the unassigned category
-            // OR if the transation has categories and none of them
-            // match the current category then remove the transaction
-            // from the transactions array
-            if let category = category {
-                if ((trx.categories.count == 0 && category.type != .unassigned) || (trx.categories.count != 0 && !trx.hasCategory(categoryId: category.id))) {
-                    
-                    // Find the index of the transaction in the transactions array
-                    let index = transactionStore.transactions.firstIndex(where: {
-                        $0.id == trx.id
-                    })
-                    
-                    // If the index was found then remove the transation from
-                    // the transactions array
-                    if let index = index {
-                        transactionStore.transactions.remove(at: index)
-                        removed()
+                // If the transaction has no categories assigned and the
+                // current category is not the unassigned category
+                // OR if the transation has categories and none of them
+                // match the current category then remove the transaction
+                // from the transactions array
+                if let category = category, let transactionStore = transactionStore {
+                    if ((trx.categories.count == 0 && category.type != .unassigned) || (trx.categories.count != 0 && !trx.hasCategory(categoryId: category.id))) {
+                        
+                        // Find the index of the transaction in the transactions array
+                        let index = transactionStore.transactions.firstIndex(where: {
+                            $0.id == trx.id
+                        })
+                        
+                        // If the index was found then remove the transation from
+                        // the transactions array
+                        if let index = index {
+                            transactionStore.transactions.remove(at: index)
+                            removed()
+                        }
                     }
                 }
-            }
-            
-            if (updateTrxResponse.categories.count > 0) {
-                let categoriesStore = CategoriesStore.shared
-
-                updateTrxResponse.categories.forEach { cat in
-                    categoriesStore.updateBalance(categoryId: cat.id, balance: cat.balance)
-                }
                 
-                categoriesStore.write()
+                if (updateTrxResponse.categories.count > 0) {
+                    let categoriesStore = CategoriesStore.shared
+
+                    updateTrxResponse.categories.forEach { cat in
+                        categoriesStore.updateBalance(categoryId: cat.id, balance: cat.balance)
+                    }
+                    
+                    categoriesStore.write()
+                }
             }
         }
     }
@@ -379,7 +443,9 @@ extension Transaction {
     }
     
     func update(from data: Data) {
-        categories = data.categories
+        categories = data.categories.filter {
+            $0.amount != 0
+        }
     }
 }
 
