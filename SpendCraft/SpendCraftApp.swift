@@ -15,6 +15,7 @@ struct SpendCraftApp: App {
     @Environment(\.scenePhase) var scenePhase
     @State var isActive = false
     @State var tabSelection: TabSelection = .categories
+    @ObservedObject var busy = Busy.shared
     
     func registerForPushNotifications() {
       UNUserNotificationCenter.current()
@@ -45,6 +46,11 @@ struct SpendCraftApp: App {
                         }
                 } else {
                     LoginView(authenticator: authenticator)
+                }
+                if busy.busy {
+                    ProgressView()
+                        .padding(32)
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(.gray, lineWidth: 1))
                 }
                 InactiveView()
                     .opacity(opacity)

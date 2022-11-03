@@ -30,6 +30,8 @@ class Authenticator: ObservableObject {
             var remember: String
         }
         
+        Busy.shared.start()
+        
         let data = Data(username: username, password: password, remember: "on")
 
         try? await Http.post(path: "/login", data: data)
@@ -37,6 +39,8 @@ class Authenticator: ObservableObject {
 
         self.authenticated = true
         self.username = username
+        
+        Busy.shared.stop()
     }
     
     func addCredentials(username: String, password: String) throws {
