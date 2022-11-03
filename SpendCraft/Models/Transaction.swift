@@ -289,16 +289,39 @@ class Transaction: ObservableObject, Identifiable, Codable {
 }
 
 extension Transaction {
-    struct Data {
-        var date: Date?
-        var name: String = ""
-        var amount: Double = 0.0
-        var institution: String = ""
-        var account: String = ""
-        var comment: String?
-        var categories: [Category] = []
-        var allowedToSpend: [AllowedToSpend] = []
+    class Data: ObservableObject {
+        @Published var date: Date?
+        @Published var name: String = ""
+        @Published var amount: Double = 0.0
+        @Published var institution: String = ""
+        @Published var account: String = ""
+        @Published var comment: String?
+        @Published var categories: [Category] = []
+        @Published var allowedToSpend: [AllowedToSpend] = []
 
+        init() {}
+        
+        init(_ transaction: Transaction) {
+            self.date = transaction.date
+            self.name = transaction.name
+            self.amount = transaction.amount
+            self.institution = transaction.institution
+            self.account = transaction.account
+            self.comment = transaction.comment
+            self.categories = transaction.categories
+        }
+        
+        func update(from data: Transaction.Data) {
+            self.date = data.date
+            self.name = data.name
+            self.amount = data.amount
+            self.institution = data.institution
+            self.account = data.account
+            self.comment = data.comment
+            self.categories = data.categories
+            self.allowedToSpend = data.allowedToSpend
+        }
+        
         struct AllowedToSpend {
             var categoryId: Int
             var amount: Double?
@@ -346,7 +369,7 @@ extension Transaction {
     }
     
     func data() async -> Data {
-        var data = Data(date: date, name: name, amount: amount, institution: institution, account: account, comment: comment, categories: categories)
+        let data = Data(self)
         
         // Popuulate the category array with the categories not currently in the array
         if type == .funding {

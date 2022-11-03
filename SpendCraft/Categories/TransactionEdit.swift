@@ -12,11 +12,12 @@ import Framework
 struct TransactionEdit: View {
     @ObservedObject var transaction: Transaction
     @Binding var isEditingTrx: Bool
-    @State var trxData = Transaction.Data()
+    @StateObject var trxData = Transaction.Data()
     @ObservedObject var transactionStore: TransactionStore
     let category: SpendCraft.Category?
     @State var newSelection: Int? = nil
     var postedTransaction: Bool
+    @State var initialized = false
 
     static var next: Int = 0
 
@@ -110,20 +111,25 @@ struct TransactionEdit: View {
                 }
             }
             .task() {
-                trxData = await transaction.data()
+                if !initialized {
+                    let data = await transaction.data()
+                    trxData.update(from: data)
+                    initialized = true
+                    print("test")
+                }
             }
         }
     }
 }
 
-//struct TransactionEdit_Previews: PreviewProvider {
-//    static let isEditingTrx = true
-//    static let category = SpendCraft.Category(id: 0, groupId: 0, name: "Test", balance: 0, type: .regular, monthlyExpenses: false)
-//    static let transactionStore = TransactionStore();
-//    static let postedTransaction = true
-//
-//    static var previews: some View {
-//        TransactionEdit(transaction: SampleData.transactions[0], isEditingTrx: .constant(isEditingTrx), trxData: .constant(SampleData.transactions[0].data), transactionStore: transactionStore, category: category, postedTransaction: postedTransaction)
-//            .previewInterfaceOrientation(.portraitUpsideDown)
-//    }
-//}
+struct TransactionEdit_Previews: PreviewProvider {
+    static let isEditingTrx = true
+    static let category = SpendCraft.Category(id: 0, groupId: 0, name: "Test", balance: 0, type: .regular, monthlyExpenses: false, hidden: false)
+    static let transactionStore = TransactionStore();
+    static let postedTransaction = true
+
+    static var previews: some View {
+        TransactionEdit(transaction: SampleData.transactions[0], isEditingTrx: .constant(isEditingTrx), transactionStore: transactionStore, category: category, postedTransaction: postedTransaction)
+            .previewInterfaceOrientation(.portraitUpsideDown)
+    }
+}
