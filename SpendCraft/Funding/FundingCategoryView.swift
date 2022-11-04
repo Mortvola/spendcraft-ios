@@ -15,6 +15,22 @@ struct FundingCategoryView: View {
     var adjustedText: String
     @Binding var showPopover: Int?
     
+    func current() -> Double {
+        guard let transaction = trxData.transaction else {
+            return category.balance
+        }
+        
+        if (transaction.id < 0) {
+            return category.balance
+        }
+
+        let trxCat2 = trxData.transaction?.categories.first {
+            $0.categoryId == category.id
+        }
+        
+        return category.balance - (trxCat2?.amount ?? 0)
+    }
+
     var body: some View {
         if !category.hidden {
             if let trxCatIndex = trxData.trxCategoryIndex(categoryId: category.id) {
@@ -41,7 +57,7 @@ struct FundingCategoryView: View {
                         .padding(.bottom, 2)
                         VStack {
                             HStack {
-                                TitledAmountView(title: "Current", amount: category.balance)
+                                TitledAmountView(title: "Current", amount: current())
                                 Spacer()
                                 VStack {
                                     HStack {
@@ -56,7 +72,7 @@ struct FundingCategoryView: View {
                                     }
                                 }
                                 Spacer()
-                                TitledAmountView(title: "Balance", amount: category.balance + (trxData.categories[trxCatIndex].amount ?? 0))
+                                TitledAmountView(title: "Balance", amount: current() + (trxData.categories[trxCatIndex].amount ?? 0))
                             }
                             HStack {
                                 Spacer()

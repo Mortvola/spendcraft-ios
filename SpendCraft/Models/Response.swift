@@ -67,6 +67,7 @@ enum Response {
             var id: Int
             var categoryId: Int
             var amount: Double
+            var expected: Double?
             var comment: String?
         }
         
