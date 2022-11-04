@@ -289,16 +289,18 @@ class Transaction: ObservableObject, Identifiable, Codable {
 }
 
 extension Transaction {
-    class Data: ObservableObject {
-        @Published var date: Date?
-        @Published var name: String = ""
-        @Published var amount: Double = 0.0
-        @Published var institution: String = ""
-        @Published var account: String = ""
-        @Published var comment: String?
-        @Published var categories: [Category] = []
-        @Published var allowedToSpend: [AllowedToSpend] = []
+    struct Data {
+        var date: Date?
+        var name: String = ""
+        var amount: Double = 0.0
+        var institution: String = ""
+        var account: String = ""
+        var comment: String?
+        var categories: [Category] = []
+        var allowedToSpend: [AllowedToSpend] = []
 
+        var loaded = false
+        
         init() {}
         
         init(_ transaction: Transaction) {
@@ -311,7 +313,18 @@ extension Transaction {
             self.categories = transaction.categories
         }
         
-        func update(from data: Transaction.Data) {
+        init(date: Date?, name: String, amount: Double, institution: String, account: String, comment: String?, categories: [Category], allowedToSpend: [AllowedToSpend]) {
+            self.date = date
+            self.name = name
+            self.amount = amount
+            self.institution = institution
+            self.account = account
+            self.comment = comment
+            self.categories = categories
+            self.allowedToSpend = allowedToSpend
+        }
+        
+        mutating func update(from data: Transaction.Data) {
             self.date = data.date
             self.name = data.name
             self.amount = data.amount
@@ -320,6 +333,8 @@ extension Transaction {
             self.comment = data.comment
             self.categories = data.categories
             self.allowedToSpend = data.allowedToSpend
+            
+            self.loaded = data.loaded
         }
         
         struct AllowedToSpend {
@@ -366,10 +381,22 @@ extension Transaction {
                 return x
             }
         }
+        
+        func trxCategoryIndex(categoryId: Int) -> Int? {
+            self.categories.firstIndex {
+                $0.categoryId == categoryId
+            }
+        }
+
+        func allowedIndex(categoryId: Int) -> Int? {
+            self.allowedToSpend.firstIndex {
+                $0.categoryId == categoryId
+            }
+        }
     }
     
     func data() async -> Data {
-        let data = Data(self)
+        var data = Data(self)
         
         // Popuulate the category array with the categories not currently in the array
         if type == .funding {
@@ -459,6 +486,8 @@ extension Transaction {
                         }
                     }
                 }
+                
+                data.loaded = true
             }
         }
 

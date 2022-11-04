@@ -14,44 +14,20 @@ struct FundingEdit: View {
     @State var trxData = Transaction.Data()
     var categoriesStore = CategoriesStore.shared
     @State var showPopover: Int? = nil
+    @State var initialized = false
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                Form {
-                    Section {
-                        Text("Date")
-                    }
-                    ForEach(categoriesStore.tree) { node in
-                        switch node {
-                        case .category(let category):
-                            if !category.hidden {
-                                FundingCategoryView(category: category, trxData: $trxData, showPopover: $showPopover)
-                            }
-                        case .group(let group):
-                            if (!group.hidden && group.type != GroupType.system) {
-                                FundingGroupView(group: group, trxData: $trxData, showPopover: $showPopover)
-                            }
+                if initialized {
+                    Form {
+                        Section {
+                            Text("Date")
                         }
+                        FundingTree(trxData: $trxData, showPopover: $showPopover)
                     }
+                    FundingEditFooter(trxData: $trxData)
                 }
-                VStack {
-                    LabeledContent("Funding Pool") {
-                        SpendCraft.AmountView(amount: categoriesStore.fundingPool.balance)
-                    }
-                    LabeledContent("Funding Total") {
-                        SpendCraft.AmountView(amount: trxData.fundingTotal)
-                    }
-                    LabeledContent("Funding Pool Balance") {
-                        SpendCraft.AmountView(amount: categoriesStore.fundingPool.balance - trxData.fundingTotal)
-                    }
-                    LabeledContent("Expected Total") {
-                        SpendCraft.AmountView(amount: trxData.allowedTotal)
-                    }
-                    .padding(.top)
-                }
-                .padding()
-                .border(edge: .top)
             }
             .navigationTitle("Category Funding")
             .toolbar {
@@ -70,8 +46,12 @@ struct FundingEdit: View {
                     }
                 }
             }
-            .task {
-                trxData = await transaction.data()
+            .task() {
+                if !initialized {
+                    let data = await transaction.data()
+                    trxData.update(from: data)
+                    initialized = true
+                }
             }
             .simultaneousGesture(
                 TapGesture()

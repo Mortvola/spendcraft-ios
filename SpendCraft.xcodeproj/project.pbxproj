@@ -17,6 +17,7 @@
 		7923783228D7F61E0069DB01 /* TransactionEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7923783128D7F61E0069DB01 /* TransactionEdit.swift */; };
 		792681B328F5F98C0005114F /* CategoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 792681B228F5F98C0005114F /* CategoryItem.swift */; };
 		792681B528F6201C0005114F /* TransactionTypePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 792681B428F6201C0005114F /* TransactionTypePicker.swift */; };
+		794160822914B5AE00E63DE3 /* TitledAmountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794160812914B5AE00E63DE3 /* TitledAmountView.swift */; };
 		7946966D28D81FC8005B6408 /* CategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946966C28D81FC8005B6408 /* CategoriesView.swift */; };
 		7946966F28D81FF0005B6408 /* PlansView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946966E28D81FF0005B6408 /* PlansView.swift */; };
 		7946967128D82006005B6408 /* AccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946967028D82006005B6408 /* AccountsView.swift */; };
@@ -60,6 +61,8 @@
 		79B2595A28F34DB6000D6763 /* AmountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946968028DA207D005B6408 /* AmountView.swift */; };
 		79B2595E28F4B4FE000D6763 /* ConfigureWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B2595D28F4B4FE000D6763 /* ConfigureWidgetView.swift */; };
 		79BD68B229136B7B00A190F6 /* Busy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BD68B129136B7B00A190F6 /* Busy.swift */; };
+		79BD68B42913700A00A190F6 /* FundingEditFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BD68B32913700A00A190F6 /* FundingEditFooter.swift */; };
+		79BD68B62913F2EE00A190F6 /* FundingTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BD68B52913F2EE00A190F6 /* FundingTree.swift */; };
 		79C19CA228D41BC8003F05F2 /* SpendCraftApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C19CA128D41BC8003F05F2 /* SpendCraftApp.swift */; };
 		79C19CA628D41BCA003F05F2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 79C19CA528D41BCA003F05F2 /* Assets.xcassets */; };
 		79C19CA928D41BCA003F05F2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 79C19CA828D41BCA003F05F2 /* Preview Assets.xcassets */; };
@@ -191,6 +194,7 @@
 		792681B428F6201C0005114F /* TransactionTypePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTypePicker.swift; sourceTree = "<group>"; };
 		793E6BC028ED1AD900480AC3 /* Http.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Http.swift; sourceTree = "<group>"; };
 		793E6BC228EDD06B00480AC3 /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
+		794160812914B5AE00E63DE3 /* TitledAmountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitledAmountView.swift; sourceTree = "<group>"; };
 		7946966C28D81FC8005B6408 /* CategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesView.swift; sourceTree = "<group>"; };
 		7946966E28D81FF0005B6408 /* PlansView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlansView.swift; sourceTree = "<group>"; };
 		7946967028D82006005B6408 /* AccountsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsView.swift; sourceTree = "<group>"; };
@@ -231,6 +235,8 @@
 		79B2595728F32A7E000D6763 /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
 		79B2595D28F4B4FE000D6763 /* ConfigureWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigureWidgetView.swift; sourceTree = "<group>"; };
 		79BD68B129136B7B00A190F6 /* Busy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Busy.swift; sourceTree = "<group>"; };
+		79BD68B32913700A00A190F6 /* FundingEditFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FundingEditFooter.swift; sourceTree = "<group>"; };
+		79BD68B52913F2EE00A190F6 /* FundingTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FundingTree.swift; sourceTree = "<group>"; };
 		79C19C9E28D41BC8003F05F2 /* SpendCraft.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpendCraft.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		79C19CA128D41BC8003F05F2 /* SpendCraftApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendCraftApp.swift; sourceTree = "<group>"; };
 		79C19CA528D41BCA003F05F2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -524,9 +530,12 @@
 			isa = PBXGroup;
 			children = (
 				79CF2E6D2909653A00448D65 /* FundingEdit.swift */,
+				79BD68B52913F2EE00A190F6 /* FundingTree.swift */,
+				79BD68B32913700A00A190F6 /* FundingEditFooter.swift */,
 				790B4EFB2912E16F00149DCC /* FundingNew.swift */,
 				790B4EF32909699500149DCC /* FundingGroupView.swift */,
 				790B4EF529096A5000149DCC /* FundingCategoryView.swift */,
+				794160812914B5AE00E63DE3 /* TitledAmountView.swift */,
 			);
 			path = Funding;
 			sourceTree = "<group>";
@@ -798,6 +807,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				794160822914B5AE00E63DE3 /* TitledAmountView.swift in Sources */,
 				79C19CCC28D4A85F003F05F2 /* LoginView.swift in Sources */,
 				79CF2E6B2908BFD200448D65 /* MonthYearPicker.swift in Sources */,
 				79CF2E5C28F8E29300448D65 /* ChangePasswordView.swift in Sources */,
@@ -808,6 +818,7 @@
 				79CF2E5A28F85C3300448D65 /* AppDelegate.swift in Sources */,
 				7923783228D7F61E0069DB01 /* TransactionEdit.swift in Sources */,
 				79CF2E4F28F7972800448D65 /* EditGroupView.swift in Sources */,
+				79BD68B42913700A00A190F6 /* FundingEditFooter.swift in Sources */,
 				79B2595828F32A7E000D6763 /* Response.swift in Sources */,
 				79A17C0D28F1A3BF006FD368 /* widget.intentdefinition in Sources */,
 				79ADF87528E5D71800227F44 /* AccountsStore.swift in Sources */,
@@ -824,6 +835,7 @@
 				79CF2E4B28F7250800448D65 /* AddGroupView.swift in Sources */,
 				7946967F28DA1F0E005B6408 /* CategoryView.swift in Sources */,
 				79CF2E692908BA7600448D65 /* CalendarButton.swift in Sources */,
+				79BD68B62913F2EE00A190F6 /* FundingTree.swift in Sources */,
 				79CF2E5528F7B21600448D65 /* CategoryView2.swift in Sources */,
 				7946968C28DB50CE005B6408 /* TransactionView.swift in Sources */,
 				7923782C28D77C0A0069DB01 /* TransactionStore.swift in Sources */,

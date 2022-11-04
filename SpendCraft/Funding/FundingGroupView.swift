@@ -16,10 +16,8 @@ struct FundingGroupView: View {
     
     var body: some View {
         DisclosureGroup(group.name, isExpanded: $isExpanded) {
-            ForEach($group.categories) { $category in
-                if !category.hidden {
-                    FundingCategoryView(category: category, trxData: $trxData, showPopover: $showPopover)
-                }
+            ForEach(group.categories) { category in
+                FundingCategoryView(category: category, trxData: $trxData, adjusted: false, adjustedText: "", showPopover: $showPopover)
             }
         }
     }
