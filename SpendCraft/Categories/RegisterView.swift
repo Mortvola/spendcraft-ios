@@ -48,7 +48,12 @@ struct RegisterView: View {
                 }
                 else {
                     List(transactionStore.transactions) { trx in
-                        TransactionView(trx: trx, transactionStore: transactionStore, category: category, postedTransaction: transactionType == 0)
+                        switch trx.type {
+                        case .funding:
+                            FundingTransactionView(trx: trx as! FundingTransaction, transactionStore: transactionStore, category: category, postedTransaction: transactionType == 0)
+                        default:
+                            TransactionView(trx: trx as! Transaction, transactionStore: transactionStore, category: category, postedTransaction: transactionType == 0)
+                        }
                     }
                     .listStyle(.plain)
                     .refreshable {

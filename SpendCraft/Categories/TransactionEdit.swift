@@ -112,7 +112,7 @@ struct TransactionEdit: View {
             }
             .task() {
                 if !initialized {
-                    let data = await transaction.data()
+                    let data = transaction.data()
                     trxData.update(from: data)
                     initialized = true
                     print("test")

@@ -10,7 +10,7 @@ import Framework
 
 struct FundingCategoryView: View {
     @ObservedObject var category: SpendCraft.Category
-    @Binding var trxData: Transaction.Data
+    @Binding var trxData: FundingTransaction.Data
     var adjusted: Bool
     var adjustedText: String
     @Binding var showPopover: Int?
@@ -91,7 +91,7 @@ struct FundingCategoryView_Previews: PreviewProvider {
         SpendCraft.Category(id: 0, groupId: 0, name: "Test Category 1", balance: 100, type: .regular, monthlyExpenses: true, hidden: false),
         SpendCraft.Category(id: 1, groupId: 0, name: "Test Category 2", balance: 200, type: .regular, monthlyExpenses: true, hidden: false)
     ]
-    static let trxData = Transaction.Data(date: Date.now, name: "Test Transaction", amount: 100.0, institution: "Institution", account: "Account", comment: "No comment", categories: [Transaction.Category(id: 0, categoryId: 0, amount: 20.0, comment: "")], allowedToSpend: [Transaction.Data.AllowedToSpend(categoryId: 0, amount: 15.0)])
+    static let trxData = FundingTransaction.Data(date: Date.now, categories: [FundingTransaction.Category(id: 0, categoryId: 0, amount: 20.0, comment: "")], allowedToSpend: [FundingTransaction.Data.AllowedToSpend(categoryId: 0, amount: 15.0)])
 
     static let isExpanded = true
 

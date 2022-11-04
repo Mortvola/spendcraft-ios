@@ -9,9 +9,9 @@ import SwiftUI
 import Framework
 
 struct FundingEdit: View {
-    @ObservedObject var transaction: Transaction
+    @ObservedObject var transaction: FundingTransaction
     @Binding var isOpen: Bool
-    @State var trxData = Transaction.Data()
+    @State var trxData = FundingTransaction.Data()
     var categoriesStore = CategoriesStore.shared
     @State var showPopover: Int? = nil
     @State var initialized = false
@@ -40,7 +40,7 @@ struct FundingEdit: View {
                     Button("Done") {
                         Task {
                             transaction.update(from: trxData)
-                            await transaction.saveCategoryTransfer()
+                            await transaction.save()
                             isOpen = false;
                         }
                     }

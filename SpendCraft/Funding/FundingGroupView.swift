@@ -11,7 +11,7 @@ import Framework
 struct FundingGroupView: View {
     @ObservedObject var group: SpendCraft.Group
     @State var isExpanded = true
-    @Binding var trxData: Transaction.Data
+    @Binding var trxData: FundingTransaction.Data
     @Binding var showPopover: Int?
     
     var body: some View {

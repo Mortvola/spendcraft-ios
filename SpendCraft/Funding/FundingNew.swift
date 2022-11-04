@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FundingNew: View {
-    @StateObject var transaction = Transaction(type: .funding)
+    @StateObject var transaction = FundingTransaction(type: .funding)
     @Binding var isOpen: Bool
     
     var body: some View {

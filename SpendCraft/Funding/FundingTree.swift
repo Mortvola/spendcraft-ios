@@ -10,7 +10,7 @@ import Framework
 
 struct FundingTree: View {
     var categoriesStore = CategoriesStore.shared
-    @Binding var trxData: Transaction.Data
+    @Binding var trxData: FundingTransaction.Data
     @Binding var showPopover: Int?
 
     var body: some View {
@@ -29,6 +29,6 @@ struct FundingTree: View {
 
 struct FundingTree_Previews: PreviewProvider {
     static var previews: some View {
-        FundingTree(trxData: .constant(Transaction.Data()), showPopover: .constant(0))
+        FundingTree(trxData: .constant(FundingTransaction.Data()), showPopover: .constant(0))
     }
 }

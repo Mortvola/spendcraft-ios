@@ -1,15 +1,15 @@
 //
-//  TransactionView.swift
+//  FundingTransactionView.swift
 //  SpendCraft
 //
-//  Created by Richard Shields on 9/21/22.
+//  Created by Richard Shields on 11/4/22.
 //
 
 import SwiftUI
 import Framework
 
-struct TransactionView: View {
-    @ObservedObject var trx: Transaction
+struct FundingTransactionView: View {
+    @ObservedObject var trx: FundingTransaction
     @ObservedObject var transactionStore: TransactionStore
     @ObservedObject var category: SpendCraft.Category
     @State var isEditingTrx = false
@@ -45,36 +45,22 @@ struct TransactionView: View {
                 
                 HStack {
                     Text(formatDate(date: trx.date))
-                    Text(formatAccount(institution: trx.institution, account:  trx.account))
-                        .lineLimit(1)
                     Spacer()
                     if let runningBalance = trx.runningBalance {
                         SpendCraft.AmountView(amount: runningBalance)
                     }
                 }
                 .font(.caption)
-
-                if (!trx.accountOwner.isEmpty) {
-                    HStack {
-                        Text(trx.accountOwner)
-                            .font(.caption)
-                            .lineLimit(1)
-                        Spacer()
-                    }
-                }
             }
         }
         .sheet(isPresented: $isEditingTrx) {
-            TransactionEdit(transaction: trx, isEditingTrx: $isEditingTrx, transactionStore: transactionStore, category: category, postedTransaction: postedTransaction)
+            FundingEdit(transaction: trx, isOpen: $isEditingTrx)
         }
     }
 }
 
-struct TransactionView_Previews: PreviewProvider {
-    static let category = SpendCraft.Category(id: 0, groupId: 0, name: "Test", balance: 0, type: .regular, monthlyExpenses: false, hidden: false)
-    static let transactionStore = TransactionStore()
-
-    static var previews: some View {
-        TransactionView(trx: SampleData.transactions[0], transactionStore: transactionStore, category: category, postedTransaction: true)
-    }
-}
+//struct FundingTransactionView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        FundingTransactionView()
+//    }
+//}

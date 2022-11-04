@@ -46,7 +46,7 @@ struct AccountRegisterView: View {
                 }
                 else {
                     List(transactionStore.transactions) {
-                        AccountTransactionView(trx: $0, transactionStore: transactionStore, postedTransaction: transactionType == 0)
+                        AccountTransactionView(trx: $0 as! Transaction, transactionStore: transactionStore, postedTransaction: transactionType == 0)
                     }
                     .listStyle(.plain)
                     .navigationTitle(account.name)

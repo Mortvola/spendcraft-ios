@@ -9,7 +9,7 @@ import SwiftUI
 import Framework
 
 struct FundingEditFooter: View {
-    @Binding var trxData: Transaction.Data
+    @Binding var trxData: FundingTransaction.Data
     var categoriesStore = CategoriesStore.shared
     
     var body: some View {
@@ -34,7 +34,7 @@ struct FundingEditFooter: View {
 }
 
 struct FundingEditFooter_Previews: PreviewProvider {
-    static var data = Transaction.Data()
+    static var data = FundingTransaction.Data()
     
     static var previews: some View {
         FundingEditFooter(trxData: .constant(data))

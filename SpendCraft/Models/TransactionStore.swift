@@ -9,7 +9,7 @@ import Foundation
 import Framework
 
 class TransactionStore: ObservableObject {
-    @Published var transactions: [Transaction] = []
+    @Published var transactions: [Trx] = []
     @Published var loading = false
 
     @MainActor
@@ -19,8 +19,16 @@ class TransactionStore: ObservableObject {
         if let transactionsResponse: Response.Transactions = try? await Http.get(path: path) {
             var runningBalance = transactionsResponse.balance;
             
-            let transactions: [Transaction] = transactionsResponse.transactions.map {
-                let trx = Transaction(trx: $0)
+            let transactions: [Trx] = transactionsResponse.transactions.map {
+                var trx: Trx
+
+                switch $0.type {
+                case .funding:
+                    trx = FundingTransaction(trx: $0)
+                default:
+                    trx = Transaction(trx: $0)
+                }
+                
                 trx.runningBalance = runningBalance
                 runningBalance -= trx.amount
                 
@@ -42,8 +50,13 @@ class TransactionStore: ObservableObject {
         self.loading = true
         
         if let pendingResponse: [Response.Transaction] = try? await Http.get(path: "/api/account/\(account.id)/transactions/pending?offset=0&limit=30") {
-            let transactions: [Transaction] = pendingResponse.map {
-                Transaction(trx: $0)
+            let transactions: [Trx] = pendingResponse.map {
+                switch $0.type {
+                case .funding:
+                    return FundingTransaction(trx: $0)
+                default:
+                    return Transaction(trx: $0)
+                }
             }
             
             self.transactions = transactions

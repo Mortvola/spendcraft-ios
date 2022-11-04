@@ -18,6 +18,8 @@
 		792681B328F5F98C0005114F /* CategoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 792681B228F5F98C0005114F /* CategoryItem.swift */; };
 		792681B528F6201C0005114F /* TransactionTypePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 792681B428F6201C0005114F /* TransactionTypePicker.swift */; };
 		794160822914B5AE00E63DE3 /* TitledAmountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794160812914B5AE00E63DE3 /* TitledAmountView.swift */; };
+		7941608429152D7800E63DE3 /* FundingTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7941608329152D7800E63DE3 /* FundingTransaction.swift */; };
+		7941608629153A0800E63DE3 /* FundingTransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7941608529153A0800E63DE3 /* FundingTransactionView.swift */; };
 		7946966D28D81FC8005B6408 /* CategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946966C28D81FC8005B6408 /* CategoriesView.swift */; };
 		7946966F28D81FF0005B6408 /* PlansView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946966E28D81FF0005B6408 /* PlansView.swift */; };
 		7946967128D82006005B6408 /* AccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7946967028D82006005B6408 /* AccountsView.swift */; };
@@ -195,6 +197,8 @@
 		793E6BC028ED1AD900480AC3 /* Http.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Http.swift; sourceTree = "<group>"; };
 		793E6BC228EDD06B00480AC3 /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
 		794160812914B5AE00E63DE3 /* TitledAmountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitledAmountView.swift; sourceTree = "<group>"; };
+		7941608329152D7800E63DE3 /* FundingTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FundingTransaction.swift; sourceTree = "<group>"; };
+		7941608529153A0800E63DE3 /* FundingTransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FundingTransactionView.swift; sourceTree = "<group>"; };
 		7946966C28D81FC8005B6408 /* CategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesView.swift; sourceTree = "<group>"; };
 		7946966E28D81FF0005B6408 /* PlansView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlansView.swift; sourceTree = "<group>"; };
 		7946967028D82006005B6408 /* AccountsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsView.swift; sourceTree = "<group>"; };
@@ -325,6 +329,7 @@
 			children = (
 				79C19CCD28D4D80D003F05F2 /* RegisterView.swift */,
 				7946968B28DB50CE005B6408 /* TransactionView.swift */,
+				7941608529153A0800E63DE3 /* FundingTransactionView.swift */,
 				7946966C28D81FC8005B6408 /* CategoriesView.swift */,
 				7946967E28DA1F0E005B6408 /* CategoryView.swift */,
 				7946967C28DA1AD1005B6408 /* GroupView.swift */,
@@ -484,6 +489,7 @@
 			isa = PBXGroup;
 			children = (
 				79C19CD228D517E7003F05F2 /* Transaction.swift */,
+				7941608329152D7800E63DE3 /* FundingTransaction.swift */,
 				7946969428DE1173005B6408 /* SampleData.swift */,
 				79ADF87428E5D71800227F44 /* AccountsStore.swift */,
 				797BDEDF28F072C400640173 /* NavModel.swift */,
@@ -817,6 +823,7 @@
 				7946967D28DA1AD1005B6408 /* GroupView.swift in Sources */,
 				79CF2E5A28F85C3300448D65 /* AppDelegate.swift in Sources */,
 				7923783228D7F61E0069DB01 /* TransactionEdit.swift in Sources */,
+				7941608429152D7800E63DE3 /* FundingTransaction.swift in Sources */,
 				79CF2E4F28F7972800448D65 /* EditGroupView.swift in Sources */,
 				79BD68B42913700A00A190F6 /* FundingEditFooter.swift in Sources */,
 				79B2595828F32A7E000D6763 /* Response.swift in Sources */,
@@ -857,6 +864,7 @@
 				79CF2E6529031F7300448D65 /* PlanItemView.swift in Sources */,
 				79C19CA228D41BC8003F05F2 /* SpendCraftApp.swift in Sources */,
 				79ADF87928E5E0C100227F44 /* InstitutionView.swift in Sources */,
+				7941608629153A0800E63DE3 /* FundingTransactionView.swift in Sources */,
 				79CF2E6128FEC46000448D65 /* PlanGroupView.swift in Sources */,
 				7946969328DCBD6F005B6408 /* CategoryList.swift in Sources */,
 				792681B528F6201C0005114F /* TransactionTypePicker.swift in Sources */,
