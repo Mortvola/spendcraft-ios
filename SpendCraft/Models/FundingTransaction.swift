@@ -13,6 +13,7 @@ class FundingTransaction: Trx {
         var id: Int?
         var categoryId: Int?
         var amount: Double?
+        var allowed: Double?
         var adjusted: Bool = false
         var adjustedText: String = ""
         
@@ -148,7 +149,6 @@ extension FundingTransaction {
     struct Data {
         var date: Date?
         var categories: [Category] = []
-        var allowedToSpend: [AllowedToSpend] = []
 
         var loaded = false
         
@@ -159,23 +159,16 @@ extension FundingTransaction {
             self.categories = transaction.categories
         }
         
-        init(date: Date?, categories: [Category], allowedToSpend: [AllowedToSpend]) {
+        init(date: Date?, categories: [Category]) {
             self.date = date
             self.categories = categories
-            self.allowedToSpend = allowedToSpend
         }
         
         mutating func update(from data: FundingTransaction.Data) {
             self.date = data.date
             self.categories = data.categories
-            self.allowedToSpend = data.allowedToSpend
             
             self.loaded = data.loaded
-        }
-        
-        struct AllowedToSpend {
-            var categoryId: Int
-            var amount: Double?
         }
         
         var isValid: Bool {
@@ -186,35 +179,29 @@ extension FundingTransaction {
         }
 
         var allowedTotal: Double {
-            return self.allowedToSpend.reduce(0.0) { x, y in
-                if let amount = y.amount {
-                    return x + amount
+            return self.categories.reduce(0.0) { accum, category in
+                if let amount = category.allowed {
+                    return accum + amount
                 }
                 
-                return x
+                return accum
             }
         }
 
         var fundingTotal: Double {
             let categoriesStore = CategoriesStore.shared
-            return self.categories.reduce(0.0) { x, y in
-                if y.categoryId != categoriesStore.fundingPool.id, let amount = y.amount {
-                    return x + amount
+            return self.categories.reduce(0.0) { accum, category in
+                if category.categoryId != categoriesStore.fundingPool.id, let amount = category.amount {
+                    return accum + amount
                 }
                 
-                return x
+                return accum
             }
         }
         
         func trxCategoryIndex(categoryId: Int) -> Int? {
-            self.categories.firstIndex {
-                $0.categoryId == categoryId
-            }
-        }
-
-        func allowedIndex(categoryId: Int) -> Int? {
-            self.allowedToSpend.firstIndex {
-                $0.categoryId == categoryId
+            self.categories.firstIndex { category in
+                category.categoryId == categoryId
             }
         }
     }
@@ -234,15 +221,13 @@ extension FundingTransaction {
                 let newCat = FundingTransaction.Category(id: Category.nextId(), categoryId: entry.value.id, amount: 0.0, comment: nil)
                 data.categories.append(newCat)
             }
-            
-            data.allowedToSpend.append(Data.AllowedToSpend(categoryId: entry.value.id, amount: 0.0))
         }
         
         // Get the plan and adjust amounts in each of the categories
         if let planResponse: Response.Plan = try? await Http.get(path: "/api/funding-plans/10/details") {
             planResponse.categories.forEach { planCat in
                 // Get the transaction category index
-                guard let i = data.categories.firstIndex(where: {
+                guard let categoryIndex = data.categories.firstIndex(where: {
                     $0.categoryId == planCat.categoryId
                 }) else {
                     return
@@ -253,13 +238,6 @@ extension FundingTransaction {
                     return
                 }
             
-                // Get the allowed to spend index
-                guard let allowedToSpendIndex = data.allowedToSpend.firstIndex(where: {
-                    $0.categoryId == planCat.categoryId
-                }) else {
-                    return
-                }
-
                 if let gd = planCat.goalDate {
                     let goalDate = MonthYearDate(date: gd)
                     let monthDiff = goalDate.diff(other: fundingMonth)
@@ -272,16 +250,16 @@ extension FundingTransaction {
                         monthlyAmount = goalDiff / Double(monthDiff + 1)
                     }
                     
-                    data.categories[i].amount = monthlyAmount
+                    data.categories[categoryIndex].amount = monthlyAmount
                     
                     if monthDiff == 0 {
-                        data.allowedToSpend[allowedToSpendIndex].amount = planCat.amount
+                        data.categories[categoryIndex].allowed = planCat.amount
                     }
                     
                     let plannedAmount = planCat.amount / Double(planCat.recurrence)
                     if monthlyAmount != plannedAmount {
-                        data.categories[i].adjusted = true
-                        data.categories[i].adjustedText = "The funding amount was adjusted from a planned amount of \(SpendCraft.Amount(amount: plannedAmount)) to \(SpendCraft.Amount(amount: monthlyAmount)) for the goal of \(planCat.amount) due \(goalDate.year)-\(goalDate.month)."
+                        data.categories[categoryIndex].adjusted = true
+                        data.categories[categoryIndex].adjustedText = "The funding amount was adjusted from a planned amount of \(SpendCraft.Amount(amount: plannedAmount)) to \(SpendCraft.Amount(amount: monthlyAmount)) for the goal of \(planCat.amount) due \(goalDate.year)-\(goalDate.month)."
                         print("Adjusted \(category.name): \(plannedAmount) to \(monthlyAmount)")
                     }
                 } else {
@@ -293,18 +271,18 @@ extension FundingTransaction {
                     if category.balance < 0 {
                         monthlyAmount = plannedAmount - category.balance
                         print("Adjusted \(category.name): \(plannedAmount) to \(monthlyAmount)")
-                        data.categories[i].adjusted = true
-                        data.categories[i].adjustedText = "The funding amount was adjusted from a planned amount of \(SpendCraft.Amount(amount: plannedAmount)) to \(SpendCraft.Amount(amount: monthlyAmount))."
+                        data.categories[categoryIndex].adjusted = true
+                        data.categories[categoryIndex].adjustedText = "The funding amount was adjusted from a planned amount of \(SpendCraft.Amount(amount: plannedAmount)) to \(SpendCraft.Amount(amount: monthlyAmount))."
                     }
                     
-                    data.categories[i].amount = monthlyAmount
+                    data.categories[categoryIndex].amount = monthlyAmount
                     
                     if planCat.expectedToSpend != nil {
-                        data.allowedToSpend[allowedToSpendIndex].amount = planCat.expectedToSpend
+                        data.categories[categoryIndex].allowed = planCat.expectedToSpend
                     }
                     else {
                         let balance = category.balance + monthlyAmount
-                        data.allowedToSpend[allowedToSpendIndex].amount = balance > 0 ? balance : 0
+                        data.categories[categoryIndex].allowed = balance > 0 ? balance : 0
                     }
                 }
             }
