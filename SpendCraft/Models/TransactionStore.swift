@@ -9,7 +9,13 @@ import Foundation
 import Framework
 import Http
 
+enum TransactionSet {
+    case Category
+    case Account
+}
+
 class TransactionStore: ObservableObject {
+    @Published var transactionSet = TransactionSet.Category
     @Published var transactions: [Trx] = []
     @Published var loading = false
 
@@ -71,7 +77,11 @@ class TransactionStore: ObservableObject {
             self.transactions = transactions
             
             if let categoryId = categoryId {
+                self.transactionSet = TransactionSet.Category
                 CategoriesStore.shared.updateBalance(categoryId: categoryId, balance: transactionsResponse.balance)
+            }
+            else {
+                self.transactionSet = TransactionSet.Account
             }
         }
 
@@ -93,6 +103,7 @@ class TransactionStore: ObservableObject {
             }
             
             self.transactions = transactions
+            self.transactionSet = TransactionSet.Account
         }
 
         self.loading = false
@@ -108,6 +119,7 @@ class TransactionStore: ObservableObject {
             }
             
             self.transactions = transactions
+            self.transactionSet = TransactionSet.Category
         }
         
         self.loading = false

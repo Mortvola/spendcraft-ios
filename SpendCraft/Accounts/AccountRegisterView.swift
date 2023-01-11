@@ -36,7 +36,7 @@ struct AccountRegisterView: View {
                     Spacer()
                 }
                 else {
-                    List(transactionStore.transactions) {
+                    List(transactionStore.transactionSet == TransactionSet.Account ? transactionStore.transactions : []) {
                         AccountTransactionView(trx: $0 as! Transaction, postedTransaction: navModel.transactionState == TransactionState.Posted)
                     }
                     .listStyle(.plain)

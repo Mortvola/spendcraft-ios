@@ -42,7 +42,7 @@ struct RegisterView: View {
                     Spacer()
                 }
                 else {
-                    List(transactionStore.transactions) { trx in
+                    List(transactionStore.transactionSet == TransactionSet.Category ? transactionStore.transactions : []) { trx in
                         switch trx.type {
                         case .funding:
                             FundingTransactionView(trx: trx as! FundingTransaction, category: category, postedTransaction: navModel.transactionState == TransactionState.Posted)
