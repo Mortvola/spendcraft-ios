@@ -129,21 +129,17 @@ struct CategoryView: View {
     
     var body: some View {
         if let category = category {
-            HStack {
+            HStack(spacing: 0) {
                 if let group = category.group {
                     Group {
                         Text("\(group.name)")
-                            .padding(.trailing, 0)
                         Text(":")
-                            .padding(.leading, 0)
-                            .padding(.trailing, 0)
                     }
                 }
                 Text(category.name)
                 Spacer()
                 SpendCraft.AmountView(amount: category.balance)
                     .frame(maxWidth: 100, alignment: .trailing)
-                    .padding(.trailing, 0)
             }
             .lineLimit(1)
         }

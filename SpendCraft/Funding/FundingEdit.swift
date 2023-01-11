@@ -22,7 +22,9 @@ struct FundingEdit: View {
                 if initialized {
                     Form {
                         Section {
-                            Text("Date")
+                            LabeledContent("Date") {
+                                Text(formatDate(date: trxData.date))
+                            }
                         }
                         FundingTree(trxData: $trxData, showPopover: $showPopover)
                     }

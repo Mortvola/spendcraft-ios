@@ -8,6 +8,7 @@
 import Foundation
 import LocalAuthentication
 import Framework
+import Http
 
 class Authenticator: ObservableObject {
     @Published var authenticated = false

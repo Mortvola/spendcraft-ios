@@ -8,10 +8,13 @@
 import Foundation
 import SwiftUI
 import Framework
+import Http
 
 class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         UNUserNotificationCenter.current().delegate = self
+        
+        Http.setServer(serverName: "spendcraft.app")
         
         // Check if launched from notification
 //        let notificationOption = launchOptions?[.remoteNotification]

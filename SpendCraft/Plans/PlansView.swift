@@ -11,14 +11,14 @@ import Framework
 struct PlansView: View {
     @ObservedObject private var planStore = PlanStore.shared
     @ObservedObject private var categoriesStore = CategoriesStore.shared
-    @State var selection: SpendCraft.Category?
+    @EnvironmentObject private var navModel: NavModel
     @State var planSelection: Response.PlanCategory?
     
     var body: some View {
         NavigationSplitView {
             VStack(spacing: 0) {
                 if planStore.loaded {
-                    List(selection: $selection) {
+                    List(selection: $navModel.selectedPlanCategory) {
                         Section(header: Text("My Categories")) {
                             ForEach(categoriesStore.tree) { node in
                                 switch node {
@@ -58,7 +58,7 @@ struct PlansView: View {
             }
         } detail: {
             List {
-                if let category = selection, let planCategory = planStore.planCategory(category) {
+                if let category = navModel.selectedPlanCategory, let planCategory = planStore.planCategory(category) {
                     PlanItemView(category: category, planCategory: planCategory)
                 }
             }

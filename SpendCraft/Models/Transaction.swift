@@ -7,6 +7,7 @@
 
 import Foundation
 import Framework
+import Http
 
 enum TransactionType: Int {
     case regular = 0
@@ -27,7 +28,7 @@ extension TransactionType: Codable {
             let t = TransactionType(rawValue: type)
             
             guard let t = t else {
-                throw MyError.runtimeError("Invalid transaction type: \(type)")
+                throw Framework.MyError.runtimeError("Invalid transaction type: \(type)")
             }
             
             self = t

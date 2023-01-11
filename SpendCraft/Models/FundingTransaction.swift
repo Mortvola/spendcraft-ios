@@ -7,6 +7,7 @@
 
 import Foundation
 import Framework
+import Http
 
 class FundingTransaction: Trx {
     struct Category: Identifiable, Codable {
@@ -215,8 +216,6 @@ extension FundingTransaction {
     func data() async -> Data {
         var data = Data(self)
         
-        let fundingMonth = MonthYearDate(month: 11, year: 2022)
-
         let categoriesStore = CategoriesStore.shared
 
         // Add categories from the category store that are not present in the transaction.
@@ -232,6 +231,9 @@ extension FundingTransaction {
         if self.id < 0 {
             // Get the plan and adjust amounts in each of the categories
             if let planResponse: Response.Plan = try? await Http.get(path: "/api/funding-plans/10/details") {
+                let fundingMonth = MonthYearDate(date: Date.now)
+                data.date = try? fundingMonth.date()
+
                 planResponse.categories.forEach { planCat in
                     // Get the transaction category index
                     guard let categoryIndex = data.categories.firstIndex(where: {

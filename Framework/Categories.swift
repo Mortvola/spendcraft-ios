@@ -81,7 +81,7 @@ public enum SpendCraft {
             balance = try container.decode(Double.self, forKey: .balance)
             type = try container.decode(CategoryType.self, forKey: .type)
             monthlyExpenses = try container.decode(Bool.self, forKey: .monthlyExpenses)
-            hidden = try container.decode(Bool.self, forKey: .hidden)
+            hidden = try container.decodeIfPresent(Bool.self, forKey: .hidden) ?? false
         }
         
         public func encode(to encoder: Encoder) throws {
@@ -134,7 +134,7 @@ public enum SpendCraft {
             id = try container.decode(Int.self, forKey: .id)
             name = try container.decode(String.self, forKey: .name)
             type = try container.decode(GroupType.self, forKey: .type)
-            hidden = try container.decode(Bool.self, forKey: .hidden)
+            hidden = try container.decodeIfPresent(Bool.self, forKey: .hidden) ?? false
             
             categories = try container.decode([SpendCraft.Category].self, forKey: .categories)
             
@@ -265,6 +265,7 @@ public enum SpendCraft {
             
             if let data = try? Data(contentsOf: archiveURL) {
                 do {
+                    print(String(decoding: data, as: UTF8.self))
                     self.tree = try JSONDecoder().decode([SpendCraft.TreeNode].self, from: data)
                     buildDictionaries()
                 } catch {

@@ -7,6 +7,7 @@
 
 import Foundation
 import Framework
+import Http
 
 class Account: ObservableObject, Identifiable, Hashable {
     var id: Int

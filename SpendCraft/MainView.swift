@@ -24,8 +24,31 @@ struct MainView: View {
     @State var isConfiguringWidget = false
     @StateObject var categories = CatList()
     
+    var selectionHandler: Binding<TabSelection> { Binding(
+        get: { self.selection },
+        set: {
+            if $0 == self.selection {
+                // If the tab is not changing then change the view
+                // to that of the root for the tab.
+                switch self.selection {
+                case TabSelection.categories:
+                    navModel.selectedCategory = nil
+                case TabSelection.plans:
+                    navModel.selectedPlanCategory = nil
+                    break;
+                case TabSelection.accounts:
+                    navModel.selectedAccount = nil
+                    break;
+                case TabSelection.settings:
+                    break;
+                }
+            }
+            self.selection = $0
+        }
+    )}
+ 
     var body: some View {
-        TabView(selection: $selection) {
+        TabView(selection: selectionHandler) {
             CategoriesView()
                 .tabItem {
                     Label("Categories", systemImage: "tray.and.arrow.down.fill")

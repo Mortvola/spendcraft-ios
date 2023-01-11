@@ -9,6 +9,7 @@ import Foundation
 import Combine
 import WidgetKit
 import Framework
+import Http
 
 extension FileManager {
   static func sharedContainerURL() -> URL {

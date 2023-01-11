@@ -12,6 +12,7 @@ import Framework
 final class NavModel: ObservableObject, Codable {
     @Published var selectedCategory: SpendCraft.Category?
     @Published var selectedAccount: Account?
+    @Published var selectedPlanCategory: SpendCraft.Category?
     
     private lazy var decoder = JSONDecoder()
     private lazy var encoder = JSONEncoder()

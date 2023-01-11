@@ -7,6 +7,7 @@
 
 import Foundation
 import Framework
+import Http
 
 class TransactionStore: ObservableObject {
     @Published var transactions: [Trx] = []

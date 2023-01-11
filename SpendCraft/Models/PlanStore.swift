@@ -7,6 +7,7 @@
 
 import Foundation
 import Framework
+import Http
 
 class Plan: ObservableObject {
     var id: Int

@@ -30,59 +30,55 @@ struct TransactionEdit: View {
     var body: some View {
         NavigationStack {
             Form {
-                List {
-                    Section {
-                        LabeledContent("Date") {
-                            Text(formatDate(date: trxData.date))
-                        }
-                        LabeledContent("Name") {
-                            Text(trxData.name)
-                        }
-                        LabeledContent("Amount") {
-                            SpendCraft.AmountView(amount: trxData.amount)
-                        }
-                        LabeledContent("Institution") {
-                            Text(trxData.institution)
-                        }
-                        LabeledContent("Account") {
-                            Text(trxData.account)
-                        }
-                    }
+                LabeledContent("Date") {
+                    Text(formatDate(date: trxData.date))
+                }
+                LabeledContent("Name") {
+                    Text(trxData.name)
+                }
+                LabeledContent("Amount") {
+                    SpendCraft.AmountView(amount: trxData.amount)
+                }
+                LabeledContent("Institution") {
+                    Text(trxData.institution)
+                }
+                LabeledContent("Account") {
+                    Text(trxData.account)
+                }
 
-                    if postedTransaction {
-                        Section(
-                            header: Text("Categories"),
-                            footer: LabeledContent("Unassigned") {
-                                SpendCraft.AmountView(amount: trxData.remaining)
-                            }
-                                .font(.body)
-                        ) {
-                            ForEach($trxData.categories) { $trxCat in
-                                VStack(alignment: .leading) {
-                                    HStack() {
-                                        CategoryPicker(selection: $trxCat.categoryId)
-                                        NumericField(value: $trxCat.amount)
-                                            .frame(maxWidth: 100)
-                                    }
-                                    TextField("Comment", text: $trxCat.comment)
-                                        .truncationMode(.tail)
-                                }
-                            }
-                            .onDelete { indices in
-                                trxData.categories.remove(atOffsets: indices)
-                            }
-                            CategoryPicker(selection: $newSelection)
-                                .onChange(of: newSelection) { id in
-                                    if let id = id {
-                                        var category = Transaction.Category();
-                                        category.id = TransactionEdit.nextCategoryId()
-                                        category.categoryId = id
-                                        category.amount = trxData.remaining
-                                        trxData.categories.append(category)
-                                        newSelection = nil
-                                    }
-                                }
+                if postedTransaction {
+                    Section(
+                        header: Text("Categories"),
+                        footer: LabeledContent("Unassigned") {
+                            SpendCraft.AmountView(amount: trxData.remaining)
                         }
+                            .font(.body)
+                    ) {
+                        ForEach($trxData.categories) { $trxCat in
+                            VStack(alignment: .leading) {
+                                HStack() {
+                                    CategoryPicker(selection: $trxCat.categoryId)
+                                    NumericField(value: $trxCat.amount)
+                                        .frame(maxWidth: 100)
+                                }
+                                TextField("Comment", text: $trxCat.comment)
+                                    .truncationMode(.tail)
+                            }
+                        }
+                        .onDelete { indices in
+                            trxData.categories.remove(atOffsets: indices)
+                        }
+                        CategoryPicker(selection: $newSelection)
+                            .onChange(of: newSelection) { id in
+                                if let id = id {
+                                    var category = Transaction.Category();
+                                    category.id = TransactionEdit.nextCategoryId()
+                                    category.categoryId = id
+                                    category.amount = trxData.remaining
+                                    trxData.categories.append(category)
+                                    newSelection = nil
+                                }
+                            }
                     }
                 }
             }
