@@ -85,11 +85,11 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
-  func userNotificationCenter(
-    _ center: UNUserNotificationCenter,
-    didReceive response: UNNotificationResponse,
-    withCompletionHandler completionHandler: @escaping () -> Void
-  ) {
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
 //    let userInfo = response.notification.request.content.userInfo
 
 //    if let aps = userInfo["aps"] as? [String: AnyObject],
@@ -103,6 +103,13 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 //      }
 //    }
 
-    completionHandler()
-  }
+        Task {
+            NavModel.shared.tabSelection = TabSelection.categories
+            NavModel.shared.selectedCategory = CategoriesStore.shared.unassigned
+            NavModel.shared.transactionState = TransactionState.Posted
+            await TransactionStore.shared.loadTransactions(category: CategoriesStore.shared.unassigned, transactionState: TransactionState.Posted, clear: true)
+        }
+
+        completionHandler()
+    }
 }

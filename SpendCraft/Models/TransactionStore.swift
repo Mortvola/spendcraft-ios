@@ -13,6 +13,38 @@ class TransactionStore: ObservableObject {
     @Published var transactions: [Trx] = []
     @Published var loading = false
 
+    static public let shared = TransactionStore()
+
+    public func loadTransactions(category: SpendCraft.Category, transactionState: TransactionState, clear: Bool = false) async {
+        if clear {
+            self.transactions = []
+        }
+
+        if transactionState == TransactionState.Posted {
+            await load(category: category)
+
+            // Update the badge if the current category is the unassigned category.
+            if (category.type == .unassigned) {
+//                UIApplication.shared.applicationIconBadgeNumber = transactionStore.transactions.count
+            }
+        } else {
+            await loadPending(category: category)
+        }
+    }
+
+    public func loadTransactions(account: Account, transactionState: TransactionState, clear: Bool = false) async {
+        if clear {
+            self.transactions = []
+        }
+
+        if transactionState == TransactionState.Posted {
+            await load(account: account)
+        }
+        else {
+            await loadPending(account: account)
+        }
+    }
+
     @MainActor
     private func load(path: String, categoryId: Int? = nil) async {
         loading = true
@@ -47,7 +79,7 @@ class TransactionStore: ObservableObject {
     }
 
     @MainActor
-    func loadPending(account: Account) async {
+    private func loadPending(account: Account) async {
         self.loading = true
         
         if let pendingResponse: [Response.Transaction] = try? await Http.get(path: "/api/account/\(account.id)/transactions/pending?offset=0&limit=30") {
@@ -67,7 +99,7 @@ class TransactionStore: ObservableObject {
     }
 
     @MainActor
-    func loadPending(category: SpendCraft.Category) async {
+    private func loadPending(category: SpendCraft.Category) async {
         self.loading = true
         
         if let pendingResponse: [Response.Transaction] = try? await Http.get(path: "/api/category/\(category.id)/transactions/pending?offset=0&limit=30") {
@@ -81,11 +113,11 @@ class TransactionStore: ObservableObject {
         self.loading = false
     }
 
-    func load(account: Account) async {
+    private func load(account: Account) async {
         await load(path: "/api/account/\(account.id)/transactions?offset=0&limit=30")
     }
 
-    func load(category: SpendCraft.Category) async {
+    private func load(category: SpendCraft.Category) async {
         await load(path: "/api/category/\(category.id)/transactions?offset=0&limit=30", categoryId: category.id)
     }
     

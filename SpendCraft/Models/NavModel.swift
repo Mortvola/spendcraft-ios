@@ -9,11 +9,22 @@ import Foundation
 import Combine
 import Framework
 
+enum TabSelection {
+    case categories
+    case plans
+    case accounts
+    case settings
+}
+
 final class NavModel: ObservableObject, Codable {
+    @Published var tabSelection: TabSelection = TabSelection.categories
     @Published var selectedCategory: SpendCraft.Category?
     @Published var selectedAccount: Account?
     @Published var selectedPlanCategory: SpendCraft.Category?
-    
+    @Published var transactionState: TransactionState = TransactionState.Posted
+
+    static public let shared = NavModel()
+
     private lazy var decoder = JSONDecoder()
     private lazy var encoder = JSONEncoder()
     

@@ -10,29 +10,24 @@ import Framework
 
 struct RegisterView: View {
     @ObservedObject var category: SpendCraft.Category
-    @StateObject private var transactionStore = TransactionStore();
-    @State var transactionType: Int = 0
+    @ObservedObject private var transactionStore = TransactionStore.shared;
+    @EnvironmentObject private var navModel: NavModel
 
-    func loadTransactions() async {
-        if transactionType == 0 {
-            await transactionStore.load(category: category)
-
-            // Update the badge if the current category is the unassigned category.
-            if (category.type == .unassigned) {
-                UIApplication.shared.applicationIconBadgeNumber = transactionStore.transactions.count
-            }
-        } else {
-            await transactionStore.loadPending(category: category)
+    var transactionState: TransactionState {
+        if category == CategoriesStore.shared.unassigned {
+            return navModel.transactionState
         }
+        
+        return TransactionState.Posted
     }
 
     var body: some View {
         VStack {
             if category.type == .unassigned {
-                TransactionTypePicker(transactionType: $transactionType)
-                    .onChange(of: transactionType) { _ in
+                TransactionTypePicker(transactionState: $navModel.transactionState)
+                    .onChange(of: navModel.transactionState) { _ in
                         Task {
-                            await loadTransactions()
+                            await transactionStore.loadTransactions(category: category, transactionState: transactionState)
                         }
                     }
             }
@@ -50,21 +45,21 @@ struct RegisterView: View {
                     List(transactionStore.transactions) { trx in
                         switch trx.type {
                         case .funding:
-                            FundingTransactionView(trx: trx as! FundingTransaction, transactionStore: transactionStore, category: category, postedTransaction: transactionType == 0)
+                            FundingTransactionView(trx: trx as! FundingTransaction, category: category, postedTransaction: navModel.transactionState == TransactionState.Posted)
                         default:
-                            TransactionView(trx: trx as! Transaction, transactionStore: transactionStore, category: category, postedTransaction: transactionType == 0)
+                            TransactionView(trx: trx as! Transaction, category: category, postedTransaction: navModel.transactionState == TransactionState.Posted)
                         }
                     }
                     .listStyle(.plain)
                     .refreshable {
-                        await loadTransactions()
+                        await transactionStore.loadTransactions(category: category, transactionState: transactionState)
                     }
                 }
             }
         }
         .navigationTitle(category.name)
         .task {
-            await loadTransactions()
+            await transactionStore.loadTransactions(category: category, transactionState: transactionState)
         }
     }
 }

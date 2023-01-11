@@ -8,29 +8,21 @@
 import SwiftUI
 import Framework
 
-enum TabSelection {
-    case categories
-    case plans
-    case accounts
-    case settings
-}
-
 struct MainView: View {
     @ObservedObject var authenticator: Authenticator
     @ObservedObject var categoriesStore = CategoriesStore.shared
-    @Binding var selection: TabSelection
-    @StateObject private var navModel = NavModel()
+    @StateObject private var navModel = NavModel.shared
     @SceneStorage("navigation") private var navigationData: Data?
     @State var isConfiguringWidget = false
     @StateObject var categories = CatList()
     
     var selectionHandler: Binding<TabSelection> { Binding(
-        get: { self.selection },
+        get: { navModel.tabSelection },
         set: {
-            if $0 == self.selection {
+            if $0 == navModel.tabSelection {
                 // If the tab is not changing then change the view
                 // to that of the root for the tab.
-                switch self.selection {
+                switch navModel.tabSelection {
                 case TabSelection.categories:
                     navModel.selectedCategory = nil
                 case TabSelection.plans:
@@ -43,7 +35,8 @@ struct MainView: View {
                     break;
                 }
             }
-            self.selection = $0
+
+            navModel.tabSelection = $0
         }
     )}
  
@@ -104,9 +97,8 @@ struct MainView: View {
 
 struct Main_Previews: PreviewProvider {
     static let authenticator = Authenticator()
-    static let selection: TabSelection = .categories
     
     static var previews: some View {
-        MainView(authenticator: authenticator, selection: .constant(selection))
+        MainView(authenticator: authenticator)
     }
 }

@@ -40,7 +40,7 @@ struct SpendCraftApp: App {
         WindowGroup {
             ZStack {
                 if (authenticator.authenticated) {
-                    MainView(authenticator: authenticator, selection: $tabSelection)
+                    MainView(authenticator: authenticator)
                         .onAppear {
                             registerForPushNotifications()
                         }

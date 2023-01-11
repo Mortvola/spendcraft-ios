@@ -13,7 +13,7 @@ struct TransactionEdit: View {
     @ObservedObject var transaction: Transaction
     @Binding var isEditingTrx: Bool
     @State var trxData = Transaction.Data()
-    @ObservedObject var transactionStore: TransactionStore
+    @ObservedObject var transactionStore = TransactionStore.shared
     let category: SpendCraft.Category?
     @State var newSelection: Int? = nil
     var postedTransaction: Bool
@@ -121,11 +121,10 @@ struct TransactionEdit: View {
 struct TransactionEdit_Previews: PreviewProvider {
     static let isEditingTrx = true
     static let category = SpendCraft.Category(id: 0, groupId: 0, name: "Test", balance: 0, type: .regular, monthlyExpenses: false, hidden: false)
-    static let transactionStore = TransactionStore();
     static let postedTransaction = true
 
     static var previews: some View {
-        TransactionEdit(transaction: SampleData.transactions[0], isEditingTrx: .constant(isEditingTrx), transactionStore: transactionStore, category: category, postedTransaction: postedTransaction)
+        TransactionEdit(transaction: SampleData.transactions[0], isEditingTrx: .constant(isEditingTrx), category: category, postedTransaction: postedTransaction)
             .previewInterfaceOrientation(.portraitUpsideDown)
     }
 }

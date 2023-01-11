@@ -19,6 +19,11 @@ enum TransactionType: Int {
     case unknown
 }
 
+enum TransactionState {
+    case Pending
+    case Posted
+}
+
 extension TransactionType: Codable {
     init(from decoder: Decoder) {
         do {

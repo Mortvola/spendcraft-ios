@@ -10,7 +10,7 @@ import Framework
 
 struct FundingTransactionView: View {
     @ObservedObject var trx: FundingTransaction
-    @ObservedObject var transactionStore: TransactionStore
+    @ObservedObject var transactionStore = TransactionStore.shared
     @ObservedObject var category: SpendCraft.Category
     @State var isEditingTrx = false
     var postedTransaction: Bool

@@ -10,7 +10,7 @@ import Framework
 
 struct AccountTransactionView: View {
     @ObservedObject var trx: Transaction
-    @ObservedObject var transactionStore: TransactionStore
+    var transactionStore = TransactionStore.shared
     @State var isEditingTrx = false
     var postedTransaction: Bool
 
@@ -42,15 +42,13 @@ struct AccountTransactionView: View {
             }
         }
         .sheet(isPresented: $isEditingTrx) {
-            TransactionEdit(transaction: trx, isEditingTrx: $isEditingTrx, transactionStore: transactionStore, category: nil, postedTransaction: postedTransaction)
+            TransactionEdit(transaction: trx, isEditingTrx: $isEditingTrx, category: nil, postedTransaction: postedTransaction)
         }
     }
 }
 
 struct AccountTransactionView_Previews: PreviewProvider {
-    static let transactionStore = TransactionStore()
-    
     static var previews: some View {
-        AccountTransactionView(trx: SampleData.transactions[0], transactionStore: transactionStore, postedTransaction: true)
+        AccountTransactionView(trx: SampleData.transactions[0], postedTransaction: true)
     }
 }

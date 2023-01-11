@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct TransactionTypePicker: View {
-    @Binding var transactionType: Int
+    @Binding var transactionState: TransactionState
 
     var body: some View {
         HStack {
             Spacer()
-            Picker(selection: $transactionType, label: Text("Type")) {
-                Text("Posted Transactions").tag(0)
-                Text("Pending Transations").tag(1)
+            Picker(selection: $transactionState, label: Text("Type")) {
+                Text("Posted Transactions").tag(TransactionState.Posted)
+                Text("Pending Transations").tag(TransactionState.Pending)
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding()
@@ -25,9 +25,9 @@ struct TransactionTypePicker: View {
 }
 
 struct TransactionTypePicker_Previews: PreviewProvider {
-    static let transactionType = 0
+    static let transactionState = TransactionState.Posted
     
     static var previews: some View {
-        TransactionTypePicker(transactionType: .constant(transactionType))
+        TransactionTypePicker(transactionState: .constant(transactionState))
     }
 }
