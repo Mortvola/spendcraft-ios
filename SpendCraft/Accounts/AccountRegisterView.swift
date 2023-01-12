@@ -15,15 +15,14 @@ struct AccountRegisterView: View {
         .repeatForever(autoreverses: false)
     }
     @State var syncing: Bool = false
-    @EnvironmentObject private var navModel: NavModel
 
     var body: some View {
         VStack {
-            TransactionTypePicker(transactionState: $navModel.transactionState)
-                .onChange(of: navModel.transactionState) { _ in
+            TransactionTypePicker(transactionState: $account.transactionState)
+                .onChange(of: account.transactionState) { _ in
                     transactionStore.loading = true
                     Task {
-                        await transactionStore.loadTransactions(account: account, transactionState: navModel.transactionState)
+                        await transactionStore.loadTransactions(account: account, transactionState: account.transactionState)
                     }
                 }
             
@@ -36,13 +35,15 @@ struct AccountRegisterView: View {
                     Spacer()
                 }
                 else {
-                    List(transactionStore.transactionSet == TransactionSet.Account ? transactionStore.transactions : []) {
-                        AccountTransactionView(trx: $0 as! Transaction, postedTransaction: navModel.transactionState == TransactionState.Posted)
+                    // Make sure the list of transactionw we have in the store are
+                    // what we are supposed to display in this view.
+                    List(transactionStore.transactionContainer == .account(account, account.transactionState) ? transactionStore.transactions : []) {
+                        AccountTransactionView(trx: $0 as! Transaction, postedTransaction: account.transactionState == TransactionState.Posted)
                     }
                     .listStyle(.plain)
                     .navigationTitle(account.name)
                     .refreshable {
-                        await transactionStore.loadTransactions(account: account, transactionState: navModel.transactionState)
+                        await transactionStore.loadTransactions(account: account, transactionState: account.transactionState)
                     }
                     .toolbar {
                         ToolbarItem(placement: .confirmationAction) {
@@ -63,7 +64,7 @@ struct AccountRegisterView: View {
             }
         }
         .task {
-            await transactionStore.loadTransactions(account: account, transactionState: navModel.transactionState)
+            await transactionStore.loadTransactions(account: account, transactionState: account.transactionState)
         }
     }
 }

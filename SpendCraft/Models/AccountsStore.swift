@@ -17,6 +17,8 @@ class Account: ObservableObject, Identifiable, Hashable {
     @Published var syncDate: Date?
     var institution: Institution?
 
+    @Published var transactionState = TransactionState.Posted
+
     init(id: Int, name: String, balance: Double, closed: Bool) {
         self.id = id
         self.name = name

@@ -9,25 +9,47 @@ import Foundation
 import Framework
 import Http
 
-enum TransactionSet {
-    case Category
-    case Account
+enum TransactionContainer: Equatable {
+    static func == (lhs: TransactionContainer, rhs: TransactionContainer) -> Bool {
+        switch(lhs) {
+        case .category(let lhsCat, let lhsState):
+            switch(rhs) {
+            case .category(let rhsCat, let rhsState):
+                return lhsCat === rhsCat && lhsState == rhsState
+            case .account:
+                return false
+            }
+        case .account(let lhsAccount, let lhsState):
+            switch(rhs) {
+            case .category:
+                return false
+            case .account(let rhsAccount, let rhsState):
+                return lhsAccount === rhsAccount && lhsState == rhsState
+            }
+        }
+    }
+    
+    case category(SpendCraft.Category, TransactionState)
+    case account(Account, TransactionState)
 }
 
 class TransactionStore: ObservableObject {
-    @Published var transactionSet = TransactionSet.Category
+    @Published var transactionContainer: TransactionContainer?
     @Published var transactions: [Trx] = []
     @Published var loading = false
 
     static public let shared = TransactionStore()
 
+    @MainActor
     public func loadTransactions(category: SpendCraft.Category, transactionState: TransactionState, clear: Bool = false) async {
+        self.transactionContainer = .category(category, transactionState)
+
         if clear {
             self.transactions = []
         }
 
         if transactionState == TransactionState.Posted {
-            await load(category: category)
+            await loadPosted(path: "/api/category/\(category.id)/transactions?offset=0&limit=30", container: .category(category, .Posted))
 
             // Update the badge if the current category is the unassigned category.
             if (category.type == .unassigned) {
@@ -38,13 +60,16 @@ class TransactionStore: ObservableObject {
         }
     }
 
+    @MainActor
     public func loadTransactions(account: Account, transactionState: TransactionState, clear: Bool = false) async {
+        self.transactionContainer = .account(account, transactionState)
+
         if clear {
             self.transactions = []
         }
 
         if transactionState == TransactionState.Posted {
-            await load(account: account)
+            await loadPosted(path: "/api/account/\(account.id)/transactions?offset=0&limit=30", container: .account(account, .Posted))
         }
         else {
             await loadPending(account: account)
@@ -52,7 +77,7 @@ class TransactionStore: ObservableObject {
     }
 
     @MainActor
-    private func load(path: String, categoryId: Int? = nil) async {
+    private func loadPosted(path: String, container: TransactionContainer) async {
         loading = true
         
         if let transactionsResponse: Response.Transactions = try? await Http.get(path: path) {
@@ -74,14 +99,15 @@ class TransactionStore: ObservableObject {
                 return trx
             }
             
-            self.transactions = transactions
-            
-            if let categoryId = categoryId {
-                self.transactionSet = TransactionSet.Category
-                CategoriesStore.shared.updateBalance(categoryId: categoryId, balance: transactionsResponse.balance)
-            }
-            else {
-                self.transactionSet = TransactionSet.Account
+            if container == self.transactionContainer {
+                self.transactions = transactions
+
+                switch(container) {
+                case .category(let category, _):
+                    CategoriesStore.shared.updateBalance(categoryId: category.id, balance: transactionsResponse.balance)
+                case .account:
+                    break
+                }
             }
         }
 
@@ -102,8 +128,9 @@ class TransactionStore: ObservableObject {
                 }
             }
             
-            self.transactions = transactions
-            self.transactionSet = TransactionSet.Account
+            if TransactionContainer.account(account, .Pending) == self.transactionContainer {
+                self.transactions = transactions
+            }
         }
 
         self.loading = false
@@ -118,21 +145,15 @@ class TransactionStore: ObservableObject {
                 Transaction(trx: $0)
             }
             
-            self.transactions = transactions
-            self.transactionSet = TransactionSet.Category
+            
+            if TransactionContainer.category(category, .Pending) == self.transactionContainer {
+                self.transactions = transactions
+            }
         }
         
         self.loading = false
     }
 
-    private func load(account: Account) async {
-        await load(path: "/api/account/\(account.id)/transactions?offset=0&limit=30")
-    }
-
-    private func load(category: SpendCraft.Category) async {
-        await load(path: "/api/category/\(category.id)/transactions?offset=0&limit=30", categoryId: category.id)
-    }
-    
     @MainActor
     static func sync(account: Account) async {
         if let institution = account.institution {

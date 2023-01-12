@@ -12,6 +12,7 @@ struct RegisterView: View {
     @ObservedObject var category: SpendCraft.Category
     @ObservedObject private var transactionStore = TransactionStore.shared;
     @EnvironmentObject private var navModel: NavModel
+    @State var stateSelection = TransactionState.Posted
 
     var transactionState: TransactionState {
         if category == CategoriesStore.shared.unassigned {
@@ -24,8 +25,9 @@ struct RegisterView: View {
     var body: some View {
         VStack {
             if category.type == .unassigned {
-                TransactionTypePicker(transactionState: $navModel.transactionState)
-                    .onChange(of: navModel.transactionState) { _ in
+                TransactionTypePicker(transactionState: $stateSelection)
+                    .onChange(of: stateSelection) { newValue in
+                        navModel.transactionState = newValue
                         Task {
                             await transactionStore.loadTransactions(category: category, transactionState: transactionState)
                         }
@@ -42,7 +44,9 @@ struct RegisterView: View {
                     Spacer()
                 }
                 else {
-                    List(transactionStore.transactionSet == TransactionSet.Category ? transactionStore.transactions : []) { trx in
+                    // Make sure the list of transactionw we have in the store are
+                    // what we are supposed to display in this view.
+                    List(transactionStore.transactionContainer == .category(category, transactionState) ? transactionStore.transactions : []) { trx in
                         switch trx.type {
                         case .funding:
                             FundingTransactionView(trx: trx as! FundingTransaction, category: category, postedTransaction: navModel.transactionState == TransactionState.Posted)
@@ -59,6 +63,7 @@ struct RegisterView: View {
         }
         .navigationTitle(category.name)
         .task {
+            stateSelection = transactionState
             await transactionStore.loadTransactions(category: category, transactionState: transactionState)
         }
     }
