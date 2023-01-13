@@ -52,7 +52,7 @@ struct MainView: View {
                     Label("Plans", systemImage: "map")
                 }
                 .tag(TabSelection.plans)
-            AccountsView()
+            Accounts.AccountsView()
                 .tabItem {
                     Label("Accounts", systemImage: "building.columns")
                 }
