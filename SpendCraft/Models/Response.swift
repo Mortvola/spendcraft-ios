@@ -20,6 +20,8 @@ extension DateFormatter {
 }
 
 enum Response {
+    typealias Login = String
+
     struct AccountSync: Decodable {
         struct Category: Decodable {
             var id: Int

@@ -137,12 +137,12 @@ class FundingTransaction: Trx {
         requestData.categories.append(RequestData.Category(categoryId: categoriesStore.fundingPool.id, amount: -sum))
 
         if self.id < 0 {
-            if let updateTrxResponse: Response.UpdateTransaction = try? await Http.post(path: "/api/category-transfer", data: requestData) {
+            if let updateTrxResponse: Http.Response<Response.UpdateTransaction> = try? await Http.post(path: "/api/category-transfer", data: requestData) {
                 print("handling response not implemented")
             }
         }
         else {
-            if let updateTrxResponse: Response.UpdateTransaction = try? await Http.patch(path: "/api/category-transfer/\(self.id)", data: requestData) {
+            if let updateTrxResponse: Http.Response<Response.UpdateTransaction> = try? await Http.patch(path: "/api/category-transfer/\(self.id)", data: requestData) {
                 print("handling response not implemented")
             }
         }
@@ -230,68 +230,70 @@ extension FundingTransaction {
         
         if self.id < 0 {
             // Get the plan and adjust amounts in each of the categories
-            if let planResponse: Response.Plan = try? await Http.get(path: "/api/funding-plans/10/details") {
-                let fundingMonth = MonthYearDate(date: Date.now)
-                data.date = try? fundingMonth.date()
-
-                planResponse.categories.forEach { planCat in
-                    // Get the transaction category index
-                    guard let categoryIndex = data.categories.firstIndex(where: {
-                        $0.categoryId == planCat.categoryId
-                    }) else {
-                        return
-                    }
+            if let response: Http.Response<Response.Plan> = try? await Http.get(path: "/api/funding-plans/10/details") {
+                if let planResponse = response.data {
+                    let fundingMonth = MonthYearDate(date: Date.now)
+                    data.date = try? fundingMonth.date()
                     
-                    // Get the category
-                    guard let category = categoriesStore.categoryDictionary[planCat.categoryId] else {
-                        return
-                    }
-                
-                    if let gd = planCat.goalDate {
-                        let goalDate = MonthYearDate(date: gd)
-                        let monthDiff = goalDate.diff(other: fundingMonth)
-                        
-                        var monthlyAmount = 0.0
-                    
-                        let goalDiff = planCat.amount - category.balance
-                        
-                        if goalDiff > 0 {
-                            monthlyAmount = goalDiff / Double(monthDiff + 1)
+                    planResponse.categories.forEach { planCat in
+                        // Get the transaction category index
+                        guard let categoryIndex = data.categories.firstIndex(where: {
+                            $0.categoryId == planCat.categoryId
+                        }) else {
+                            return
                         }
                         
-                        data.categories[categoryIndex].amount = monthlyAmount
-                        
-                        if monthDiff == 0 {
-                            data.categories[categoryIndex].allowed = planCat.amount
+                        // Get the category
+                        guard let category = categoriesStore.categoryDictionary[planCat.categoryId] else {
+                            return
                         }
                         
-                        let plannedAmount = planCat.amount / Double(planCat.recurrence)
-                        if monthlyAmount != plannedAmount {
-                            data.categories[categoryIndex].adjusted = true
-                            data.categories[categoryIndex].adjustedText = "The funding amount was adjusted from a planned amount of \(SpendCraft.Amount(amount: plannedAmount)) to \(SpendCraft.Amount(amount: monthlyAmount)) for the goal of \(planCat.amount) due \(goalDate.year)-\(goalDate.month)."
-                            print("Adjusted \(category.name): \(plannedAmount) to \(monthlyAmount)")
-                        }
-                    } else {
-                        let plannedAmount = planCat.amount / Double(planCat.recurrence)
-                        var monthlyAmount = plannedAmount
-                        
-                        // Adjust the monthly amount if this is a required amount (a bill)
-                        // so that there is enough of a balance to meet its requirement
-                        if category.balance < 0 {
-                            monthlyAmount = plannedAmount - category.balance
-                            print("Adjusted \(category.name): \(plannedAmount) to \(monthlyAmount)")
-                            data.categories[categoryIndex].adjusted = true
-                            data.categories[categoryIndex].adjustedText = "The funding amount was adjusted from a planned amount of \(SpendCraft.Amount(amount: plannedAmount)) to \(SpendCraft.Amount(amount: monthlyAmount))."
-                        }
-                        
-                        data.categories[categoryIndex].amount = monthlyAmount
-                        
-                        if planCat.expectedToSpend != nil {
-                            data.categories[categoryIndex].allowed = planCat.expectedToSpend
-                        }
-                        else {
-                            let balance = category.balance + monthlyAmount
-                            data.categories[categoryIndex].allowed = balance > 0 ? balance : 0
+                        if let gd = planCat.goalDate {
+                            let goalDate = MonthYearDate(date: gd)
+                            let monthDiff = goalDate.diff(other: fundingMonth)
+                            
+                            var monthlyAmount = 0.0
+                            
+                            let goalDiff = planCat.amount - category.balance
+                            
+                            if goalDiff > 0 {
+                                monthlyAmount = goalDiff / Double(monthDiff + 1)
+                            }
+                            
+                            data.categories[categoryIndex].amount = monthlyAmount
+                            
+                            if monthDiff == 0 {
+                                data.categories[categoryIndex].allowed = planCat.amount
+                            }
+                            
+                            let plannedAmount = planCat.amount / Double(planCat.recurrence)
+                            if monthlyAmount != plannedAmount {
+                                data.categories[categoryIndex].adjusted = true
+                                data.categories[categoryIndex].adjustedText = "The funding amount was adjusted from a planned amount of \(SpendCraft.Amount(amount: plannedAmount)) to \(SpendCraft.Amount(amount: monthlyAmount)) for the goal of \(planCat.amount) due \(goalDate.year)-\(goalDate.month)."
+                                print("Adjusted \(category.name): \(plannedAmount) to \(monthlyAmount)")
+                            }
+                        } else {
+                            let plannedAmount = planCat.amount / Double(planCat.recurrence)
+                            var monthlyAmount = plannedAmount
+                            
+                            // Adjust the monthly amount if this is a required amount (a bill)
+                            // so that there is enough of a balance to meet its requirement
+                            if category.balance < 0 {
+                                monthlyAmount = plannedAmount - category.balance
+                                print("Adjusted \(category.name): \(plannedAmount) to \(monthlyAmount)")
+                                data.categories[categoryIndex].adjusted = true
+                                data.categories[categoryIndex].adjustedText = "The funding amount was adjusted from a planned amount of \(SpendCraft.Amount(amount: plannedAmount)) to \(SpendCraft.Amount(amount: monthlyAmount))."
+                            }
+                            
+                            data.categories[categoryIndex].amount = monthlyAmount
+                            
+                            if planCat.expectedToSpend != nil {
+                                data.categories[categoryIndex].allowed = planCat.expectedToSpend
+                            }
+                            else {
+                                let balance = category.balance + monthlyAmount
+                                data.categories[categoryIndex].allowed = balance > 0 ? balance : 0
+                            }
                         }
                     }
                 }

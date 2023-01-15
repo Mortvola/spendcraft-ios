@@ -12,6 +12,7 @@ struct LoginView: View {
     @ObservedObject var authenticator: Authenticator
     @State var username = ""
     @State var password = ""
+    @State var isRegistering = false
     
     func authenticate() async {
         await authenticator.signIn(username: username, password: password)
@@ -47,17 +48,32 @@ struct LoginView: View {
                     Image(systemName: "faceid")
                 }
             }
+            Spacer().frame(height:16)
             Button {
                 Task {
                     await authenticate()
                 }
             } label: {
                 Text("Sign In")
+                    .frame(maxWidth: .infinity)
             }
+            .buttonStyle(.bordered)
             .disabled(username.isEmpty || password.isEmpty)
+            Spacer().frame(height:32)
+            HStack {
+                Button {
+                    isRegistering = true
+                } label: {
+                    Text("Create Account")
+                }
+                Spacer()
+            }
             Spacer()
         }
         .padding(.horizontal)
+        .sheet(isPresented: $isRegistering) {
+            CreateAccountView(show: $isRegistering)
+        }
     }
 }
 

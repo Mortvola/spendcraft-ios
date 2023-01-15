@@ -136,8 +136,10 @@ class PlanStore: ObservableObject {
     @MainActor
     func load() async {
         self.loaded = false
-        if let response: Response.Plan = try? await Http.get(path: "/api/funding-plans/10/details") {
-            self.plan = Plan(response: response)
+        if let response: Http.Response<Response.Plan> = try? await Http.get(path: "/api/funding-plans/10/details") {
+            if let response = response.data {
+                self.plan = Plan(response: response)
+            }
         }
 
         self.loaded = true

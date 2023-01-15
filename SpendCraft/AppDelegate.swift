@@ -14,8 +14,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         UNUserNotificationCenter.current().delegate = self
         
-        Http.setServer(serverName: "spendcraft.app")
-        
+//        Http.setServer(serverName: "https://spendcraft.app")
+        Http.setServer(serverName: "http://192.168.1.12:3334")
+
         // Check if launched from notification
 //        let notificationOption = launchOptions?[.remoteNotification]
 //

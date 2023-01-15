@@ -10,7 +10,8 @@ import SwiftUI
 struct SettingsView: View {
     @ObservedObject var authenticator: Authenticator
     let version = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String
-
+    @State var isInvitingCollaborator = false
+    
     var body: some View {
         Form {
             LabeledContent("Version") {
@@ -35,6 +36,17 @@ struct SettingsView: View {
                     HStack {
                         Spacer()
                         Text("Sign Out")
+                        Spacer()
+                    }
+                }
+            }
+            ControlGroup {
+                Button(action: {
+                    isInvitingCollaborator = true
+                }) {
+                    HStack {
+                        Spacer()
+                        Text("Invite Collaborator")
                         Spacer()
                     }
                 }

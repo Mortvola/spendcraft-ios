@@ -82,23 +82,25 @@ class AccountsStore: ObservableObject {
     
     @MainActor
     func load() async {
-        if let accountsResponse: [Response.Institution] = try? await Http.get(path: "/api/connected-accounts") {
-            var accounts: [Institution] = accountsResponse.map{
-                Institution(institution: $0)
-            };
-            
-            accounts.sort {
-                $0.name < $1.name
-            }
-        
-            self.accounts = accounts
-
-            // Build a dictionary of the accounts for faster lookup
-            self.accountDictionary = Dictionary()
-
-            self.accounts.forEach { institution in
-                institution.accounts.forEach { account in
-                    self.accountDictionary.updateValue(account, forKey: account.id)
+        if let accountsResponse: Http.Response<[Response.Institution]> = try? await Http.get(path: "/api/connected-accounts") {
+            if let accountsResponse = accountsResponse.data {
+                var accounts: [Institution] = accountsResponse.map {
+                    Institution(institution: $0)
+                };
+                
+                accounts.sort {
+                    $0.name < $1.name
+                }
+                
+                self.accounts = accounts
+                
+                // Build a dictionary of the accounts for faster lookup
+                self.accountDictionary = Dictionary()
+                
+                self.accounts.forEach { institution in
+                    institution.accounts.forEach { account in
+                        self.accountDictionary.updateValue(account, forKey: account.id)
+                    }
                 }
             }
         }

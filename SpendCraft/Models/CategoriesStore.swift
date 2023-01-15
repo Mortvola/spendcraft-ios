@@ -46,9 +46,11 @@ final class CategoriesStore: ObservableObject {
 
     @MainActor
     func load() async {
-        if let categoriesResponse: [SpendCraft.Response.CategoryTreeNode] = try? await Http.get(path: "/api/groups") {
-            self.makeTree(tree: categoriesResponse)
-            self.write()
+        if let response: Http.Response<[SpendCraft.Response.CategoryTreeNode]> = try? await Http.get(path: "/api/groups") {
+            if let categoriesResponse = response.data {
+                self.makeTree(tree: categoriesResponse)
+                self.write()
+            }
         }
         
         self.loaded = true
@@ -252,11 +254,13 @@ final class CategoriesStore: ObservableObject {
         
         let cat = Data(name: name, groupId: groupId)
     
-        if let category: SpendCraft.Category = try? await Http.post(path: "/api/groups/\(groupId)/categories", data: cat) {
-            self.addCategoryToGroup(category: category, groupId: groupId)
-            
-            // Add the category to the dictionary
-            self.categoryDictionary.updateValue(category, forKey: category.id)
+        if let category: Http.Response<SpendCraft.Category> = try? await Http.post(path: "/api/groups/\(groupId)/categories", data: cat) {
+            if let category = category.data {
+                self.addCategoryToGroup(category: category, groupId: groupId)
+                
+                // Add the category to the dictionary
+                self.categoryDictionary.updateValue(category, forKey: category.id)
+            }
         }
     }
     
@@ -270,16 +274,17 @@ final class CategoriesStore: ObservableObject {
         
         let cat = Data(name: name, monthlyExpenses: category.monthlyExpenses, hidden: hidden)
     
-        if let response: SpendCraft.Response.CategoryUpdate = try? await Http.patch(path: "/api/groups/\(groupId)/categories/\(category.id)", data: cat) {
-
-            category.name = response.name
-            category.monthlyExpenses = response.monthlyExpenses
-            category.hidden = response.hidden
-            
-            // If the category changed groups...
-            if (category.groupId != groupId) {
-                self.removeCategoryFromGroup(category: category)
-                self.addCategoryToGroup(category: category, groupId: groupId)
+        if let response: Http.Response<SpendCraft.Response.CategoryUpdate> = try? await Http.patch(path: "/api/groups/\(groupId)/categories/\(category.id)", data: cat) {
+            if let response = response.data {
+                category.name = response.name
+                category.monthlyExpenses = response.monthlyExpenses
+                category.hidden = response.hidden
+                
+                // If the category changed groups...
+                if (category.groupId != groupId) {
+                    self.removeCategoryFromGroup(category: category)
+                    self.addCategoryToGroup(category: category, groupId: groupId)
+                }
             }
         }
     }
@@ -300,13 +305,15 @@ final class CategoriesStore: ObservableObject {
         
         let group = Data(name: name)
     
-        if let groupResponse: SpendCraft.Response.Group = try? await Http.post(path: "/api/groups", data: group) {
-            let group = SpendCraft.Group(groupResponse: groupResponse)
-
-            self.addNodeToRoot(node: SpendCraft.TreeNode(group))
-            
-            // Add the group to the dictionary
-            self.groupDictionary.updateValue(group, forKey: group.id)
+        if let groupResponse: Http.Response<SpendCraft.Response.Group> = try? await Http.post(path: "/api/groups", data: group) {
+            if let groupResponse = groupResponse.data {
+                let group = SpendCraft.Group(groupResponse: groupResponse)
+                
+                self.addNodeToRoot(node: SpendCraft.TreeNode(group))
+                
+                // Add the group to the dictionary
+                self.groupDictionary.updateValue(group, forKey: group.id)
+            }
         }
     }
 
@@ -319,9 +326,11 @@ final class CategoriesStore: ObservableObject {
         
         let grp = Data(name: name, hidden: hidden)
     
-        if let response: SpendCraft.Response.GroupUpdate = try? await Http.patch(path: "/api/groups/\(group.id)", data: grp) {
-            group.name = response.name
-            group.hidden = response.hidden
+        if let response: Http.Response<SpendCraft.Response.GroupUpdate> = try? await Http.patch(path: "/api/groups/\(group.id)", data: grp) {
+            if let response = response.data {
+                group.name = response.name
+                group.hidden = response.hidden
+            }
         }
     }
 

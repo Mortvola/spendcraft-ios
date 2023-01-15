@@ -80,33 +80,35 @@ class TransactionStore: ObservableObject {
     private func loadPosted(path: String, container: TransactionContainer) async {
         loading = true
         
-        if let transactionsResponse: Response.Transactions = try? await Http.get(path: path) {
-            var runningBalance = transactionsResponse.balance;
-            
-            let transactions: [Trx] = transactionsResponse.transactions.map {
-                var trx: Trx
-
-                switch $0.type {
-                case .funding:
-                    trx = FundingTransaction(trx: $0)
-                default:
-                    trx = Transaction(trx: $0)
+        if let transactionsResponse: Http.Response<Response.Transactions> = try? await Http.get(path: path) {
+            if let transactionsResponse = transactionsResponse.data {
+                var runningBalance = transactionsResponse.balance;
+                
+                let transactions: [Trx] = transactionsResponse.transactions.map {
+                    var trx: Trx
+                    
+                    switch $0.type {
+                    case .funding:
+                        trx = FundingTransaction(trx: $0)
+                    default:
+                        trx = Transaction(trx: $0)
+                    }
+                    
+                    trx.runningBalance = runningBalance
+                    runningBalance -= trx.amount
+                    
+                    return trx
                 }
                 
-                trx.runningBalance = runningBalance
-                runningBalance -= trx.amount
-                
-                return trx
-            }
-            
-            if container == self.transactionContainer {
-                self.transactions = transactions
-
-                switch(container) {
-                case .category(let category, _):
-                    CategoriesStore.shared.updateBalance(categoryId: category.id, balance: transactionsResponse.balance)
-                case .account:
-                    break
+                if container == self.transactionContainer {
+                    self.transactions = transactions
+                    
+                    switch(container) {
+                    case .category(let category, _):
+                        CategoriesStore.shared.updateBalance(categoryId: category.id, balance: transactionsResponse.balance)
+                    case .account:
+                        break
+                    }
                 }
             }
         }
@@ -118,18 +120,20 @@ class TransactionStore: ObservableObject {
     private func loadPending(account: Account) async {
         self.loading = true
         
-        if let pendingResponse: [Response.Transaction] = try? await Http.get(path: "/api/account/\(account.id)/transactions/pending?offset=0&limit=30") {
-            let transactions: [Trx] = pendingResponse.map {
-                switch $0.type {
-                case .funding:
-                    return FundingTransaction(trx: $0)
-                default:
-                    return Transaction(trx: $0)
+        if let pendingResponse: Http.Response<[Response.Transaction]> = try? await Http.get(path: "/api/account/\(account.id)/transactions/pending?offset=0&limit=30") {
+            if let pendingResponse = pendingResponse.data {
+                let transactions: [Trx] = pendingResponse.map {
+                    switch $0.type {
+                    case .funding:
+                        return FundingTransaction(trx: $0)
+                    default:
+                        return Transaction(trx: $0)
+                    }
                 }
-            }
-            
-            if TransactionContainer.account(account, .Pending) == self.transactionContainer {
-                self.transactions = transactions
+                
+                if TransactionContainer.account(account, .Pending) == self.transactionContainer {
+                    self.transactions = transactions
+                }
             }
         }
 
@@ -140,14 +144,16 @@ class TransactionStore: ObservableObject {
     private func loadPending(category: SpendCraft.Category) async {
         self.loading = true
         
-        if let pendingResponse: [Response.Transaction] = try? await Http.get(path: "/api/category/\(category.id)/transactions/pending?offset=0&limit=30") {
-            let transactions = pendingResponse.map {
-                Transaction(trx: $0)
-            }
-            
-            
-            if TransactionContainer.category(category, .Pending) == self.transactionContainer {
-                self.transactions = transactions
+        if let pendingResponse: Http.Response<[Response.Transaction]> = try? await Http.get(path: "/api/category/\(category.id)/transactions/pending?offset=0&limit=30") {
+            if let pendingResponse = pendingResponse.data {
+                let transactions = pendingResponse.map {
+                    Transaction(trx: $0)
+                }
+                
+                
+                if TransactionContainer.category(category, .Pending) == self.transactionContainer {
+                    self.transactions = transactions
+                }
             }
         }
         
@@ -157,9 +163,11 @@ class TransactionStore: ObservableObject {
     @MainActor
     static func sync(account: Account) async {
         if let institution = account.institution {
-            if let accountSync: Response.AccountSync = try? await Http.post(path: "/api/institution/\(institution.id)/accounts/\(account.id)/transactions/sync") {
-                account.balance = accountSync.accounts[0].balance
-                account.syncDate = accountSync.accounts[0].syncDate
+            if let accountSync: Http.Response<Response.AccountSync> = try? await Http.post(path: "/api/institution/\(institution.id)/accounts/\(account.id)/transactions/sync") {
+                if let accountSync = accountSync.data {
+                    account.balance = accountSync.accounts[0].balance
+                    account.syncDate = accountSync.accounts[0].syncDate
+                }
             }
         }
     }

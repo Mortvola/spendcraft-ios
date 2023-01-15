@@ -244,39 +244,41 @@ final class Transaction: Trx {
             // todo: add code to post new transaction
         }
         else {
-            if let updateTrxResponse: Response.UpdateTransaction = try? await Http.patch(path: "/api/transaction/\(self.id)", data: trxData) {
-                let trx = Transaction(trx: updateTrxResponse.transaction)
-
-                // If the transaction has no categories assigned and the
-                // current category is not the unassigned category
-                // OR if the transation has categories and none of them
-                // match the current category then remove the transaction
-                // from the transactions array
-                if let category = category, let transactionStore = transactionStore {
-                    if ((trx.categories.count == 0 && category.type != .unassigned) || (trx.categories.count != 0 && !trx.hasCategory(categoryId: category.id))) {
-                        
-                        // Find the index of the transaction in the transactions array
-                        let index = transactionStore.transactions.firstIndex(where: {
-                            $0.id == trx.id
-                        })
-                        
-                        // If the index was found then remove the transation from
-                        // the transactions array
-                        if let index = index {
-                            transactionStore.transactions.remove(at: index)
-                            removed()
+            if let updateTrxResponse: Http.Response<Response.UpdateTransaction> = try? await Http.patch(path: "/api/transaction/\(self.id)", data: trxData) {
+                if let updateTrxResponse = updateTrxResponse.data {
+                    let trx = Transaction(trx: updateTrxResponse.transaction)
+                    
+                    // If the transaction has no categories assigned and the
+                    // current category is not the unassigned category
+                    // OR if the transation has categories and none of them
+                    // match the current category then remove the transaction
+                    // from the transactions array
+                    if let category = category, let transactionStore = transactionStore {
+                        if ((trx.categories.count == 0 && category.type != .unassigned) || (trx.categories.count != 0 && !trx.hasCategory(categoryId: category.id))) {
+                            
+                            // Find the index of the transaction in the transactions array
+                            let index = transactionStore.transactions.firstIndex(where: {
+                                $0.id == trx.id
+                            })
+                            
+                            // If the index was found then remove the transation from
+                            // the transactions array
+                            if let index = index {
+                                transactionStore.transactions.remove(at: index)
+                                removed()
+                            }
                         }
                     }
-                }
-                
-                if (updateTrxResponse.categories.count > 0) {
-                    let categoriesStore = CategoriesStore.shared
-
-                    updateTrxResponse.categories.forEach { cat in
-                        categoriesStore.updateBalance(categoryId: cat.id, balance: cat.balance)
-                    }
                     
-                    categoriesStore.write()
+                    if (updateTrxResponse.categories.count > 0) {
+                        let categoriesStore = CategoriesStore.shared
+                        
+                        updateTrxResponse.categories.forEach { cat in
+                            categoriesStore.updateBalance(categoryId: cat.id, balance: cat.balance)
+                        }
+                        
+                        categoriesStore.write()
+                    }
                 }
             }
         }

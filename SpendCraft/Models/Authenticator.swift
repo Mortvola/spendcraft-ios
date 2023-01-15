@@ -35,11 +35,25 @@ class Authenticator: ObservableObject {
         
         let data = Data(username: username, password: password, remember: "on")
 
-        try? await Http.post(path: "/login", data: data)
-        try? self.addCredentials(username: username, password: password)
-
-        self.authenticated = true
-        self.username = username
+        do {
+            let response: Http.Response<Response.Login> = try await Http.post(path: "/api/login", data: data)
+            
+            if let errors = response.errors {
+                // todo: handle errors
+            } else {
+                try? self.addCredentials(username: username, password: password)
+                
+                self.authenticated = true
+                self.username = username
+                
+                if let data = response.data {
+                    Http.setToken(data)
+                }
+            }
+        }
+        catch {
+            print(error)
+        }
         
         Busy.shared.stop()
     }
