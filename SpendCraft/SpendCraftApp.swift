@@ -14,7 +14,7 @@ struct SpendCraftApp: App {
     @StateObject private var authenticator = Authenticator()
     @Environment(\.scenePhase) var scenePhase
     @State var isActive = false
-    @State var tabSelection: TabSelection = .categories
+    @StateObject private var navModel = NavModel.shared
     @ObservedObject var busy = Busy.shared
     
     func registerForPushNotifications() {
@@ -68,7 +68,7 @@ struct SpendCraftApp: App {
                         let (username, password) = try authenticator.getCredentials()
                         Task {
                             await authenticator.signIn(username: username, password: password)
-                            tabSelection = .categories
+                            navModel.tabSelection = .categories
                         }
                     }
                     catch {
@@ -83,7 +83,7 @@ struct SpendCraftApp: App {
         .onChange(of: authenticator.authenticated) { authenticated in
             // If we sign out then set the tab selection back to categories
             if (!authenticated) {
-                tabSelection = .categories
+                navModel.tabSelection = .categories
             }
         }
     }
