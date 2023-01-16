@@ -29,44 +29,57 @@ struct LoginView: View {
                 Text("SpendCraft")
                     .font(.largeTitle)
             }
-            .frame(maxHeight: 64)
+                .frame(maxHeight: 64)
             Spacer()
                 .frame(maxHeight: 64)
-            TextField("Username", text: $username)
-            HStack {
-                SecureField("Password", text: $password)
-                Button(action: {
-                    do {
-                        (username, password) = try authenticator.getCredentials()
-                        Task {
-                            await authenticate()
+            VStack(spacing: 16) {
+                VStack(spacing: 8) {
+                    TextField("Username", text: $username)
+                    HStack {
+                        SecureField("Password", text: $password)
+                        Button(action: {
+                            do {
+                                (username, password) = try authenticator.getCredentials()
+                                Task {
+                                    await authenticate()
+                                }
+                            }
+                            catch {
+                            }
+                        }) {
+                            Image(systemName: "faceid")
                         }
                     }
-                    catch {
-                    }
-                }) {
-                    Image(systemName: "faceid")
                 }
-            }
-            Spacer().frame(height:16)
-            Button {
-                Task {
-                    await authenticate()
-                }
-            } label: {
-                Text("Sign In")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.bordered)
-            .disabled(username.isEmpty || password.isEmpty)
-            Spacer().frame(height:32)
-            HStack {
                 Button {
-                    isRegistering = true
+                    Task {
+                        await authenticate()
+                    }
                 } label: {
-                    Text("Create Account")
+                    Text("Sign In")
+                        .frame(maxWidth: .infinity)
                 }
-                Spacer()
+                .buttonStyle(.bordered)
+                .disabled(username.isEmpty || password.isEmpty)
+            }
+            Spacer().frame(height:32)
+            VStack(spacing: 16) {
+                HStack {
+                    Button {
+                        isRegistering = true
+                    } label: {
+                        Text("Forgot my password")
+                    }
+                    Spacer()
+                }
+                HStack {
+                    Button {
+                        isRegistering = true
+                    } label: {
+                        Text("Create Account")
+                    }
+                    Spacer()
+                }
             }
             Spacer()
         }
