@@ -22,12 +22,24 @@ struct CreateAccountView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                FormFieldView(label: "Username", value: $username, error: usernameError)
                 FormFieldView(label: "E-Mail", value: $email, error: emailError)
-                FormFieldView(label: "Password", value: $password, error: passwordError, secured: true)
-                FormFieldView(label: "Confirm Password", value: $passwordConfirmation, error: passwordConfirmationError, secured: true)
+                    .textInputAutocapitalization(.never)
+                    .disableAutocorrection(true)
+                    .textContentType(.emailAddress)
+                FormFieldView(label: "Username", value: $username, error: usernameError)
+                    .disableAutocorrection(true)
+                    .textContentType(.username)
+                FormFieldView(label: "Password", value: $password, error: passwordError, secured: false)
+                    .textContentType(.newPassword)
+                FormFieldView(label: "Confirm Password", value: $passwordConfirmation, error: passwordConfirmationError, secured: false)
+                    .textContentType(.newPassword)
                 Button {
                     Task {
+                        usernameError = ""
+                        emailError = ""
+                        passwordError = ""
+                        passwordConfirmationError = ""
+                        
                         struct Data: Encodable {
                             var username: String
                             var email: String
@@ -42,7 +54,7 @@ struct CreateAccountView: View {
                             password_confirmation: passwordConfirmation
                         )
 
-                        let result = try await Http.post(path: "/register", data: data)
+                        let result = try await Http.post(path: "/api/register", data: data)
 
                         if let errors = result.errors {
                             errors.forEach { error in
@@ -53,7 +65,7 @@ struct CreateAccountView: View {
                                     emailError = error.message
                                 case "password":
                                     passwordError = error.message
-                                case "passwordConfirmation":
+                                case "password_confirmation":
                                     passwordConfirmationError = error.message
                                 default:
                                     break

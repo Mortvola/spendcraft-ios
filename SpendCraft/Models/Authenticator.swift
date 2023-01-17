@@ -24,7 +24,7 @@ class Authenticator: ObservableObject {
     }
     
     @MainActor
-    func signIn(username: String, password: String) async {
+    func signIn(username: String, password: String) async -> Errors? {
         struct Data: Encodable {
             var username: String
             var password: String
@@ -39,16 +39,17 @@ class Authenticator: ObservableObject {
             let response: Http.Response<Response.Login> = try await Http.post(path: "/api/login", data: data)
             
             if let errors = response.errors {
-                // todo: handle errors
-            } else {
-                try? self.addCredentials(username: username, password: password)
+                Busy.shared.stop()
+                return errors
+            }
+
+            try? self.addCredentials(username: username, password: password)
                 
-                self.authenticated = true
-                self.username = username
-                
-                if let data = response.data {
-                    Http.setToken(data)
-                }
+            self.authenticated = true
+            self.username = username
+            
+            if let data = response.data {
+                Http.setToken(data)
             }
         }
         catch {
@@ -56,8 +57,26 @@ class Authenticator: ObservableObject {
         }
         
         Busy.shared.stop()
+        
+        return nil
     }
     
+    @MainActor
+    func signOut() async {
+        Busy.shared.start()
+
+        do {
+            try await Http.post(path: "/api/logout")
+        }
+        catch {
+            print(error)
+        }
+
+        self.authenticated = false
+
+        Busy.shared.stop()
+    }
+
     func addCredentials(username: String, password: String) throws {
         // Create an access control instance that dictates how the item can be read later.
         let access = SecAccessControlCreateWithFlags(nil, // Use the default allocator.

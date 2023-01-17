@@ -31,7 +31,9 @@ struct SettingsView: View {
             }
             ControlGroup {
                 Button(action: {
-                    authenticator.authenticated = false
+                    Task {
+                        await authenticator.signOut()
+                    }
                 }) {
                     HStack {
                         Spacer()

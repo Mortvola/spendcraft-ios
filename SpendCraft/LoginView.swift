@@ -13,15 +13,30 @@ struct LoginView: View {
     @State var username = ""
     @State var password = ""
     @State var isRegistering = false
+    @State var usernameError = ""
+    @State var passwordError = ""
     
     func authenticate() async {
-        await authenticator.signIn(username: username, password: password)
+        let errors = await authenticator.signIn(username: username, password: password)
+        
+        if let errors = errors {
+            errors.forEach { error in
+                switch(error.field) {
+                case "username":
+                    usernameError = error.message
+                case "password":
+                    passwordError = error.message
+                default:
+                    break
+                }
+            }
+        }
     }
 
     var body: some View {
         VStack {
             Spacer()
-                .frame(maxHeight: 128)
+                .frame(maxHeight: 64)
             HStack {
                 Image(uiImage: UIImage(named: "Logo") ?? UIImage())
                     .resizable()
@@ -34,9 +49,11 @@ struct LoginView: View {
                 .frame(maxHeight: 64)
             VStack(spacing: 16) {
                 VStack(spacing: 8) {
-                    TextField("Username", text: $username)
+                    FormFieldView(label: "Username", value: $username, error: usernameError)
+                        .textContentType(.username)
                     HStack {
-                        SecureField("Password", text: $password)
+                        FormFieldView(label: "Password", value: $password, error: passwordError, secured: true)
+                            .textContentType(.password)
                         Button(action: {
                             do {
                                 (username, password) = try authenticator.getCredentials()

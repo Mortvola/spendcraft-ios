@@ -14,26 +14,11 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         UNUserNotificationCenter.current().delegate = self
         
-        Http.setServer(serverName: "https://spendcraft.app")
-//        Http.setServer(serverName: "https://sandbox.spendcraft.app:3334")
+        Http.setServer(serverName: Configuration.baseURL)
 
-        // Check if launched from notification
-//        let notificationOption = launchOptions?[.remoteNotification]
-//
-//        // 1
-//        if
-//            let notification = notificationOption as? [String: AnyObject],
-//            let aps = notification["aps"] as? [String: AnyObject] {
-//            // 2
-//            print("launched by notification")
-//
-//            // 3
-//            //          (window?.rootViewController as? UITabBarController)?.selectedIndex = 1
-//        }
-        
         return true
     }
-    
+
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
         let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
