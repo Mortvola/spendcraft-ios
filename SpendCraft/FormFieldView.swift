@@ -6,20 +6,32 @@
 //
 
 import SwiftUI
+import Combine
 
 struct FormFieldView: View {
     var label: String
     @Binding var value: String
     var error = ""
     var secured = false
+    var textLimit: Int? = nil
+
+    func limitText(_ max: Int?) {
+        if let max = max {
+            if value.count > max {
+                value = String(value.prefix(max))
+            }
+        }
+    }
 
     var body: some View {
         VStack {
             if secured {
                 SecureField(label, text: $value)
+                    .onReceive(Just(value)) { _ in limitText(textLimit) }
             }
             else {
                 TextField(label, text: $value)
+                    .onReceive(Just(value)) { _ in limitText(textLimit) }
             }
             FieldErrorView(error: error)
         }

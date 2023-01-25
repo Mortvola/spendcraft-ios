@@ -45,15 +45,17 @@ final class CategoriesStore: ObservableObject {
     }
 
     @MainActor
-    func load() async {
-        if let response: Http.Response<[SpendCraft.Response.CategoryTreeNode]> = try? await Http.get(path: "/api/groups") {
-            if let categoriesResponse = response.data {
-                self.makeTree(tree: categoriesResponse)
-                self.write()
+    func load(force: Bool = false) async {
+        if !self.loaded || force {
+            if let response: Http.Response<[SpendCraft.Response.CategoryTreeNode]> = try? await Http.get(path: "/api/groups") {
+                if let categoriesResponse = response.data {
+                    self.makeTree(tree: categoriesResponse)
+                    self.write()
+                }
             }
+            
+            self.loaded = true
         }
-        
-        self.loaded = true
     }
     
     func makeTree(tree: [SpendCraft.Response.CategoryTreeNode]) {

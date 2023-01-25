@@ -100,6 +100,13 @@
 		79CF2E6B2908BFD200448D65 /* MonthYearPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E6A2908BFD200448D65 /* MonthYearPicker.swift */; };
 		79CF2E6E2909653A00448D65 /* FundingEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CF2E6D2909653A00448D65 /* FundingEdit.swift */; };
 		79F5DF492977431F00F6AC4D /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79F5DF482977431F00F6AC4D /* Configuration.swift */; };
+		79F5DF5629775F5600F6AC4D /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79F5DF5529775F5600F6AC4D /* ForgotPasswordView.swift */; };
+		79F5DF5829783FAD00F6AC4D /* EnterPassCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79F5DF5729783FAD00F6AC4D /* EnterPassCodeView.swift */; };
+		79F5DF5A2978476700F6AC4D /* EnterPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79F5DF592978476700F6AC4D /* EnterPasswordView.swift */; };
+		79F5DF5C297C6B8D00F6AC4D /* CredentialListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79F5DF5B297C6B8D00F6AC4D /* CredentialListView.swift */; };
+		79F5DF62297F075F00F6AC4D /* PasswordRuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79F5DF61297F075F00F6AC4D /* PasswordRuleView.swift */; };
+		79F5DF64297F154500F6AC4D /* PasswordRulesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79F5DF63297F154500F6AC4D /* PasswordRulesView.swift */; };
+		79F5DF66297F1D0900F6AC4D /* PasswordValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79F5DF65297F1D0900F6AC4D /* PasswordValidator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -302,6 +309,13 @@
 		79F5DF4729771DF700F6AC4D /* SpendCraftRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SpendCraftRelease.entitlements; sourceTree = "<group>"; };
 		79F5DF482977431F00F6AC4D /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		79F5DF54297757F300F6AC4D /* SpendCraftProduction.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SpendCraftProduction.entitlements; sourceTree = "<group>"; };
+		79F5DF5529775F5600F6AC4D /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
+		79F5DF5729783FAD00F6AC4D /* EnterPassCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterPassCodeView.swift; sourceTree = "<group>"; };
+		79F5DF592978476700F6AC4D /* EnterPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterPasswordView.swift; sourceTree = "<group>"; };
+		79F5DF5B297C6B8D00F6AC4D /* CredentialListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialListView.swift; sourceTree = "<group>"; };
+		79F5DF61297F075F00F6AC4D /* PasswordRuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordRuleView.swift; sourceTree = "<group>"; };
+		79F5DF63297F154500F6AC4D /* PasswordRulesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordRulesView.swift; sourceTree = "<group>"; };
+		79F5DF65297F1D0900F6AC4D /* PasswordValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordValidator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -484,10 +498,9 @@
 				79CF2E5928F85C3300448D65 /* AppDelegate.swift */,
 				79F5DF482977431F00F6AC4D /* Configuration.swift */,
 				795382E728E864B800133EFA /* InactiveView.swift */,
-				79C19CCB28D4A85E003F05F2 /* LoginView.swift */,
-				795AFB5D2971F67400B977A3 /* CreateAccountView.swift */,
 				795AFB612973093700B977A3 /* FormFieldView.swift */,
 				795AFB5F2973084E00B977A3 /* FieldErrorView.swift */,
+				79F5DF5D297EBA3000F6AC4D /* Credentials */,
 				79ADF87328E5D49B00227F44 /* Accounts */,
 				7946968228DA2732005B6408 /* Categories */,
 				79CF2E5D28FEC40C00448D65 /* Plans */,
@@ -547,6 +560,7 @@
 				790B4EF9290F522D00149DCC /* MonthYearDate.swift */,
 				7923782B28D77C0A0069DB01 /* TransactionStore.swift */,
 				7923782928D76BD60069DB01 /* Authenticator.swift */,
+				79F5DF65297F1D0900F6AC4D /* PasswordValidator.swift */,
 				79B2595728F32A7E000D6763 /* Response.swift */,
 			);
 			path = Models;
@@ -593,6 +607,21 @@
 				794160812914B5AE00E63DE3 /* TitledAmountView.swift */,
 			);
 			path = Funding;
+			sourceTree = "<group>";
+		};
+		79F5DF5D297EBA3000F6AC4D /* Credentials */ = {
+			isa = PBXGroup;
+			children = (
+				79C19CCB28D4A85E003F05F2 /* LoginView.swift */,
+				795AFB5D2971F67400B977A3 /* CreateAccountView.swift */,
+				79F5DF5529775F5600F6AC4D /* ForgotPasswordView.swift */,
+				79F5DF5729783FAD00F6AC4D /* EnterPassCodeView.swift */,
+				79F5DF592978476700F6AC4D /* EnterPasswordView.swift */,
+				79F5DF63297F154500F6AC4D /* PasswordRulesView.swift */,
+				79F5DF61297F075F00F6AC4D /* PasswordRuleView.swift */,
+				79F5DF5B297C6B8D00F6AC4D /* CredentialListView.swift */,
+			);
+			path = Credentials;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -904,9 +933,11 @@
 				79BD68B42913700A00A190F6 /* FundingEditFooter.swift in Sources */,
 				79B2595828F32A7E000D6763 /* Response.swift in Sources */,
 				79A17C0D28F1A3BF006FD368 /* widget.intentdefinition in Sources */,
+				79F5DF5A2978476700F6AC4D /* EnterPasswordView.swift in Sources */,
 				79ADF87528E5D71800227F44 /* AccountsStore.swift in Sources */,
 				79CF2E5128F79AAA00448D65 /* EditCategoryView.swift in Sources */,
 				79CF2E5F28FEC43400448D65 /* PlanCategoryView.swift in Sources */,
+				79F5DF64297F154500F6AC4D /* PasswordRulesView.swift in Sources */,
 				795382E628E71F3500133EFA /* Accounts-TransactionView.swift in Sources */,
 				79CF2E672904276300448D65 /* PlanStore.swift in Sources */,
 				79CF2E4928F6F39000448D65 /* AddCategoryView.swift in Sources */,
@@ -915,6 +946,7 @@
 				7946967128D82006005B6408 /* Accounts-AccountsView.swift in Sources */,
 				790B4EF629096A5000149DCC /* FundingCategoryView.swift in Sources */,
 				79CF2E4D28F7861300448D65 /* EditCategoriesView.swift in Sources */,
+				79F5DF5C297C6B8D00F6AC4D /* CredentialListView.swift in Sources */,
 				79CF2E4B28F7250800448D65 /* AddGroupView.swift in Sources */,
 				7946967F28DA1F0E005B6408 /* CategoryView.swift in Sources */,
 				79CF2E692908BA7600448D65 /* CalendarButton.swift in Sources */,
@@ -926,6 +958,7 @@
 				79CF2E5728F7B57900448D65 /* GroupView2.swift in Sources */,
 				795382E828E864B800133EFA /* InactiveView.swift in Sources */,
 				7946966F28D81FF0005B6408 /* PlansView.swift in Sources */,
+				79F5DF66297F1D0900F6AC4D /* PasswordValidator.swift in Sources */,
 				790B4EF8290C376200149DCC /* Border.swift in Sources */,
 				79C19CD328D517E7003F05F2 /* Transaction.swift in Sources */,
 				795382E028E7141100133EFA /* SettingsView.swift in Sources */,
@@ -935,6 +968,7 @@
 				79F5DF492977431F00F6AC4D /* Configuration.swift in Sources */,
 				79CF2E5328F79FE900448D65 /* DeleteButton.swift in Sources */,
 				795382E228E7178600133EFA /* Accounts-RegisterView.swift in Sources */,
+				79F5DF62297F075F00F6AC4D /* PasswordRuleView.swift in Sources */,
 				795AFB602973084E00B977A3 /* FieldErrorView.swift in Sources */,
 				7946967728D8B99B005B6408 /* CategoriesStore.swift in Sources */,
 				7946968E28DCADFE005B6408 /* CategoryPicker.swift in Sources */,
@@ -945,12 +979,14 @@
 				7941608629153A0800E63DE3 /* FundingTransactionView.swift in Sources */,
 				79CF2E6128FEC46000448D65 /* PlanGroupView.swift in Sources */,
 				7946969328DCBD6F005B6408 /* CategoryList.swift in Sources */,
+				79F5DF5829783FAD00F6AC4D /* EnterPassCodeView.swift in Sources */,
 				792681B528F6201C0005114F /* TransactionTypePicker.swift in Sources */,
 				7946968A28DAC578005B6408 /* NumericField.swift in Sources */,
 				79CF2E6329002F8900448D65 /* PlanItemEdit.swift in Sources */,
 				792681B328F5F98C0005114F /* CategoryItem.swift in Sources */,
 				790B4EFC2912E16F00149DCC /* FundingNew.swift in Sources */,
 				7923782A28D76BD60069DB01 /* Authenticator.swift in Sources */,
+				79F5DF5629775F5600F6AC4D /* ForgotPasswordView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

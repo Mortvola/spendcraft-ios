@@ -44,7 +44,7 @@ struct CategoriesView: View {
             }
             .navigationTitle("Categories")
             .refreshable {
-                await categoriesStore.load()
+                await categoriesStore.load(force: true)
             }
             .toolbar {
                 ToolbarItem(placement: .automatic) {
@@ -71,11 +71,6 @@ struct CategoriesView: View {
         }
         .sheet(isPresented: $isFundingCategories) {
             FundingNew(isOpen: $isFundingCategories)
-        }
-        .task {
-            if (!categoriesStore.loaded) {
-                await categoriesStore.load()
-            }
         }
     }
 }

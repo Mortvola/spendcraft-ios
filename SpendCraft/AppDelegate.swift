@@ -10,12 +10,18 @@ import SwiftUI
 import Framework
 import Http
 
+private func unauthorizedHandler() {
+    Task {
+        await Authenticator.shared.setUnauthenticated()
+    }
+}
+
 class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         UNUserNotificationCenter.current().delegate = self
         
         Http.setServer(serverName: Configuration.baseURL)
-
+        Http.setUnauthorizedHandler(handler: unauthorizedHandler)
         return true
     }
 

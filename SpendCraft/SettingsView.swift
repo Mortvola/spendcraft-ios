@@ -11,46 +11,52 @@ struct SettingsView: View {
     @ObservedObject var authenticator: Authenticator
     let version = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String
     @State var isInvitingCollaborator = false
-    
+    @State var presentedPath: [NavigationState] = []
+
     var body: some View {
-        Form {
-            LabeledContent("Version") {
-                if let version = version {
-                    Text(version)
-                } else {
-                    Text("Unknown")
-                }
-            }
-            ControlGroup {
-                LabeledContent("Username") {
-                    Text(authenticator.username)
-                }
-                NavigationLink(destination: ChangePasswordView()) {
-                    Text("Reset Password")
-                }
-            }
-            ControlGroup {
-                Button(action: {
-                    Task {
-                        await authenticator.signOut()
-                    }
-                }) {
-                    HStack {
-                        Spacer()
-                        Text("Sign Out")
-                        Spacer()
+        NavigationStack(path: $presentedPath) {
+            Form {
+                LabeledContent("Version") {
+                    if let version = version {
+                        Text(version)
+                    } else {
+                        Text("Unknown")
                     }
                 }
-            }
-            ControlGroup {
-                Button(action: {
-                    isInvitingCollaborator = true
-                }) {
-                    HStack {
-                        Spacer()
-                        Text("Invite Collaborator")
-                        Spacer()
+                ControlGroup {
+                    LabeledContent("Username") {
+                        Text(authenticator.username)
                     }
+                    NavigationLink("Change Password", value: NavigationState.setPassword)
+                }
+                ControlGroup {
+                    Button(action: {
+                        Task {
+                            await authenticator.signOut()
+                        }
+                    }) {
+                        HStack {
+                            Spacer()
+                            Text("Sign Out")
+                            Spacer()
+                        }
+                    }
+                }
+                ControlGroup {
+                    Button(action: {
+                        isInvitingCollaborator = true
+                    }) {
+                        HStack {
+                            Spacer()
+                            Text("Invite Collaborator")
+                            Spacer()
+                        }
+                    }
+                }
+            }
+            .navigationDestination(for: NavigationState.self) { state in
+                if state == .setPassword {
+                    EnterPasswordView(path: $presentedPath)
                 }
             }
         }

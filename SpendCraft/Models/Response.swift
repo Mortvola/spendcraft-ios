@@ -20,7 +20,16 @@ extension DateFormatter {
 }
 
 enum Response {
-    typealias Login = String
+    struct Login: Decodable {
+        var access: String
+        var refresh: String
+    }
+
+    struct PassCodeVerify: Decodable {
+        var access: String
+        var refresh: String
+        var username: String
+    }
 
     struct AccountSync: Decodable {
         struct Category: Decodable {
