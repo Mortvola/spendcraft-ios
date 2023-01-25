@@ -118,7 +118,7 @@ class PlanCategory: ObservableObject {
         
         let requestData = RequestData(amount: data.amount ?? 0, useGoal: false, goalDate: data.goal, recurrence: data.recurrence, expectedToSpend: data.expectedToSpend)
         
-        try await Http.put(path: "/api/funding-plans/10/item/\(self.categoryId)", data: requestData)
+        try await Http.put(path: "/api/v1/funding-plans/10/item/\(self.categoryId)", data: requestData)
 
         self.amount = data.amount ?? 0
         self.recurrence = data.recurrence
@@ -136,7 +136,7 @@ class PlanStore: ObservableObject {
     @MainActor
     func load() async {
         self.loaded = false
-        if let response: Http.Response<Response.Plan> = try? await Http.get(path: "/api/funding-plans/10/details") {
+        if let response: Http.Response<Response.Plan> = try? await Http.get(path: "/api/v1/funding-plans/10/details") {
             if let response = response.data {
                 self.plan = Plan(response: response)
             }

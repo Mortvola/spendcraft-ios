@@ -42,7 +42,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
         
         let data = Data(token: token)
 
-        try? await Http.post(path: "/api/user/apns-token", data: data)
+        try? await Http.post(path: "/api/v1/user/apns-token", data: data)
     }
 
     func application(

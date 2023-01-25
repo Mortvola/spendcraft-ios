@@ -59,7 +59,7 @@ struct CreateAccountView: View {
                         passwordConfirmation: passwordConfirmation
                     )
 
-                    let result = try await Http.post(path: "/api/register", data: data)
+                    let result = try await Http.post(path: "/api/v1/register", data: data)
 
                     if let errors = result.errors {
                         errors.forEach { error in

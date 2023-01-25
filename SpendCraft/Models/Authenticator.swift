@@ -48,7 +48,7 @@ class Authenticator: ObservableObject {
             // Make sure the access and refresh tokens are not set
             Http.setTokens("", "")
             
-            let response: Http.Response<Response.Login> = try await Http.post(path: "/api/login", data: data)
+            let response: Http.Response<Response.Login> = try await Http.post(path: "/api/v1/login", data: data)
             
             if let errors = response.errors {
                 Busy.shared.stop()
@@ -96,7 +96,7 @@ class Authenticator: ObservableObject {
             
             let logoutRequest = LogoutRequest(refreshToken: Http.getRefreshToken())
             
-            try await Http.post(path: "/api/logout", data: logoutRequest)
+            try await Http.post(path: "/api/v1/logout", data: logoutRequest)
             
             Http.setTokens("", "")
             self.context = nil
@@ -129,7 +129,7 @@ class Authenticator: ObservableObject {
             email: email
         )
 
-        return try await Http.post(path: "/api/code-request", data: data)
+        return try await Http.post(path: "/api/v1/code-request", data: data)
     }
 
     func addCredentials(username: String, password: String) throws {

@@ -38,7 +38,7 @@ struct EnterPassCodeView: View {
                         code: code
                     )
 
-                    let response: Http.Response<Response.PassCodeVerify> = try await Http.post(path: "/api/code-verify", data: data)
+                    let response: Http.Response<Response.PassCodeVerify> = try await Http.post(path: "/api/v1/code-verify", data: data)
 
                     if let errors = response.errors {
                         errors.forEach { error in

@@ -82,7 +82,7 @@ class AccountsStore: ObservableObject {
     
     @MainActor
     func load() async {
-        if let accountsResponse: Http.Response<[Response.Institution]> = try? await Http.get(path: "/api/connected-accounts") {
+        if let accountsResponse: Http.Response<[Response.Institution]> = try? await Http.get(path: "/api/v1/connected-accounts") {
             if let accountsResponse = accountsResponse.data {
                 var accounts: [Institution] = accountsResponse.map {
                     Institution(institution: $0)

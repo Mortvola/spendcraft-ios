@@ -49,7 +49,7 @@ class TransactionStore: ObservableObject {
         }
 
         if transactionState == TransactionState.Posted {
-            await loadPosted(path: "/api/category/\(category.id)/transactions?offset=0&limit=30", container: .category(category, .Posted))
+            await loadPosted(path: "/api/v1/category/\(category.id)/transactions?offset=0&limit=30", container: .category(category, .Posted))
 
             // Update the badge if the current category is the unassigned category.
             if (category.type == .unassigned) {
@@ -69,7 +69,7 @@ class TransactionStore: ObservableObject {
         }
 
         if transactionState == TransactionState.Posted {
-            await loadPosted(path: "/api/account/\(account.id)/transactions?offset=0&limit=30", container: .account(account, .Posted))
+            await loadPosted(path: "/api/v1/account/\(account.id)/transactions?offset=0&limit=30", container: .account(account, .Posted))
         }
         else {
             await loadPending(account: account)
@@ -120,7 +120,7 @@ class TransactionStore: ObservableObject {
     private func loadPending(account: Account) async {
         self.loading = true
         
-        if let pendingResponse: Http.Response<[Response.Transaction]> = try? await Http.get(path: "/api/account/\(account.id)/transactions/pending?offset=0&limit=30") {
+        if let pendingResponse: Http.Response<[Response.Transaction]> = try? await Http.get(path: "/api/v1/account/\(account.id)/transactions/pending?offset=0&limit=30") {
             if let pendingResponse = pendingResponse.data {
                 let transactions: [Trx] = pendingResponse.map {
                     switch $0.type {
@@ -144,7 +144,7 @@ class TransactionStore: ObservableObject {
     private func loadPending(category: SpendCraft.Category) async {
         self.loading = true
         
-        if let pendingResponse: Http.Response<[Response.Transaction]> = try? await Http.get(path: "/api/category/\(category.id)/transactions/pending?offset=0&limit=30") {
+        if let pendingResponse: Http.Response<[Response.Transaction]> = try? await Http.get(path: "/api/v1/category/\(category.id)/transactions/pending?offset=0&limit=30") {
             if let pendingResponse = pendingResponse.data {
                 let transactions = pendingResponse.map {
                     Transaction(trx: $0)
@@ -163,7 +163,7 @@ class TransactionStore: ObservableObject {
     @MainActor
     static func sync(account: Account) async {
         if let institution = account.institution {
-            if let accountSync: Http.Response<Response.AccountSync> = try? await Http.post(path: "/api/institution/\(institution.id)/accounts/\(account.id)/transactions/sync") {
+            if let accountSync: Http.Response<Response.AccountSync> = try? await Http.post(path: "/api/v1/institution/\(institution.id)/accounts/\(account.id)/transactions/sync") {
                 if let accountSync = accountSync.data {
                     account.balance = accountSync.accounts[0].balance
                     account.syncDate = accountSync.accounts[0].syncDate

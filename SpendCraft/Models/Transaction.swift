@@ -244,7 +244,7 @@ final class Transaction: Trx {
             // todo: add code to post new transaction
         }
         else {
-            if let updateTrxResponse: Http.Response<Response.UpdateTransaction> = try? await Http.patch(path: "/api/transaction/\(self.id)", data: trxData) {
+            if let updateTrxResponse: Http.Response<Response.UpdateTransaction> = try? await Http.patch(path: "/api/v1/transaction/\(self.id)", data: trxData) {
                 if let updateTrxResponse = updateTrxResponse.data {
                     let trx = Transaction(trx: updateTrxResponse.transaction)
                     

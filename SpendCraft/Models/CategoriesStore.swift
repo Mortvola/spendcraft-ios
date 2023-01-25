@@ -47,7 +47,7 @@ final class CategoriesStore: ObservableObject {
     @MainActor
     func load(force: Bool = false) async {
         if !self.loaded || force {
-            if let response: Http.Response<[SpendCraft.Response.CategoryTreeNode]> = try? await Http.get(path: "/api/groups") {
+            if let response: Http.Response<[SpendCraft.Response.CategoryTreeNode]> = try? await Http.get(path: "/api/v1/groups") {
                 if let categoriesResponse = response.data {
                     self.makeTree(tree: categoriesResponse)
                     self.write()
@@ -256,7 +256,7 @@ final class CategoriesStore: ObservableObject {
         
         let cat = Data(name: name, groupId: groupId)
     
-        if let category: Http.Response<SpendCraft.Category> = try? await Http.post(path: "/api/groups/\(groupId)/categories", data: cat) {
+        if let category: Http.Response<SpendCraft.Category> = try? await Http.post(path: "/api/v1/groups/\(groupId)/categories", data: cat) {
             if let category = category.data {
                 self.addCategoryToGroup(category: category, groupId: groupId)
                 
@@ -293,7 +293,7 @@ final class CategoriesStore: ObservableObject {
 
     @MainActor
     public func deleteCategory(category: SpendCraft.Category) async {
-        try? await Http.delete(path: "/api/groups/\(category.groupId)/categories/\(category.id)")
+        try? await Http.delete(path: "/api/v1/groups/\(category.groupId)/categories/\(category.id)")
         
         self.removeCategoryFromGroup(category: category)
         self.categoryDictionary.removeValue(forKey: category.id)
@@ -307,7 +307,7 @@ final class CategoriesStore: ObservableObject {
         
         let group = Data(name: name)
     
-        if let groupResponse: Http.Response<SpendCraft.Response.Group> = try? await Http.post(path: "/api/groups", data: group) {
+        if let groupResponse: Http.Response<SpendCraft.Response.Group> = try? await Http.post(path: "/api/v1/groups", data: group) {
             if let groupResponse = groupResponse.data {
                 let group = SpendCraft.Group(groupResponse: groupResponse)
                 
@@ -328,7 +328,7 @@ final class CategoriesStore: ObservableObject {
         
         let grp = Data(name: name, hidden: hidden)
     
-        if let response: Http.Response<SpendCraft.Response.GroupUpdate> = try? await Http.patch(path: "/api/groups/\(group.id)", data: grp) {
+        if let response: Http.Response<SpendCraft.Response.GroupUpdate> = try? await Http.patch(path: "/api/v1/groups/\(group.id)", data: grp) {
             if let response = response.data {
                 group.name = response.name
                 group.hidden = response.hidden
@@ -338,7 +338,7 @@ final class CategoriesStore: ObservableObject {
 
     @MainActor
     public func deleteGroup(group: SpendCraft.Group) async {
-        try? await Http.delete(path: "/api/groups/\(group.id)")
+        try? await Http.delete(path: "/api/v1/groups/\(group.id)")
         
         let index = self.tree.firstIndex { node in
             switch node {

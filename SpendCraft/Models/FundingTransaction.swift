@@ -137,12 +137,12 @@ class FundingTransaction: Trx {
         requestData.categories.append(RequestData.Category(categoryId: categoriesStore.fundingPool.id, amount: -sum))
 
         if self.id < 0 {
-            if let updateTrxResponse: Http.Response<Response.UpdateTransaction> = try? await Http.post(path: "/api/category-transfer", data: requestData) {
+            if let updateTrxResponse: Http.Response<Response.UpdateTransaction> = try? await Http.post(path: "/api/v1/category-transfer", data: requestData) {
                 print("handling response not implemented")
             }
         }
         else {
-            if let updateTrxResponse: Http.Response<Response.UpdateTransaction> = try? await Http.patch(path: "/api/category-transfer/\(self.id)", data: requestData) {
+            if let updateTrxResponse: Http.Response<Response.UpdateTransaction> = try? await Http.patch(path: "/api/v1/category-transfer/\(self.id)", data: requestData) {
                 print("handling response not implemented")
             }
         }
@@ -230,7 +230,7 @@ extension FundingTransaction {
         
         if self.id < 0 {
             // Get the plan and adjust amounts in each of the categories
-            if let response: Http.Response<Response.Plan> = try? await Http.get(path: "/api/funding-plans/10/details") {
+            if let response: Http.Response<Response.Plan> = try? await Http.get(path: "/api/v1/funding-plans/10/details") {
                 if let planResponse = response.data {
                     let fundingMonth = MonthYearDate(date: Date.now)
                     data.date = try? fundingMonth.date()

@@ -45,7 +45,7 @@ struct EnterPasswordView: View {
                         passwordConfirmation: passwordConfirmation
                     )
 
-                    let result = try await Http.post(path: "/api/password/update", data: data)
+                    let result = try await Http.post(path: "/api/v1/password/update", data: data)
 
                     if let errors = result.errors {
                         errors.forEach { error in
