@@ -153,7 +153,7 @@ struct LoginView: View {
                 case .inactive:
                     if !self.isActive {
                         // Activating...
-                        if !authenticator.authenticated {
+                        if !authenticator.authenticated && presentedPath.count == 0 {
                             // Transitioning from background to active state, attempt signIn
                             credentials = (try? authenticator.getCredentials()) ?? []
                             
