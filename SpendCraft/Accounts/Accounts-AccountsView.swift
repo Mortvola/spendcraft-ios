@@ -20,7 +20,7 @@ extension Accounts {
                 .listStyle(.sidebar)
                 .navigationTitle("Accounts")
                 .refreshable {
-                    await accountsStore.load()
+                    await accountsStore.load(force: true)
                 }
             } detail: {
                 if let account = navModel.selectedAccount {
@@ -28,9 +28,7 @@ extension Accounts {
                 }
             }
             .task {
-                if (!accountsStore.loaded) {
-                    await accountsStore.load()
-                }
+                await accountsStore.load()
             }
         }
     }

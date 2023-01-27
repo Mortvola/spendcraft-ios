@@ -78,7 +78,7 @@ class TransactionStore: ObservableObject {
 
     @MainActor
     private func loadPosted(path: String, container: TransactionContainer) async {
-        loading = true
+        self.loading = true
         
         if let transactionsResponse: Http.Response<Response.Transactions> = try? await Http.get(path: path) {
             if let transactionsResponse = transactionsResponse.data {
@@ -113,7 +113,7 @@ class TransactionStore: ObservableObject {
             }
         }
 
-        loading = false
+        self.loading = false
     }
 
     @MainActor

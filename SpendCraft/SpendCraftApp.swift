@@ -13,7 +13,6 @@ struct SpendCraftApp: App {
     @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
     @Environment(\.scenePhase) var scenePhase
     @StateObject private var navModel = NavModel.shared
-    @ObservedObject var busy = Busy.shared
     @ObservedObject private var categoriesStore = CategoriesStore.shared
     @ObservedObject private var authenticator = Authenticator.shared
 
@@ -49,13 +48,7 @@ struct SpendCraftApp: App {
                         LoginView()
                     }
                 }
-
-                if busy.busy {
-                    ProgressView()
-                        .padding(32)
-                        .background(Color(.white))
-                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(.gray, lineWidth: 1))
-                }
+                .withBusyIndicator()
                 InactiveView()
                     .opacity(opacity)
             }

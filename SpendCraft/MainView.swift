@@ -15,6 +15,8 @@ struct MainView: View {
     @SceneStorage("navigation") private var navigationData: Data?
     @State var isConfiguringWidget = false
     @StateObject var categories = CatList()
+    @State var ofxFile: URL? = nil
+    @State var showUploadOfx = false
     
     var selectionHandler: Binding<TabSelection> { Binding(
         get: { navModel.tabSelection },
@@ -71,6 +73,11 @@ struct MainView: View {
         .sheet(isPresented: $isConfiguringWidget) {
             ConfigureWidgetView(isConfiguringWidget: $isConfiguringWidget, categories: categories)
         }
+        .sheet(isPresented: $showUploadOfx) {
+            if let ofxFile = ofxFile {
+                UploadOfxView(file: ofxFile, show: $showUploadOfx)
+            }
+        }
         .environmentObject(navModel)
         .task {
             if let jsonData = navigationData {
@@ -90,6 +97,9 @@ struct MainView: View {
                 }
                 
                 isConfiguringWidget = true
+            } else if url.path().firstMatch(of: /.*\.ofx/) != nil {
+                ofxFile = url
+                showUploadOfx = true
             }
         }
     }

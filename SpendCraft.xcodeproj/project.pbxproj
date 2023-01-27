@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		79040B19298407CB0019342A /* UploadOfxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79040B18298407CB0019342A /* UploadOfxView.swift */; };
+		79040B1B298412630019342A /* Institution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79040B1A298412630019342A /* Institution.swift */; };
+		79040B1D2984128D0019342A /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79040B1C2984128D0019342A /* Account.swift */; };
+		79040B20298448D10019342A /* BusyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79040B1F298448D10019342A /* BusyView.swift */; };
 		790B4EF42909699500149DCC /* FundingGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790B4EF32909699500149DCC /* FundingGroupView.swift */; };
 		790B4EF629096A5000149DCC /* FundingCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790B4EF529096A5000149DCC /* FundingCategoryView.swift */; };
 		790B4EF8290C376200149DCC /* Border.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790B4EF7290C376200149DCC /* Border.swift */; };
@@ -213,6 +217,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		79040B18298407CB0019342A /* UploadOfxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadOfxView.swift; sourceTree = "<group>"; };
+		79040B1A298412630019342A /* Institution.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Institution.swift; sourceTree = "<group>"; };
+		79040B1C2984128D0019342A /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
+		79040B1F298448D10019342A /* BusyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusyView.swift; sourceTree = "<group>"; };
 		790B4EF32909699500149DCC /* FundingGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FundingGroupView.swift; sourceTree = "<group>"; };
 		790B4EF529096A5000149DCC /* FundingCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FundingCategoryView.swift; sourceTree = "<group>"; };
 		790B4EF7290C376200149DCC /* Border.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Border.swift; sourceTree = "<group>"; };
@@ -495,6 +503,7 @@
 				795382E928E8AAA700133EFA /* Info.plist */,
 				795382DE28E663CB00133EFA /* SpendCraft.entitlements */,
 				79C19CA128D41BC8003F05F2 /* SpendCraftApp.swift */,
+				79040B1F298448D10019342A /* BusyView.swift */,
 				79CF2E5928F85C3300448D65 /* AppDelegate.swift */,
 				79F5DF482977431F00F6AC4D /* Configuration.swift */,
 				795382E728E864B800133EFA /* InactiveView.swift */,
@@ -508,6 +517,7 @@
 				7946967228D82018005B6408 /* ReportsView.swift */,
 				792681B428F6201C0005114F /* TransactionTypePicker.swift */,
 				7946967428D8203A005B6408 /* MainView.swift */,
+				79040B18298407CB0019342A /* UploadOfxView.swift */,
 				79B2595D28F4B4FE000D6763 /* ConfigureWidgetView.swift */,
 				795382DF28E7141100133EFA /* SettingsView.swift */,
 				795AFB5B29703C4D00B977A3 /* InviteCollaboratorView.swift */,
@@ -554,6 +564,8 @@
 				7941608329152D7800E63DE3 /* FundingTransaction.swift */,
 				7946969428DE1173005B6408 /* SampleData.swift */,
 				79ADF87428E5D71800227F44 /* AccountsStore.swift */,
+				79040B1A298412630019342A /* Institution.swift */,
+				79040B1C2984128D0019342A /* Account.swift */,
 				797BDEDF28F072C400640173 /* NavModel.swift */,
 				7946967628D8B99B005B6408 /* CategoriesStore.swift */,
 				79CF2E662904276300448D65 /* PlanStore.swift */,
@@ -935,6 +947,7 @@
 				79A17C0D28F1A3BF006FD368 /* widget.intentdefinition in Sources */,
 				79F5DF5A2978476700F6AC4D /* EnterPasswordView.swift in Sources */,
 				79ADF87528E5D71800227F44 /* AccountsStore.swift in Sources */,
+				79040B1D2984128D0019342A /* Account.swift in Sources */,
 				79CF2E5128F79AAA00448D65 /* EditCategoryView.swift in Sources */,
 				79CF2E5F28FEC43400448D65 /* PlanCategoryView.swift in Sources */,
 				79F5DF64297F154500F6AC4D /* PasswordRulesView.swift in Sources */,
@@ -945,6 +958,7 @@
 				790B4EFA290F522D00149DCC /* MonthYearDate.swift in Sources */,
 				7946967128D82006005B6408 /* Accounts-AccountsView.swift in Sources */,
 				790B4EF629096A5000149DCC /* FundingCategoryView.swift in Sources */,
+				79040B20298448D10019342A /* BusyView.swift in Sources */,
 				79CF2E4D28F7861300448D65 /* EditCategoriesView.swift in Sources */,
 				79F5DF5C297C6B8D00F6AC4D /* CredentialListView.swift in Sources */,
 				79CF2E4B28F7250800448D65 /* AddGroupView.swift in Sources */,
@@ -955,6 +969,7 @@
 				7946968C28DB50CE005B6408 /* TransactionView.swift in Sources */,
 				7923782C28D77C0A0069DB01 /* TransactionStore.swift in Sources */,
 				797BDEE028F072C400640173 /* NavModel.swift in Sources */,
+				79040B19298407CB0019342A /* UploadOfxView.swift in Sources */,
 				79CF2E5728F7B57900448D65 /* GroupView2.swift in Sources */,
 				795382E828E864B800133EFA /* InactiveView.swift in Sources */,
 				7946966F28D81FF0005B6408 /* PlansView.swift in Sources */,
@@ -970,6 +985,7 @@
 				795382E228E7178600133EFA /* Accounts-RegisterView.swift in Sources */,
 				79F5DF62297F075F00F6AC4D /* PasswordRuleView.swift in Sources */,
 				795AFB602973084E00B977A3 /* FieldErrorView.swift in Sources */,
+				79040B1B298412630019342A /* Institution.swift in Sources */,
 				7946967728D8B99B005B6408 /* CategoriesStore.swift in Sources */,
 				7946968E28DCADFE005B6408 /* CategoryPicker.swift in Sources */,
 				7946966D28D81FC8005B6408 /* CategoriesView.swift in Sources */,

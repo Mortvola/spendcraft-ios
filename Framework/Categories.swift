@@ -259,8 +259,7 @@ public enum SpendCraft {
         }
         
         public func read() {
-            let archiveURL =
-            FileManager.sharedContainerURL()
+            let archiveURL = FileManager.sharedContainerURL()
                 .appendingPathComponent("categories.json")
             
             if let data = try? Data(contentsOf: archiveURL) {
