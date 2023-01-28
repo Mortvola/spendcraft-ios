@@ -42,8 +42,8 @@ class Account: ObservableObject, Identifiable, Hashable {
         hasher.combine(id)
     }
     
-    func uploadOfx(file: URL) async {
-        try? await Http.uploadFile(path: "/api/v1/account/\(self.id)/ofx", file: file, mimeType: "text/plain")
+    func uploadOfx(file: URL) async -> Http.EmptyResponse? {
+        return try? await Http.uploadFile(path: "/api/v1/account/\(self.id)/ofx", file: file, mimeType: "text/plain")
     }
 }
 

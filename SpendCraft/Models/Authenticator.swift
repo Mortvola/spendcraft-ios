@@ -81,29 +81,28 @@ class Authenticator: ObservableObject {
     func signOut() async {
         Busy.shared.start()
 
-        do {
-            struct LogoutRequest: Encodable {
-                struct Data: Encodable {
-                    var refresh: String
-                }
-                
-                init(refreshToken: String) {
-                    self.data = Data(refresh: refreshToken)
-                }
-                
-                var data: Data
+        struct LogoutRequest: Encodable {
+            struct Data: Encodable {
+                var refresh: String
             }
             
-            let logoutRequest = LogoutRequest(refreshToken: Http.getRefreshToken())
+            init(refreshToken: String) {
+                self.data = Data(refresh: refreshToken)
+            }
             
-            try await Http.post(path: "/api/v1/logout", data: logoutRequest)
-            
-            Http.setTokens("", "")
-            self.context = nil
+            var data: Data
         }
-        catch {
-            print(error)
+        
+        let logoutRequest = LogoutRequest(refreshToken: Http.getRefreshToken())
+        
+        let result = try? await Http.post(path: "/api/v1/logout", data: logoutRequest)
+        
+        if let result = result, result.hasErrors() {
+            result.printErrors()
         }
+        
+        Http.setTokens("", "")
+        self.context = nil
 
         self.setUnauthenticated()
 

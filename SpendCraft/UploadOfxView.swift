@@ -41,8 +41,14 @@ struct UploadOfxView: View {
                         Button {
                             Task {
                                 Busy.shared.busy = true
-                                await acct.uploadOfx(file: file)
-                                show = false
+                                let result = await acct.uploadOfx(file: file)
+                                
+                                if let result = result, result.hasErrors() {
+                                    result.printErrors()
+                                } else {
+                                    show = false
+                                }
+
                                 Busy.shared.busy = false
                             }
                         } label: {
